@@ -12,7 +12,6 @@
 
 * [Installation and Usage](#installation-and-usage)
    * [Example: Create a transaction](#example-create-a-transaction)
-* [Use a pre-built image (browser only)](#use-a-pre-built-image-browser-only)
 * [Documentation](#bigchaindb-documentation)
 * [Authors](#authors)
 * [License](#license)
