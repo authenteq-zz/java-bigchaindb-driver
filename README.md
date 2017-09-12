@@ -17,7 +17,32 @@
 * [License](#license)
 
 ## Installation and Usage
+```bash
+mvn install
+```
+### Example: Create a transaction
+```java
+// Payload of the transaction, defined as the asset to store
+JSONObject data = new JSONObject();
+data.put("firstname", "John");
+data.put("lastname", "Smith");
 
+// Metadata contains information about the transaction itself
+//                     (can be `null` if not needed)
+JSONObject metadata = new JSONObject();
+metadata.put("what", "My first BigchainDB transaction");
+
+KeyPair keyPair = retrieveKeyPair();
+
+BigchaindbTransaction bigchaindbTransaction = new BigchaindbTransaction(
+        data, metadata, (EdDSAPublicKey) keyPair.getPublic()
+);
+bigchaindbTransaction.signTransaction((EdDSAPrivateKey) keyPair.getPrivate());
+
+// signed transaction json ready to be submitted
+JSONObject transactionJson = bigchaindbTransaction.getTransactionJson();
+
+```
 
 ## BigchainDB Documentation
 
