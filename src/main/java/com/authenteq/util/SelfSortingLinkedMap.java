@@ -6,6 +6,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+/**
+ * Since Android org.json implementation uses strictly typed LinkedHashMap internally
+ * it's impossible to just substitute TreeMap instead of it. To make it self sorting
+ * this little hack should be made.
+ * @param <K>
+ * @param <V>
+ */
 public class SelfSortingLinkedMap<K,V> extends LinkedHashMap<K,V> {
     private TreeMap<K,V> mapDelegate = new TreeMap<>();
 

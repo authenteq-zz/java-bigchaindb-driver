@@ -22,6 +22,13 @@ public class BigchaindbTransaction {
     private JSONObject transactionJson;
     private boolean signed;
 
+    /**
+     * Create a BigchainDB transaction with specified data and metadata
+     * @param data Payload of the transaction, defined as the asset to store
+     * @param metadata Metadata contains information about the transaction itself
+     *                (can be `null` if not needed)
+     * @param publicKey
+     */
     public BigchaindbTransaction(JSONObject data, JSONObject metadata, EdDSAPublicKey publicKey) {
         this.publicKey = publicKey;
         this.data = DriverUtils.makeSelfSorting(data);
@@ -29,6 +36,9 @@ public class BigchaindbTransaction {
         buildTransactionJson();
     }
 
+    /**
+     * Builds the transaction JSON without actually signing it
+     */
     protected void buildTransactionJson() {
         JSONObject asset = DriverUtils.getSelfSortingJson();
         JSONObject outputs = DriverUtils.getSelfSortingJson();
@@ -82,6 +92,12 @@ public class BigchaindbTransaction {
         transactionJson = rootObject;
     }
 
+    /**
+     * Sign the transaction with the specified private key
+     * @param privateKey
+     * @throws InvalidKeyException
+     * @throws SignatureException
+     */
     public void signTransaction(EdDSAPrivateKey privateKey) throws InvalidKeyException, SignatureException {
         try {
             // getting SHA3 hash of the current JSON object
@@ -109,10 +125,16 @@ public class BigchaindbTransaction {
         }
     }
 
+    /**
+     * @return Whether the transaction is successfully signed
+     */
     public boolean isSigned() {
         return signed;
     }
 
+    /**
+     * @return The JSON representation of the transaction
+     */
     public JSONObject getTransactionJson() {
         return transactionJson;
     }
