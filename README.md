@@ -1,6 +1,6 @@
 [![java-bigchaindb-driver](media/repo-banner@2x.png)](https://www.bigchaindb.com)
 
-> Official Java driver for [BigchainDB](https://github.com/bigchaindb/bigchaindb).
+> Official Java driver for [BigchainDB](https://github.com/bigchaindb/bigchaindb) created by [Authenteq](https://authenteq.com).
 
 ## Compatibility
 
@@ -58,6 +58,7 @@ JSONObject transactionJson = bigchaindbTransaction.getTransactionJson();
 
 ## Authors
 
+- The [Authenteq](https://authenteq.com) team.
 
 ## License
 
