@@ -1,3 +1,4 @@
+[![java-bigchaindb-driver](media/repo-banner@2x.png)](https://www.bigchaindb.com)
 
 > Official Java driver for [BigchainDB](https://github.com/bigchaindb/bigchaindb).
 
