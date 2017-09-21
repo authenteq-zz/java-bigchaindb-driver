@@ -1,0 +1,34 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+apply plugin: 'checkstyle'
+
+targetCompatibility = 1.7
+sourceCompatibility = 1.7
+
+group = 'com.authenteq'
+version = '0.1'
+description = 'Java Driver for Bigchaindb'
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': description,
+                   'Implementation-Version': version
+    }
+}
+
+repositories {    
+    maven { url "http://repo.maven.apache.org/maven2" }
+    mavenLocal()
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: '*.jar')	
+
+    compile 'net.i2p.crypto:eddsa:0.2.0'
+    compile 'org.bouncycastle:bcprov-jdk15on:1.58'
+    compile 'org.json:json:20170516'
+    compile group: 'commons-codec', name: 'commons-codec', version: '1.10'
+    testCompile 'junit:junit:4.12'
+}
+
