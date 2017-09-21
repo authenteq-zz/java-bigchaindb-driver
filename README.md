@@ -20,11 +20,9 @@
 * [License](#license)
 
 ## Installation and Usage
-To manually build java-bigchaindb-driver one should firstly install java-crypto-conditions lib (https://github.com/interledger/java-crypto-conditions) into the local maven repository. 
-
-After this from java-bigchaindb-driver directory run:
+The build system now is fully gradle-based, so to build the driver run:
 ```bash
-mvn install
+./gradlew install
 ```
 ### Example: Create a transaction
 ```java
