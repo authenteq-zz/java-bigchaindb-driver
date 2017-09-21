@@ -1,5 +1,8 @@
+[![java-bigchaindb-driver](media/repo-banner@2x.png)](https://www.bigchaindb.com)
 
-> Official Java driver for [BigchainDB](https://github.com/bigchaindb/bigchaindb).
+> Official Java driver for [BigchainDB](https://github.com/bigchaindb/bigchaindb) created by [Authenteq](https://authenteq.com).
+
+**Please note**: the driver is in an early development stage and does not cover all of the features of BigchainDB yet.
 
 ## Compatibility
 
@@ -17,6 +20,9 @@
 * [License](#license)
 
 ## Installation and Usage
+To manually build java-bigchaindb-driver one should firstly install java-crypto-conditions lib (https://github.com/interledger/java-crypto-conditions) into the local maven repository. 
+
+After this from java-bigchaindb-driver directory run:
 ```bash
 mvn install
 ```
@@ -54,6 +60,7 @@ JSONObject transactionJson = bigchaindbTransaction.getTransactionJson();
 
 ## Authors
 
+- The [Authenteq](https://authenteq.com) team.
 
 ## License
 
