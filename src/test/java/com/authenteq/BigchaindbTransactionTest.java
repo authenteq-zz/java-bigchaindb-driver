@@ -19,6 +19,7 @@
 
 package com.authenteq;
 
+import com.authenteq.util.DriverUtils;
 import net.i2p.crypto.eddsa.EdDSAEngine;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
@@ -42,6 +43,84 @@ import static org.junit.Assert.assertFalse;
 
 public class BigchaindbTransactionTest {
     static final String SHOULD_BE_FULFILMENT = "pGSAIOJUaCNTxPOZO2g7x0h6cFHt4LmgrN1LNGXh9q7IDOKxgUDSvX-fMwu6b-VdHQj9plPncX-XiS-VIgBWHPd13hNlB3G-C6grKqzHYGjEGvcJ_fcfD9wy-QHwN4hEfyvebkAM";
+
+    static final String JSON_REPR_SIGNED = "{\n" +
+            "  \"asset\": {\n" +
+            "    \"data\": {\n" +
+            "      \"msg\": \"Hello BigchainDB!\"\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"id\": \"8b20dbe164badd5ca0611b0e233aef9acce609fbca20f787fc7d926f300d0102\",\n" +
+            "  \"inputs\": [\n" +
+            "    {\n" +
+            "      \"fulfillment\": \"pGSAIDE5i63cn4X8T8N1sZ2mGkJD5lNRnBM4PZgI_zvzbr-cgUCGvCc2HO2uB4IKix6INRzGIM10r7VsKFMPM9cT7uVJ1xFLOJ9bn6UioepBMLIrrwTlk2CkTolIPonf7BnzriQL\",\n" +
+            "      \"fulfills\": null,\n" +
+            "      \"owners_before\": [\n" +
+            "        \"4K9sWUMFwTgaDGPfdynrbxWqWS6sWmKbZoTjxLtVUibD\"\n" +
+            "      ]\n" +
+            "    }\n" +
+            "  ],\n" +
+            "  \"metadata\": {\n" +
+            "    \"sequence\": 0\n" +
+            "  },\n" +
+            "  \"operation\": \"CREATE\",\n" +
+            "  \"outputs\": [\n" +
+            "    {\n" +
+            "      \"amount\": \"1\",\n" +
+            "      \"condition\": {\n" +
+            "        \"details\": {\n" +
+            "          \"public_key\": \"4K9sWUMFwTgaDGPfdynrbxWqWS6sWmKbZoTjxLtVUibD\",\n" +
+            "          \"type\": \"ed25519-sha-256\"\n" +
+            "        },\n" +
+            "        \"uri\": \"ni:///sha-256;PNYwdxaRaNw60N6LDFzOWO97b8tJeragczakL8PrAPc?fpt=ed25519-sha-256&cost=131072\"\n" +
+            "      },\n" +
+            "      \"public_keys\": [\n" +
+            "        \"4K9sWUMFwTgaDGPfdynrbxWqWS6sWmKbZoTjxLtVUibD\"\n" +
+            "      ]\n" +
+            "    }\n" +
+            "  ],\n" +
+            "  \"version\": \"1.0\"\n" +
+            "}";
+
+    static final String JSON_REPR_UNSIGNED = "{\n" +
+            "  \"asset\": {\n" +
+            "    \"data\": {\n" +
+            "      \"msg\": \"Hello BigchainDB!\"\n" +
+            "    }\n" +
+            "  },\n" +
+            "  \"id\": \"8b20dbe164badd5ca0611b0e233aef9acce609fbca20f787fc7d926f300d0102\",\n" +
+            "  \"inputs\": [\n" +
+            "    {\n" +
+            "      \"fulfillment\": null,\n" +
+            "      \"fulfills\": null,\n" +
+            "      \"owners_before\": [\n" +
+            "        \"4K9sWUMFwTgaDGPfdynrbxWqWS6sWmKbZoTjxLtVUibD\"\n" +
+            "      ]\n" +
+            "    }\n" +
+            "  ],\n" +
+            "  \"metadata\": {\n" +
+            "    \"sequence\": 0\n" +
+            "  },\n" +
+            "  \"operation\": \"CREATE\",\n" +
+            "  \"outputs\": [\n" +
+            "    {\n" +
+            "      \"amount\": \"1\",\n" +
+            "      \"condition\": {\n" +
+            "        \"details\": {\n" +
+            "          \"public_key\": \"4K9sWUMFwTgaDGPfdynrbxWqWS6sWmKbZoTjxLtVUibD\",\n" +
+            "          \"type\": \"ed25519-sha-256\"\n" +
+            "        },\n" +
+            "        \"uri\": \"ni:///sha-256;PNYwdxaRaNw60N6LDFzOWO97b8tJeragczakL8PrAPc?fpt=ed25519-sha-256&cost=131072\"\n" +
+            "      },\n" +
+            "      \"public_keys\": [\n" +
+            "        \"4K9sWUMFwTgaDGPfdynrbxWqWS6sWmKbZoTjxLtVUibD\"\n" +
+            "      ]\n" +
+            "    }\n" +
+            "  ],\n" +
+            "  \"version\": \"1.0\"\n" +
+            "}";
+
+    static final String SHOULD_BE_PUBLIC_KEY = "4K9sWUMFwTgaDGPfdynrbxWqWS6sWmKbZoTjxLtVUibD";
 
     @Test
     public void transactionGenerationTest() throws Exception {
@@ -82,6 +161,19 @@ public class BigchaindbTransactionTest {
 
         assertTrue(fulfillment.verify(condition1, rootObject.toString().getBytes()));
 //        return rootObject.toString();
+    }
+
+    @Test
+    public void transactionFromJson() throws Exception {
+        BigchaindbTransaction transactionSigned
+                = BigchaindbTransaction.createFromJson(new JSONObject(JSON_REPR_SIGNED));
+        BigchaindbTransaction transactionUnsigned
+                = BigchaindbTransaction.createFromJson(new JSONObject(JSON_REPR_UNSIGNED));
+
+        String publicEncoded = DriverUtils.convertToBase58(transactionSigned.getPublicKey());
+        assertEquals(SHOULD_BE_PUBLIC_KEY, publicEncoded);
+        assertTrue(transactionSigned.isSigned());
+        assertFalse(transactionUnsigned.isSigned());
     }
 
     private KeyPair retrieveKeyPair() {

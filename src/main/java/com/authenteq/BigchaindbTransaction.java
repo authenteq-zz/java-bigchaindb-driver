@@ -19,10 +19,14 @@
 
 package com.authenteq;
 
+import com.authenteq.util.Base58;
 import com.authenteq.util.DriverUtils;
 import net.i2p.crypto.eddsa.EdDSAEngine;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
+import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
+import net.i2p.crypto.eddsa.spec.EdDSAParameterSpec;
+import net.i2p.crypto.eddsa.spec.EdDSAPublicKeySpec;
 import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.jcajce.provider.digest.SHA3;
 import org.interledger.cryptoconditions.types.Ed25519Sha256Condition;
@@ -53,6 +57,15 @@ public class BigchaindbTransaction {
         this.data = DriverUtils.makeSelfSorting(data);
         this.metadata = DriverUtils.makeSelfSorting(metadata);
         buildTransactionJson();
+    }
+
+    private BigchaindbTransaction(JSONObject data, JSONObject metadata, JSONObject transactionJson,
+                                  EdDSAPublicKey publicKey, boolean signed) {
+        this.publicKey = publicKey;
+        this.data = DriverUtils.makeSelfSorting(data);
+        this.metadata = DriverUtils.makeSelfSorting(metadata);
+        this.transactionJson = DriverUtils.makeSelfSorting(transactionJson);
+        this.signed = signed;
     }
 
     /**
@@ -156,5 +169,53 @@ public class BigchaindbTransaction {
      */
     public JSONObject getTransactionJson() {
         return transactionJson;
+    }
+
+    @Override
+    public String toString() {
+        if (transactionJson == null) {
+            return "";
+        }
+        else {
+            return transactionJson.toString();
+        }
+    }
+
+    public EdDSAPublicKey getPublicKey() {
+        return publicKey;
+    }
+
+    public JSONObject getData() {
+        return data;
+    }
+
+    public JSONObject getMetadata() {
+        return metadata;
+    }
+
+    /**
+     * Parse the JSON representation of the transaction and return the BigchaindbTransaction object. The validation of
+     * signatures is not performed.
+     * @param jsonObject
+     * @return
+     */
+    public static BigchaindbTransaction createFromJson(JSONObject jsonObject) {
+        JSONObject data = jsonObject.getJSONObject("asset").getJSONObject("data");
+        JSONObject metadata = jsonObject.getJSONObject("metadata");
+        String publicKeyEncoded = jsonObject.getJSONArray("outputs").getJSONObject(0)
+                .getJSONArray("public_keys").getString(0);
+        byte[] publicKey = Base58.decode(publicKeyEncoded);
+        EdDSAParameterSpec keySpecs = EdDSANamedCurveTable.getByName("Ed25519");
+        EdDSAPublicKeySpec spec = new EdDSAPublicKeySpec(publicKey, keySpecs);
+        EdDSAPublicKey edDSAPublicKey = new EdDSAPublicKey(spec);
+
+        // TODO: validate the signature
+        Object fulfObject = jsonObject.getJSONArray("inputs").getJSONObject(0).get("fulfillment");
+
+        boolean signed = false;
+        if (!JSONObject.NULL.equals(fulfObject))
+            signed = true;
+
+        return new BigchaindbTransaction(data, metadata, jsonObject, edDSAPublicKey, signed);
     }
 }

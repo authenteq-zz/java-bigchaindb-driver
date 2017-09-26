@@ -26,6 +26,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.TreeMap;
 
 public class DriverUtils {
     private static final char[] DIGITS =
@@ -56,13 +57,6 @@ public class DriverUtils {
             map = json.getClass().getDeclaredField("map");
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
-            try {
-                // org.json of JDK and Android standard library are not compatible
-                // this means we are on Android
-                map = json.getClass().getDeclaredField("nameValuePairs");
-            } catch (NoSuchFieldException e1) {
-                e1.printStackTrace();
-            }
         }
         if (map == null) {
             return json;
@@ -70,7 +64,7 @@ public class DriverUtils {
 
         map.setAccessible(true);//because the field is private final...
         try {
-            map.set(json, new SelfSortingLinkedMap());
+            map.set(json, new TreeMap<>());
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
