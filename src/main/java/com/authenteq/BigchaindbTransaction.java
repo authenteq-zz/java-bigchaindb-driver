@@ -118,10 +118,25 @@ public class BigchaindbTransaction {
             inputs.put("owners_before", ownersBefore);
             inputsArr.put(inputs);
             rootObject.put("inputs", inputsArr);
+
+            // getting SHA3 hash of the current JSON object
+            SHA3.DigestSHA3 md = new SHA3.DigestSHA3(256);
+            md.update(transactionJson.toString().getBytes());
+            String id = DriverUtils.getHex(md.digest());
+
+            // putting the hash as id field
+            transactionJson.put("id", id);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         transactionJson = rootObject;
+    }
+
+    /**
+     * @return TransactionID which is SHA3 hash of the transaction JSON without fulfillment
+     */
+    public String getTransactionId() {
+        return transactionJson.getString("id");
     }
 
     /**
@@ -132,14 +147,6 @@ public class BigchaindbTransaction {
      */
     public void signTransaction(EdDSAPrivateKey privateKey) throws InvalidKeyException, SignatureException {
         try {
-            // getting SHA3 hash of the current JSON object
-            SHA3.DigestSHA3 md = new SHA3.DigestSHA3(256);
-            md.update(transactionJson.toString().getBytes());
-            String id = DriverUtils.getHex(md.digest());
-
-            // putting the hash as id field
-            transactionJson.put("id", id);
-
             // signing the transaction
             Signature edDsaSigner = new EdDSAEngine(MessageDigest.getInstance("SHA-512"));
             edDsaSigner.initSign(privateKey);

@@ -157,6 +157,7 @@ public class BigchaindbTransactionTest {
         Ed25519Sha256Fulfillment fulfillment
                 = new Ed25519Sha256Fulfillment((EdDSAPublicKey) keyPair.getPublic(), signature);
         assertEquals("4eff006ca203061d6bc1100959018f008c0f61a4b53c5d8a333159adf69a7c46", rootObject.getString("id"));
+        assertEquals("4eff006ca203061d6bc1100959018f008c0f61a4b53c5d8a333159adf69a7c46", bigchaindbTransaction.getTransactionId());
         assertEquals(SHOULD_BE_FULFILMENT, fulfilmentVal);
 
         assertTrue(fulfillment.verify(condition1, rootObject.toString().getBytes()));

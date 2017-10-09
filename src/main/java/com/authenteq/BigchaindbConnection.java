@@ -34,7 +34,6 @@ public class BigchaindbConnection {
     public static final String TRANSACTIONS_ENDPOINT = "/transactions";
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    public static final MediaType MEDIA_TYPE = MediaType.parse("multipart/mixed");
 
     protected String baseUrl;
     protected Map<String, String> tokens;
