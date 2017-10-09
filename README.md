@@ -43,8 +43,28 @@ BigchaindbTransaction bigchaindbTransaction = new BigchaindbTransaction(
 );
 bigchaindbTransaction.signTransaction((EdDSAPrivateKey) keyPair.getPrivate());
 
-// signed transaction json ready to be submitted
-JSONObject transactionJson = bigchaindbTransaction.getTransactionJson();
+// creating connection (assuming the server is running on localhost)
+final BigchaindbConnection bigchaindbConnection = new BigchaindbConnection("http://localhost:9984");
+
+bigchaindbConnection.send(bigchaindbTransaction, new TransactionCallback() {
+            @Override
+            public void pushedSuccessfully() {
+               // get the newly submitted transaction from remote
+               BigchaindbTransaction tra =
+                bigchaindbConnection.getTransactionById(bigchaindbTransaction.getTransactionId());
+               System.out.println(tra.toString());
+            }
+
+            @Override
+            public void transactionMalformed() {
+              // transaction is malformed and has been rejected
+            }
+
+            @Override
+            public void otherError() {
+              // other unexpected server error
+            }
+});
 
 ```
 
