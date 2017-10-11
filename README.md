@@ -42,9 +42,10 @@ BigchaindbTransaction bigchaindbTransaction = new BigchaindbTransaction(
         data, metadata, (EdDSAPublicKey) keyPair.getPublic()
 );
 bigchaindbTransaction.signTransaction((EdDSAPrivateKey) keyPair.getPrivate());
+```
 
 ### Example: Send a transaction
-
+```java
 // creating connection (assuming the server is running on localhost)
 final BigchaindbConnection bigchaindbConnection = new BigchaindbConnection("http://localhost:9984");
 
