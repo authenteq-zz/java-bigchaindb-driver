@@ -24,7 +24,7 @@ The build system now is fully gradle-based, so to build the driver run:
 ```bash
 ./gradlew install
 ```
-### Example: Create a transaction
+### Example: Create and sign a transaction
 ```java
 // Payload of the transaction, defined as the asset to store
 JSONObject data = new JSONObject();
@@ -42,6 +42,8 @@ BigchaindbTransaction bigchaindbTransaction = new BigchaindbTransaction(
         data, metadata, (EdDSAPublicKey) keyPair.getPublic()
 );
 bigchaindbTransaction.signTransaction((EdDSAPrivateKey) keyPair.getPrivate());
+
+### Example: Send a transaction
 
 // creating connection (assuming the server is running on localhost)
 final BigchaindbConnection bigchaindbConnection = new BigchaindbConnection("http://localhost:9984");
