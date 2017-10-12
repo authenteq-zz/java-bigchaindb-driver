@@ -121,11 +121,11 @@ public class BigchaindbTransaction {
 
             // getting SHA3 hash of the current JSON object
             SHA3.DigestSHA3 md = new SHA3.DigestSHA3(256);
-            md.update(transactionJson.toString().getBytes());
+            md.update(rootObject.toString().getBytes());
             String id = DriverUtils.getHex(md.digest());
 
             // putting the hash as id field
-            transactionJson.put("id", id);
+            rootObject.put("id", id);
         } catch (JSONException e) {
             e.printStackTrace();
         }
