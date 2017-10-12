@@ -26,6 +26,10 @@ The build system now is fully gradle-based, so to build the driver run:
 ```
 ### Example: Create and sign a transaction
 ```java
+// Generating public/private key pair
+net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
+KeyPair keyPair = edDsaKpg.generateKeyPair();
+
 // Payload of the transaction, defined as the asset to store
 JSONObject data = new JSONObject();
 data.put("firstname", "John");
@@ -35,8 +39,6 @@ data.put("lastname", "Smith");
 //                     (can be `null` if not needed)
 JSONObject metadata = new JSONObject();
 metadata.put("what", "My first BigchainDB transaction");
-
-KeyPair keyPair = retrieveKeyPair();
 
 BigchaindbTransaction bigchaindbTransaction = new BigchaindbTransaction(
         data, metadata, (EdDSAPublicKey) keyPair.getPublic()
