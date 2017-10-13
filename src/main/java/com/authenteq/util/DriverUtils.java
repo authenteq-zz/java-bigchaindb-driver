@@ -28,10 +28,22 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.TreeMap;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DriverUtils.
+ */
 public class DriverUtils {
+    
+    /** The Constant DIGITS. */
     private static final char[] DIGITS =
             {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
+    /**
+     * Gets the hex.
+     *
+     * @param data the data
+     * @return the hex
+     */
     public static String getHex(byte[] data) {
         final int l = data.length;
         final char[] outData = new char[l << 1];
@@ -43,6 +55,12 @@ public class DriverUtils {
         return new String(outData);
     }
 
+    /**
+     * Make self sorting.
+     *
+     * @param input the input
+     * @return the JSON object
+     */
     /*
     We are using a hack to make stardard org.json be automatically sorted
     by key desc alphabetically
@@ -83,6 +101,11 @@ public class DriverUtils {
         return json;
     }
 
+    /**
+     * Gets the self sorting json.
+     *
+     * @return the self sorting json
+     */
     /*
     We need to sort the keys in alphabetical order to sign the transaction successfully.
      */
@@ -91,6 +114,12 @@ public class DriverUtils {
         return json;
     }
 
+    /**
+     * Convert to base 58.
+     *
+     * @param publicKey the public key
+     * @return the string
+     */
     public static String convertToBase58(EdDSAPublicKey publicKey) {
         return Base58.encode(Arrays.copyOfRange(publicKey.getEncoded(), 12, 44));
     }

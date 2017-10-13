@@ -14,7 +14,7 @@
 ## Contents
 
 * [Installation and Usage](#installation-and-usage)
-   * [Example: Create a transaction](#example-create-a-transaction)
+* [Example: Create a transaction](#example-create-a-transaction)
 * [Documentation](#bigchaindb-documentation)
 * [Authors](#authors)
 * [License](#license)

@@ -19,6 +19,7 @@
 
 package com.authenteq;
 
+import com.authenteq.model.Transaction;
 import com.authenteq.util.DriverUtils;
 import net.i2p.crypto.eddsa.EdDSAEngine;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
@@ -41,9 +42,16 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class BigchaindbTransactionTest.
+ */
 public class BigchaindbTransactionTest {
+    
+    /** The Constant SHOULD_BE_FULFILMENT. */
     static final String SHOULD_BE_FULFILMENT = "pGSAIOJUaCNTxPOZO2g7x0h6cFHt4LmgrN1LNGXh9q7IDOKxgUDSvX-fMwu6b-VdHQj9plPncX-XiS-VIgBWHPd13hNlB3G-C6grKqzHYGjEGvcJ_fcfD9wy-QHwN4hEfyvebkAM";
-
+    
+    /** The Constant JSON_REPR_SIGNED. */
     static final String JSON_REPR_SIGNED = "{\n" +
             "  \"asset\": {\n" +
             "    \"data\": {\n" +
@@ -82,6 +90,7 @@ public class BigchaindbTransactionTest {
             "  \"version\": \"1.0\"\n" +
             "}";
 
+    /** The Constant JSON_REPR_UNSIGNED. */
     static final String JSON_REPR_UNSIGNED = "{\n" +
             "  \"asset\": {\n" +
             "    \"data\": {\n" +
@@ -120,8 +129,14 @@ public class BigchaindbTransactionTest {
             "  \"version\": \"1.0\"\n" +
             "}";
 
+    /** The Constant SHOULD_BE_PUBLIC_KEY. */
     static final String SHOULD_BE_PUBLIC_KEY = "4K9sWUMFwTgaDGPfdynrbxWqWS6sWmKbZoTjxLtVUibD";
 
+    /**
+     * Transaction generation test.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void transactionGenerationTest() throws Exception {
         JSONObject data = new JSONObject();
@@ -137,7 +152,7 @@ public class BigchaindbTransactionTest {
 
         KeyPair keyPair = retrieveKeyPair();
 
-        BigchaindbTransaction bigchaindbTransaction = new BigchaindbTransaction(
+        Transaction bigchaindbTransaction = new Transaction(
                 data, null, (EdDSAPublicKey) keyPair.getPublic()
         );
         assertFalse(bigchaindbTransaction.isSigned());
@@ -164,12 +179,17 @@ public class BigchaindbTransactionTest {
 //        return rootObject.toString();
     }
 
+    /**
+     * Transaction from json.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void transactionFromJson() throws Exception {
-        BigchaindbTransaction transactionSigned
-                = BigchaindbTransaction.createFromJson(new JSONObject(JSON_REPR_SIGNED));
-        BigchaindbTransaction transactionUnsigned
-                = BigchaindbTransaction.createFromJson(new JSONObject(JSON_REPR_UNSIGNED));
+        Transaction transactionSigned
+                = Transaction.createFromJson(new JSONObject(JSON_REPR_SIGNED));
+        Transaction transactionUnsigned
+                = Transaction.createFromJson(new JSONObject(JSON_REPR_UNSIGNED));
 
         String publicEncoded = DriverUtils.convertToBase58(transactionSigned.getPublicKey());
         assertEquals(SHOULD_BE_PUBLIC_KEY, publicEncoded);
@@ -177,6 +197,11 @@ public class BigchaindbTransactionTest {
         assertFalse(transactionUnsigned.isSigned());
     }
 
+    /**
+     * Retrieve key pair.
+     *
+     * @return the key pair
+     */
     private KeyPair retrieveKeyPair() {
         Security.addProvider(new BouncyCastleProvider());
 

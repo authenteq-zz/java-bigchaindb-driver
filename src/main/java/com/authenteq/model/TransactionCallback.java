@@ -17,8 +17,12 @@
  *     Bohdan Bezpartochnyi <bohdan@authenteq.com>
  */
 
-package com.authenteq;
+package com.authenteq.model;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface TransactionCallback.
+ */
 public interface TransactionCallback {
     /**
      * The pushed transaction was accepted in the BACKLOG, but the processing has not been completed.
