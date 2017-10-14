@@ -5,8 +5,9 @@ import java.io.IOException;
 import org.json.JSONObject;
 
 import com.authenteq.constants.BigchainDbApi;
-import com.authenteq.model.Transaction;
+import com.authenteq.model.TransactionModel;
 import com.authenteq.model.Globals;
+import com.authenteq.model.Transaction;
 import com.authenteq.model.TransactionCallback;
 
 import okhttp3.Call;
@@ -16,7 +17,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class NetworkUtils.
  */
@@ -34,23 +34,23 @@ public class NetworkUtils {
 	 */
 	public static void sendPostRequest(String url, Transaction transaction,
 			final TransactionCallback callback) {
-		RequestBody body = RequestBody.create(JSON, transaction.toString());
+		RequestBody body = RequestBody.create(JSON, JsonUtils.toJson(transaction));
 		Request request = new Request.Builder().url(url).post(body).build();
 
 		Globals.getHttpClient().newCall(request).enqueue(new Callback() {
 			@Override
 			public void onFailure(Call call, IOException e) {
-				callback.otherError();
+				e.printStackTrace();
 			}
 
 			@Override
 			public void onResponse(Call call, Response response) throws IOException {
 				if (response.code() == 202) {
-					callback.pushedSuccessfully();
+					callback.pushedSuccessfully(response);
 				} else if (response.code() == 400) {
-					callback.transactionMalformed();
+					callback.transactionMalformed(response);
 				} else {
-					callback.otherError();
+					callback.otherError(response);
 				}
 			}
 		});
@@ -65,7 +65,7 @@ public class NetworkUtils {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static Response sendPostRequest(String url, Transaction transaction) throws IOException {
-		RequestBody body = RequestBody.create(JSON, transaction.toString());
+		RequestBody body = RequestBody.create(JSON, JsonUtils.toJson(transaction));
 		Request request = new Request.Builder().url(url).post(body).build();
 		return Globals.getHttpClient().newCall(request).execute();
 	}

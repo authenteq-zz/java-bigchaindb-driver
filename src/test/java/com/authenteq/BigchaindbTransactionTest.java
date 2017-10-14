@@ -19,7 +19,7 @@
 
 package com.authenteq;
 
-import com.authenteq.model.Transaction;
+import com.authenteq.model.TransactionModel;
 import com.authenteq.util.DriverUtils;
 import net.i2p.crypto.eddsa.EdDSAEngine;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
@@ -152,7 +152,7 @@ public class BigchaindbTransactionTest {
 
         KeyPair keyPair = retrieveKeyPair();
 
-        Transaction bigchaindbTransaction = new Transaction(
+        TransactionModel bigchaindbTransaction = new TransactionModel(
                 data, null, (EdDSAPublicKey) keyPair.getPublic()
         );
         assertFalse(bigchaindbTransaction.isSigned());
@@ -186,10 +186,10 @@ public class BigchaindbTransactionTest {
      */
     @Test
     public void transactionFromJson() throws Exception {
-        Transaction transactionSigned
-                = Transaction.createFromJson(new JSONObject(JSON_REPR_SIGNED));
-        Transaction transactionUnsigned
-                = Transaction.createFromJson(new JSONObject(JSON_REPR_UNSIGNED));
+        TransactionModel transactionSigned
+                = TransactionModel.createFromJson(new JSONObject(JSON_REPR_SIGNED));
+        TransactionModel transactionUnsigned
+                = TransactionModel.createFromJson(new JSONObject(JSON_REPR_UNSIGNED));
 
         String publicEncoded = DriverUtils.convertToBase58(transactionSigned.getPublicKey());
         assertEquals(SHOULD_BE_PUBLIC_KEY, publicEncoded);

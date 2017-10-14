@@ -19,7 +19,8 @@
 
 package com.authenteq.model;
 
-// TODO: Auto-generated Javadoc
+import okhttp3.Response;
+
 /**
  * The Interface TransactionCallback.
  */
@@ -27,16 +28,17 @@ public interface TransactionCallback {
     /**
      * The pushed transaction was accepted in the BACKLOG, but the processing has not been completed.
      */
-    void pushedSuccessfully();
+    void pushedSuccessfully(Response response);
 
     /**
      * The transaction was malformed and not accepted in the BACKLOG. This shouldn't normally happen as the
      * driver ensures the proper transaction creation.
      */
-    void transactionMalformed();
+    void transactionMalformed(Response response);
 
     /**
      * All other errors, including server malfunction or network error.
      */
-    void otherError();
+    void otherError(Response response);
+    
 }

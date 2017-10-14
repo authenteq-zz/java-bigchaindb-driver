@@ -13,14 +13,17 @@ import org.junit.Test;
 
 import com.authenteq.api.TransactionsApi;
 import com.authenteq.builders.BigchainDbConfigBuilder;
+import com.authenteq.builders.BigchainDbTransactionBuilder;
 import com.authenteq.constants.Operations;
+import com.authenteq.model.TransactionModel;
+import com.authenteq.util.JsonUtils;
 import com.authenteq.model.Transaction;
 import com.authenteq.model.TransactionCallback;
 
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
+import okhttp3.Response;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class BigchaindbTransactionTest.
  */
@@ -35,9 +38,22 @@ public class BigchaindbTransactionTest {
 		.addToken("app_key", "c929b708177dcc8b9d58180082029b8d").setup();
 	}
 
-	/**
-	 * Test post transaction.
-	 */
+	@Test
+	public void testPostTransactionUsingBuilder() {
+		net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
+		KeyPair keyPair = edDsaKpg.generateKeyPair();
+		try {
+			Transaction transaction = BigchainDbTransactionBuilder.init()
+				.addAsset("firstname", "alvin").addMetaData("what", "bigchaintrans")
+				.buildAndSign((EdDSAPublicKey) keyPair.getPublic(),(EdDSAPrivateKey) keyPair.getPrivate())
+				.sendTransaction();
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	@Test
 	public void testPostTransaction() {
 		net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
@@ -53,7 +69,7 @@ public class BigchaindbTransactionTest {
 		JSONObject metadata = new JSONObject();
 		metadata.put("what", "My first BigchainDB transaction");
 
-		Transaction bigchaindbTransaction = new Transaction(data, metadata,
+		TransactionModel bigchaindbTransaction = new TransactionModel(data, metadata,
 				(EdDSAPublicKey) keyPair.getPublic());
 		try {
 			bigchaindbTransaction.signTransaction((EdDSAPrivateKey) keyPair.getPrivate());
@@ -62,16 +78,43 @@ public class BigchaindbTransactionTest {
 		} catch (SignatureException e) {
 			e.printStackTrace();
 		}
-
-		
+	}
+	
+	
+	@Test
+	public void testPostTransactionUsingBuilderWithCallBack() {
+		net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
+		KeyPair keyPair = edDsaKpg.generateKeyPair();
 		try {
-			Transaction tran = TransactionsApi.sendTransaction(bigchaindbTransaction);
-			assertTrue(tran != null);
+			BigchainDbTransactionBuilder.init()
+				.addAsset("firstname", "alvin").addMetaData("what", "bigchaintrans")
+				.buildAndSign((EdDSAPublicKey) keyPair.getPublic(),(EdDSAPrivateKey) keyPair.getPrivate())
+				.sendTransaction(new TransactionCallback() {
+					
+					@Override
+					public void transactionMalformed(Response response) {
+						System.out.println(response.message());
+						System.out.println("malformed " + response.message());
+						
+					}
+					
+					@Override
+					public void pushedSuccessfully(Response response) {
+						System.out.println("pushedSuccessfully");
+						
+					}
+					
+					@Override
+					public void otherError(Response response) {
+						System.out.println("otherError");
+						
+					}
+				});
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 	
 	/**
@@ -93,7 +136,7 @@ public class BigchaindbTransactionTest {
 	@Test
 	public void testTransactionByAssetIdTransfer() {
 		try {
-			assertTrue(TransactionsApi.getTransactionsByAssetId("437ce30de5cf1c3ad199fa983aded47d0db43567befa92e3a36b38a5784e4d3a", Operations.TRANSFER).size() > 0);
+			assertTrue(TransactionsApi.getTransactionsByAssetId("437ce30de5cf1c3ad199fa983aded47d0db43567befa92e3a36b38a5784e4d3a", Operations.CREATE).size() > 0);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

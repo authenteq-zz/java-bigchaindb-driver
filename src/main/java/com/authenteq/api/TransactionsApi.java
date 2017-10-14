@@ -9,14 +9,15 @@ import org.json.JSONObject;
 
 import com.authenteq.constants.BigchainDbApi;
 import com.authenteq.constants.Operations;
-import com.authenteq.model.Transaction;
+import com.authenteq.model.TransactionModel;
 import com.authenteq.model.Globals;
+import com.authenteq.model.Transaction;
 import com.authenteq.model.TransactionCallback;
+import com.authenteq.util.JsonUtils;
 import com.authenteq.util.NetworkUtils;
 
 import okhttp3.Response;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class TransactionsApi.
  */
@@ -40,9 +41,12 @@ public class TransactionsApi {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static Transaction sendTransaction(Transaction transaction) throws IOException {
+		System.out.println(JsonUtils.toJson(transaction));
 		Response response = NetworkUtils.sendPostRequest(Globals.getBaseUrl() + BigchainDbApi.TRANSACTIONS,
 				transaction);
-		return Transaction.createFromJson(new JSONObject(response.body().string()));
+		System.out.println(Globals.getBaseUrl() + BigchainDbApi.TRANSACTIONS + " > " + response.code());
+		System.out.println(response.body().string());
+		return JsonUtils.fromJson(response.body().string(), Transaction.class);
 	}
 
 	/**
@@ -52,9 +56,9 @@ public class TransactionsApi {
 	 * @return the transaction by id
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static Transaction getTransactionById(String id) throws IOException {
+	public static TransactionModel getTransactionById(String id) throws IOException {
 		Response response = NetworkUtils.sendGetRequest(Globals.getBaseUrl() + BigchainDbApi.TRANSACTIONS + "/" + id);
-		return Transaction.createFromJson(new JSONObject(response.body().string()));
+		return TransactionModel.createFromJson(new JSONObject(response.body().string()));
 	}
 
 	/**
@@ -66,11 +70,11 @@ public class TransactionsApi {
 	 * @throws JSONException the JSON exception
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static List<Transaction> getTransactionsByAssetId(String assetId, Operations operation)
+	public static List<TransactionModel> getTransactionsByAssetId(String assetId, Operations operation)
 			throws JSONException, IOException {
 		Response response = NetworkUtils.sendGetRequest(
 				Globals.getBaseUrl() + BigchainDbApi.TRANSACTIONS + "?asset_id=" + assetId + "&operation=" + operation);
-		return Transaction.createFromJsonArray(new JSONArray(response.body().string()));
+		return TransactionModel.createFromJsonArray(new JSONArray(response.body().string()));
 
 	}
 }
