@@ -5,10 +5,10 @@ import com.google.gson.annotations.SerializedName;
 public class FulFill {
 	
 	@SerializedName("output_index")
-	private String outputIndex;
+	private String outputIndex = "";
 	
 	@SerializedName("transaction_id")
-	private String transactionId;
+	private String transactionId = "";
 
 	public String getOutputIndex() {
 		return outputIndex;

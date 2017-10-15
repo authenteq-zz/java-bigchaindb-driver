@@ -1,8 +1,10 @@
 package com.authenteq.model;
 
+import java.io.Serializable;
+
 import com.google.gson.annotations.SerializedName;
 
-public class Details {
+public class Details implements Serializable {
 
 	@SerializedName("public_key")
 	private String publicKey;

@@ -5,4 +5,8 @@ package com.authenteq.api;
  */
 public class AssetsApi {
 	
+	public static void getAssets(String searchKey) {
+ 
+	}
+	
 }

@@ -1,12 +1,13 @@
 package com.authenteq.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.authenteq.annotations.Exclude;
 import com.google.gson.annotations.SerializedName;
 
-public class Output {
+public class Output implements Serializable {
 	
 	@SerializedName("output_index")
 	@Exclude

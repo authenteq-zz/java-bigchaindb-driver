@@ -1,11 +1,12 @@
 package com.authenteq.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Input {
+public class Input implements Serializable {
 
 	@SerializedName("fulfillment")
 	private String fullFillment = null;
@@ -14,7 +15,7 @@ public class Input {
 	private FulFill fulFills = null;
 	
 	@SerializedName("owners_before")
-	private List<String> ownersBefore= new ArrayList<String>();
+	private List<String> ownersBefore = new ArrayList<String>();
 
 	public String getFullFillment() {
 		return fullFillment;

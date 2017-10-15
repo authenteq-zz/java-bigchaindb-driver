@@ -152,8 +152,9 @@ public class TransactionModel {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		
 		transactionJson = rootObject;
-		System.out.println(rootObject.toString());
+		System.out.println(transactionJson.toString());
 	}
 
 	/**

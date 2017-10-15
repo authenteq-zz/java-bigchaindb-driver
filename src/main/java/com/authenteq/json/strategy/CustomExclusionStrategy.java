@@ -1,4 +1,4 @@
-package com.authenteq.util;
+package com.authenteq.json.strategy;
 
 import com.authenteq.annotations.Exclude;
 import com.google.gson.ExclusionStrategy;
@@ -14,7 +14,6 @@ public class CustomExclusionStrategy implements ExclusionStrategy {
 	}
 
 	public boolean shouldSkipClass(Class clazz) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

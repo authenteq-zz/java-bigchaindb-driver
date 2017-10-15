@@ -4,8 +4,6 @@ import java.io.IOException;
 
 import org.json.JSONObject;
 
-import com.authenteq.constants.BigchainDbApi;
-import com.authenteq.model.TransactionModel;
 import com.authenteq.model.Globals;
 import com.authenteq.model.Transaction;
 import com.authenteq.model.TransactionCallback;
@@ -34,7 +32,7 @@ public class NetworkUtils {
 	 */
 	public static void sendPostRequest(String url, Transaction transaction,
 			final TransactionCallback callback) {
-		RequestBody body = RequestBody.create(JSON, JsonUtils.toJson(transaction));
+		RequestBody body = RequestBody.create(JSON, transaction.toString());
 		Request request = new Request.Builder().url(url).post(body).build();
 
 		Globals.getHttpClient().newCall(request).enqueue(new Callback() {

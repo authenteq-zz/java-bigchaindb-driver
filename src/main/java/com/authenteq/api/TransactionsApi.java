@@ -41,11 +41,8 @@ public class TransactionsApi {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static Transaction sendTransaction(Transaction transaction) throws IOException {
-		System.out.println(JsonUtils.toJson(transaction));
 		Response response = NetworkUtils.sendPostRequest(Globals.getBaseUrl() + BigchainDbApi.TRANSACTIONS,
 				transaction);
-		System.out.println(Globals.getBaseUrl() + BigchainDbApi.TRANSACTIONS + " > " + response.code());
-		System.out.println(response.body().string());
 		return JsonUtils.fromJson(response.body().string(), Transaction.class);
 	}
 

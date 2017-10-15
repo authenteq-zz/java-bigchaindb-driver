@@ -1,8 +1,15 @@
 package com.authenteq.model;
 
+import java.io.Serializable;
+
 import com.google.gson.annotations.SerializedName;
 
-public class Condition {
+public class Condition implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@SerializedName("details")
 	private Details details;
 	
@@ -10,7 +17,6 @@ public class Condition {
 	private String uri;
 	
 	public Condition() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	public Condition(Details details) {

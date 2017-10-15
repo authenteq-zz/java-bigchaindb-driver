@@ -1,8 +1,8 @@
 package com.authenteq.util;
 
+import com.authenteq.json.strategy.CustomExclusionStrategy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 
 /**
  * Utility class for handling JSON serialization and deserialization.
@@ -10,9 +10,7 @@ import com.google.gson.GsonBuilder;
  */
 public class JsonUtils {
 
-
 	private static Gson gson;
-
 
 	private JsonUtils() {
 	}
@@ -21,10 +19,8 @@ public class JsonUtils {
 		if (gson == null) {
 			GsonBuilder builder = new GsonBuilder();
 
-			gson = builder.setPrettyPrinting()
-					.serializeNulls()
-	        		.setExclusionStrategies(new CustomExclusionStrategy())
-	        		.create();
+			gson = builder.setPrettyPrinting().serializeNulls().disableHtmlEscaping().setPrettyPrinting()
+					.setExclusionStrategies(new CustomExclusionStrategy()).create();
 		}
 		return gson;
 	}
@@ -57,6 +53,10 @@ public class JsonUtils {
 	 */
 	public static String toJson(Object src) {
 		return getGson().toJson(src);
+	}
+
+	public static Gson gson() {
+		return gson;
 	}
 
 	/*
