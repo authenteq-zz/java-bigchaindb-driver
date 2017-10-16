@@ -4,7 +4,7 @@ import java.util.Map;
 
 import okhttp3.OkHttpClient;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class Globals.
  */

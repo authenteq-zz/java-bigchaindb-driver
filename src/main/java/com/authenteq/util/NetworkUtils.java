@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 import com.authenteq.model.Globals;
 import com.authenteq.model.Transaction;
-import com.authenteq.model.TransactionCallback;
+import com.authenteq.model.GenericCallback;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -14,14 +14,22 @@ import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
+
 
 /**
  * The Class NetworkUtils.
  */
 public class NetworkUtils {
 
-	/** The Constant JSON. */
-	private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+	/**
+	 *  The Constant JSON.
+	 *
+	 * @param url the url
+	 * @param body the body
+	 * @param callback the callback
+	 */
+	
 
 	/**
 	 * Send post request.
@@ -30,9 +38,9 @@ public class NetworkUtils {
 	 * @param transaction the transaction
 	 * @param callback the callback
 	 */
-	public static void sendPostRequest(String url, Transaction transaction,
-			final TransactionCallback callback) {
-		RequestBody body = RequestBody.create(JSON, transaction.toString());
+	public static void sendPostRequest(String url, RequestBody body,
+			final GenericCallback callback) {
+		
 		Request request = new Request.Builder().url(url).post(body).build();
 
 		Globals.getHttpClient().newCall(request).enqueue(new Callback() {
@@ -58,12 +66,11 @@ public class NetworkUtils {
 	 * Send post request.
 	 *
 	 * @param url the url
-	 * @param transaction the transaction
+	 * @param body the body
 	 * @return the response
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static Response sendPostRequest(String url, Transaction transaction) throws IOException {
-		RequestBody body = RequestBody.create(JSON, JsonUtils.toJson(transaction));
+	public static Response sendPostRequest(String url, RequestBody body) throws IOException {
 		Request request = new Request.Builder().url(url).post(body).build();
 		return Globals.getHttpClient().newCall(request).execute();
 	}

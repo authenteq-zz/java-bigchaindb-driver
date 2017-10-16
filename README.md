@@ -24,52 +24,34 @@ The build system now is fully gradle-based, so to build the driver run:
 ```bash
 ./gradlew install
 ```
-### Example: Create and sign a transaction
-```java
-// Generating public/private key pair
-net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
-KeyPair keyPair = edDsaKpg.generateKeyPair();
-
-// Payload of the transaction, defined as the asset to store
-JSONObject data = new JSONObject();
-data.put("firstname", "John");
-data.put("lastname", "Smith");
-
-// Metadata contains information about the transaction itself
-//                     (can be `null` if not needed)
-JSONObject metadata = new JSONObject();
-metadata.put("what", "My first BigchainDB transaction");
-
-BigchaindbTransaction bigchaindbTransaction = new BigchaindbTransaction(
-        data, metadata, (EdDSAPublicKey) keyPair.getPublic()
-);
-bigchaindbTransaction.signTransaction((EdDSAPrivateKey) keyPair.getPrivate());
+or use maven
+```bash
+mvn clean install
 ```
 
-### Example: Send a transaction
+### Set up your configuration
 ```java
-// creating connection (assuming the server is running on localhost)
-final BigchaindbConnection bigchaindbConnection = new BigchaindbConnection("http://localhost:9984");
+	BigchainDbConfigBuilder
+			.baseUrl("https://test.ipdb.io")
+			.addToken("app_id", "2bbaf3ff")
+			.addToken("app_key", "c929b708177dcc8b9d58180082029b8d").setup();
+```
 
-bigchaindbConnection.send(bigchaindbTransaction, new TransactionCallback() {
-            @Override
-            public void pushedSuccessfully() {
-               // get the newly submitted transaction from remote
-               BigchaindbTransaction tra =
-                bigchaindbConnection.getTransactionById(bigchaindbTransaction.getTransactionId());
-               System.out.println(tra.toString());
-            }
 
-            @Override
-            public void transactionMalformed() {
-              // transaction is malformed and has been rejected
-            }
-
-            @Override
-            public void otherError() {
-              // other unexpected server error
-            }
-});
+### Example: Create, Sign and Send a transaction
+```java
+	//	prepare your keys
+	net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
+	KeyPair keyPair = edDsaKpg.generateKeyPair();
+	
+	//	Set up your transaction
+	Transaction transaction = BigchainDbTransactionBuilder.init()
+			.addAsset("firstname", "John")
+			.addAsset("lastname", "Smith")
+			.addMetaData("what", "My first BigchainDB transaction")
+			.addMetaData("this", "My 2nd metadata BigchainDB transaction")
+			.buildAndSign((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate())
+			.sendTransaction();
 
 ```
 

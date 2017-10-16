@@ -42,7 +42,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class BigchaindbTransactionTest.
  */

@@ -1,6 +1,6 @@
 package com.authenteq.constants;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Enum BigchainDbApi.
  */
@@ -22,7 +22,13 @@ public enum BigchainDbApi {
 	OUTPUTS("/outputs"),
 	
 	/** The statuses. */
-	STATUSES("/outputs"),
+	STATUSES("/statuses"),
+	
+	/** The blocks. */
+	BLOCKS("/blocks"),
+	
+	/** The votes. */
+	VOTES("/votes"),
 	
 	/** The transactions. */
 	TRANSACTIONS("/transactions");

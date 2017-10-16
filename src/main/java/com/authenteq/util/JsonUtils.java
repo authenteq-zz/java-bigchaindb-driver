@@ -1,8 +1,22 @@
 package com.authenteq.util;
 
+import java.lang.reflect.Type;
+import java.util.List;
+
+import com.authenteq.json.strategy.AssetsDeserializer;
 import com.authenteq.json.strategy.CustomExclusionStrategy;
+import com.authenteq.json.strategy.OutputsDeserializer;
+import com.authenteq.json.strategy.TransactionDeserializer;
+import com.authenteq.json.strategy.TransactionsDeserializer;
+import com.authenteq.json.strategy.VoteDeserializer;
+import com.authenteq.model.Assets;
+import com.authenteq.model.Outputs;
+import com.authenteq.model.Transaction;
+import com.authenteq.model.Transactions;
+import com.authenteq.model.Votes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 
 /**
  * Utility class for handling JSON serialization and deserialization.
@@ -10,16 +24,30 @@ import com.google.gson.GsonBuilder;
  */
 public class JsonUtils {
 
+	/** The gson. */
 	private static Gson gson;
 
+	/**
+	 * Instantiates a new json utils.
+	 */
 	private JsonUtils() {
 	}
 
+	/**
+	 * Gets the gson.
+	 *
+	 * @return the gson
+	 */
 	private static Gson getGson() {
 		if (gson == null) {
 			GsonBuilder builder = new GsonBuilder();
-
+			
 			gson = builder.setPrettyPrinting().serializeNulls().disableHtmlEscaping().setPrettyPrinting()
+					//.registerTypeAdapter(Transaction.class, new TransactionDeserializer())
+					.registerTypeAdapter(Transactions.class, new TransactionsDeserializer())
+					.registerTypeAdapter(Assets.class, new AssetsDeserializer())
+					.registerTypeAdapter(Outputs.class, new OutputsDeserializer())
+					.registerTypeAdapter(Votes.class, new VoteDeserializer())
 					.setExclusionStrategies(new CustomExclusionStrategy()).create();
 		}
 		return gson;
@@ -54,7 +82,12 @@ public class JsonUtils {
 	public static String toJson(Object src) {
 		return getGson().toJson(src);
 	}
-
+	
+	/**
+	 * Return the instance of Gson.
+	 *
+	 * @return the gson
+	 */
 	public static Gson gson() {
 		return gson;
 	}

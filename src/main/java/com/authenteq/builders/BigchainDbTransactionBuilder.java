@@ -28,7 +28,7 @@ import com.authenteq.model.Input;
 import com.authenteq.model.MetaData;
 import com.authenteq.model.Output;
 import com.authenteq.model.Transaction;
-import com.authenteq.model.TransactionCallback;
+import com.authenteq.model.GenericCallback;
 import com.authenteq.util.DriverUtils;
 import com.authenteq.util.JsonUtils;
 import com.google.gson.JsonObject;
@@ -37,78 +37,196 @@ import net.i2p.crypto.eddsa.EdDSAEngine;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
 
+
+/**
+ * The Class BigchainDbTransactionBuilder.
+ */
 public class BigchainDbTransactionBuilder {
 
+	/**
+	 * Instantiates a new bigchain db transaction builder.
+	 */
 	private BigchainDbTransactionBuilder() {
 	}
 
+	/**
+	 * Inits the.
+	 *
+	 * @return the builder
+	 */
 	public static Builder init() {
 		return new BigchainDbTransactionBuilder.Builder();
 	}
 
+	/**
+	 * The Interface IAssetMetaData.
+	 */
 	public interface IAssetMetaData {
+		
+		/**
+		 * Adds the asset.
+		 *
+		 * @param key the key
+		 * @param value the value
+		 * @return the i asset meta data
+		 */
 		IAssetMetaData addAsset(String key, String value);
 
+		/**
+		 * Adds the meta data.
+		 *
+		 * @param key the key
+		 * @param value the value
+		 * @return the i asset meta data
+		 */
 		IAssetMetaData addMetaData(String key, String value);
 
+		/**
+		 * Adds the assets.
+		 *
+		 * @param assets the assets
+		 * @return the i asset meta data
+		 */
 		IAssetMetaData addAssets(Map<String, String> assets);
 
+		/**
+		 * Adds the meta data.
+		 *
+		 * @param metadata the metadata
+		 * @return the i asset meta data
+		 */
 		IAssetMetaData addMetaData(Map<String, String> metadata);
 
+		/**
+		 * Adds the meta data.
+		 *
+		 * @param jsonObject the json object
+		 * @return the i asset meta data
+		 */
 		IAssetMetaData addMetaData(JsonObject jsonObject);
 
+		/**
+		 * Builds the.
+		 *
+		 * @param publicKey the public key
+		 * @return the i build
+		 */
 		IBuild build(EdDSAPublicKey publicKey);
 
+		/**
+		 * Builds the and sign.
+		 *
+		 * @param publicKey the public key
+		 * @param privateKey the private key
+		 * @return the i build
+		 */
 		IBuild buildAndSign(EdDSAPublicKey publicKey, EdDSAPrivateKey privateKey);
 
+		/**
+		 * Builds the and sign and return.
+		 *
+		 * @param publicKey the public key
+		 * @return the transaction
+		 */
 		Transaction buildAndSignAndReturn(EdDSAPublicKey publicKey);
 
+		/**
+		 * Builds the and sign and return.
+		 *
+		 * @param publicKey the public key
+		 * @param privateKey the private key
+		 * @return the transaction
+		 */
 		Transaction buildAndSignAndReturn(EdDSAPublicKey publicKey, EdDSAPrivateKey privateKey);
 	}
 
+	/**
+	 * The Interface IBuild.
+	 */
 	public interface IBuild {
+		
+		/**
+		 * Send transaction.
+		 *
+		 * @return the transaction
+		 * @throws IOException Signals that an I/O exception has occurred.
+		 */
 		Transaction sendTransaction() throws IOException;
 
-		void sendTransaction(TransactionCallback callback) throws IOException;
+		/**
+		 * Send transaction.
+		 *
+		 * @param callback the callback
+		 * @throws IOException Signals that an I/O exception has occurred.
+		 */
+		void sendTransaction(GenericCallback callback) throws IOException;
 	}
 
+	/**
+	 * The Class Builder.
+	 */
 	public static class Builder implements IAssetMetaData, IBuild {
 
+		/** The metadata. */
 		private Map<String, String> metadata = new TreeMap<String, String>();
+		
+		/** The assets. */
 		private Map<String, String> assets = new TreeMap<String, String>();
+		
+		/** The public key. */
 		private EdDSAPublicKey publicKey;
+		
+		/** The transaction. */
 		private Transaction transaction;
 
+		/* (non-Javadoc)
+		 * @see com.authenteq.builders.BigchainDbTransactionBuilder.IAssetMetaData#addAsset(java.lang.String, java.lang.String)
+		 */
 		@Override
 		public IAssetMetaData addAsset(String key, String value) {
 			this.assets.put(key, value);
 			return this;
 		}
 
+		/* (non-Javadoc)
+		 * @see com.authenteq.builders.BigchainDbTransactionBuilder.IAssetMetaData#addMetaData(java.lang.String, java.lang.String)
+		 */
 		@Override
 		public IAssetMetaData addMetaData(String key, String value) {
 			this.metadata.put(key, value);
 			return this;
 		}
 
+		/* (non-Javadoc)
+		 * @see com.authenteq.builders.BigchainDbTransactionBuilder.IAssetMetaData#addAssets(java.util.Map)
+		 */
 		@Override
 		public IAssetMetaData addAssets(Map<String, String> assets) {
 			this.assets.putAll(assets);
 			return this;
 		}
 
+		/* (non-Javadoc)
+		 * @see com.authenteq.builders.BigchainDbTransactionBuilder.IAssetMetaData#addMetaData(java.util.Map)
+		 */
 		@Override
 		public IAssetMetaData addMetaData(Map<String, String> metadata) {
 			this.metadata.putAll(metadata);
 			return this;
 		}
 
+		/* (non-Javadoc)
+		 * @see com.authenteq.builders.BigchainDbTransactionBuilder.IAssetMetaData#addMetaData(com.google.gson.JsonObject)
+		 */
 		@Override
 		public IAssetMetaData addMetaData(JsonObject jsonObject) {
 			// TODO Auto-generated method stub
 			return this;
 		}
 
+		/* (non-Javadoc)
+		 * @see com.authenteq.builders.BigchainDbTransactionBuilder.IAssetMetaData#build(net.i2p.crypto.eddsa.EdDSAPublicKey)
+		 */
 		@Override
 		public IBuild build(EdDSAPublicKey publicKey) {
 			this.transaction = new Transaction();
@@ -152,6 +270,14 @@ public class BigchainDbTransactionBuilder {
 			return this;
 		}
 
+		/**
+		 * Sign.
+		 *
+		 * @param privateKey the private key
+		 * @throws InvalidKeyException the invalid key exception
+		 * @throws SignatureException the signature exception
+		 * @throws NoSuchAlgorithmException the no such algorithm exception
+		 */
 		private void sign(EdDSAPrivateKey privateKey)
 				throws InvalidKeyException, SignatureException, NoSuchAlgorithmException {
 
@@ -168,6 +294,9 @@ public class BigchainDbTransactionBuilder {
 
 		}
 
+		/* (non-Javadoc)
+		 * @see com.authenteq.builders.BigchainDbTransactionBuilder.IAssetMetaData#buildAndSign(net.i2p.crypto.eddsa.EdDSAPublicKey, net.i2p.crypto.eddsa.EdDSAPrivateKey)
+		 */
 		@Override
 		public IBuild buildAndSign(EdDSAPublicKey publicKey, EdDSAPrivateKey privateKey) {
 			try {
@@ -179,26 +308,39 @@ public class BigchainDbTransactionBuilder {
 			return this;
 		}
 
+		/* (non-Javadoc)
+		 * @see com.authenteq.builders.BigchainDbTransactionBuilder.IAssetMetaData#buildAndSignAndReturn(net.i2p.crypto.eddsa.EdDSAPublicKey)
+		 */
 		@Override
 		public Transaction buildAndSignAndReturn(EdDSAPublicKey publicKey) {
 			this.build(publicKey);
 			return this.transaction;
 		}
 
+		/* (non-Javadoc)
+		 * @see com.authenteq.builders.BigchainDbTransactionBuilder.IAssetMetaData#buildAndSignAndReturn(net.i2p.crypto.eddsa.EdDSAPublicKey, net.i2p.crypto.eddsa.EdDSAPrivateKey)
+		 */
 		@Override
 		public Transaction buildAndSignAndReturn(EdDSAPublicKey publicKey, EdDSAPrivateKey privateKey) {
 			this.buildAndSign(publicKey, privateKey);
 			return this.transaction;
 		}
 
+		/* (non-Javadoc)
+		 * @see com.authenteq.builders.BigchainDbTransactionBuilder.IBuild#sendTransaction(com.authenteq.model.GenericCallback)
+		 */
 		@Override
-		public void sendTransaction(TransactionCallback callback) throws IOException {
+		public void sendTransaction(GenericCallback callback) throws IOException {
 			TransactionsApi.sendTransaction(this.transaction, callback);
 		}
 
+		/* (non-Javadoc)
+		 * @see com.authenteq.builders.BigchainDbTransactionBuilder.IBuild#sendTransaction()
+		 */
 		@Override
 		public Transaction sendTransaction() throws IOException {
-			return TransactionsApi.sendTransaction(this.transaction);
+			TransactionsApi.sendTransaction(this.transaction);
+			return this.transaction;
 		}
 	}
 }

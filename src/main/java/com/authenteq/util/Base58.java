@@ -1,7 +1,7 @@
 package com.authenteq.util;
 
 
-// TODO: Auto-generated Javadoc
+
 /**
  * BreadWallet
  * <p/>

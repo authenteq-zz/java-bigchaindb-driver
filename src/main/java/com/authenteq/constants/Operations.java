@@ -1,6 +1,6 @@
 package com.authenteq.constants;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Enum Operations.
  */
