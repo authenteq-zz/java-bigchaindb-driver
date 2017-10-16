@@ -29,7 +29,7 @@ or use maven
 mvn clean install
 ```
 
-### Set up your configuration
+## Set up your configuration
 ```java
 BigchainDbConfigBuilder
 	.baseUrl("https://test.ipdb.io")
@@ -38,7 +38,6 @@ BigchainDbConfigBuilder
 ```
 
 ## Example: Create a Transaction
-
 ```java
 //    prepare your keys
 net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
@@ -70,7 +69,7 @@ Transaction transaction = BigchainDbTransactionBuilder.init()
 
 ```
 
-### Example: Create, Sign and Send a Transaction
+## Example: Create, Sign and Send a Transaction
 ```java
 //    prepare your keys
 net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
@@ -87,7 +86,7 @@ Transaction transaction = BigchainDbTransactionBuilder.init()
 
 ```
 
-<h2> Java Apis</h2>
+<h2>Api Wrappers</h2>
 <h3>Transactions</h3>
 
 <h4>Send a Transaction</h4>
