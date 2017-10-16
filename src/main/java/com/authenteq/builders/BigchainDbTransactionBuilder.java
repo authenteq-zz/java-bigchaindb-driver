@@ -23,6 +23,7 @@ import org.json.JSONObject;
 import com.authenteq.api.TransactionsApi;
 import com.authenteq.model.Asset;
 import com.authenteq.model.Condition;
+import com.authenteq.model.DataModel;
 import com.authenteq.model.Details;
 import com.authenteq.model.FulFill;
 import com.authenteq.model.Input;
@@ -38,7 +39,6 @@ import com.google.gson.reflect.TypeToken;
 import net.i2p.crypto.eddsa.EdDSAEngine;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
-
 
 /**
  * The Class BigchainDbTransactionBuilder.
@@ -91,7 +91,13 @@ public class BigchainDbTransactionBuilder {
 		 */
 		IAssetMetaData addAssets(Map<String, String> assets);
 		
-		<T> IAssetMetaData addAssets(T obj);
+		/**
+		 * Adds the assets.
+		 *
+		 * @param obj the obj
+		 * @return the i asset meta data
+		 */
+		IAssetMetaData addAssets(DataModel obj);
 
 		/**
 		 * Adds the meta data.
@@ -101,7 +107,13 @@ public class BigchainDbTransactionBuilder {
 		 */
 		IAssetMetaData addMetaData(Map<String, String> metadata);
 		
-		<T> IAssetMetaData addMetaData(T obj);
+		/**
+		 * Adds the meta data.
+		 *
+		 * @param obj the obj
+		 * @return the i asset meta data
+		 */
+		IAssetMetaData addMetaData(DataModel obj);
 
 		/**
 		 * Adds the meta data.
@@ -163,6 +175,7 @@ public class BigchainDbTransactionBuilder {
 		 * Send transaction.
 		 *
 		 * @param callback the callback
+		 * @return the transaction
 		 * @throws IOException Signals that an I/O exception has occurred.
 		 */
 		Transaction sendTransaction(GenericCallback callback) throws IOException;
@@ -350,16 +363,22 @@ public class BigchainDbTransactionBuilder {
 			return this.transaction;
 		}
 
+		/* (non-Javadoc)
+		 * @see com.authenteq.builders.BigchainDbTransactionBuilder.IAssetMetaData#addAssets(com.authenteq.model.DataModel)
+		 */
 		@Override
-		public <T> IAssetMetaData addAssets(T obj) {
+		public IAssetMetaData addAssets(DataModel obj) {
 			Type mapType = new TypeToken<Map<String, String>>(){}.getType();  
 			Map<String, String> son = JsonUtils.getGson().fromJson(JsonUtils.toJson(obj), mapType);
 			this.assets.putAll(son);
 			return this;
 		}
 
+		/* (non-Javadoc)
+		 * @see com.authenteq.builders.BigchainDbTransactionBuilder.IAssetMetaData#addMetaData(com.authenteq.model.DataModel)
+		 */
 		@Override
-		public <T> IAssetMetaData addMetaData(T obj) {
+		public IAssetMetaData addMetaData(DataModel obj) {
 			Type mapType = new TypeToken<Map<String, String>>(){}.getType();  
 			Map<String, String> son = JsonUtils.getGson().fromJson(JsonUtils.toJson(obj), mapType);
 			this.metadata.putAll(son);

@@ -15,6 +15,7 @@ import com.authenteq.constants.Operations;
 import com.authenteq.model.Transaction;
 import com.authenteq.util.JsonUtils;
 import com.authenteq.model.Asset;
+import com.authenteq.model.DataModel;
 import com.authenteq.model.GenericCallback;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
@@ -67,12 +68,14 @@ public class TransactionApiTest {
 			ObjectDummy dummyAsset = new ObjectDummy();
 			dummyAsset.setId("id");
 			dummyAsset.setDescription("asset");
+			System.out.println(dummyAsset.toMapString());
 			
 			ObjectDummy dummyMeta = new ObjectDummy();
 			dummyMeta.setId("id");
 			dummyMeta.setDescription("meta");
 			
-			Transaction transaction = BigchainDbTransactionBuilder.init().addAssets(dummyAsset)
+			Transaction transaction = BigchainDbTransactionBuilder.init()
+					.addAssets(dummyAsset)
 					.addMetaData(dummyMeta)
 					.buildAndSign((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate())
 					.sendTransaction();
@@ -98,13 +101,11 @@ public class TransactionApiTest {
 						public void transactionMalformed(Response response) {
 							// System.out.println(response.message());
 							System.out.println("malformed " + response.message());
-
 						}
 
 						@Override
 						public void pushedSuccessfully(Response response) {
 							System.out.println("pushedSuccessfully");
-
 						}
 
 						@Override
@@ -157,10 +158,10 @@ public class TransactionApiTest {
 		}
 	}
 
-	public class ObjectDummy {
+	public class ObjectDummy extends DataModel {
 		private String id;
 		private String description;
-
+		
 		public String getId() {
 			return id;
 		}
