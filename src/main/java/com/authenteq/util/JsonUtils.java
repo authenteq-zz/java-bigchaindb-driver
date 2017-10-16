@@ -38,7 +38,7 @@ public class JsonUtils {
 	 *
 	 * @return the gson
 	 */
-	private static Gson getGson() {
+	public static Gson getGson() {
 		if (gson == null) {
 			GsonBuilder builder = new GsonBuilder();
 			

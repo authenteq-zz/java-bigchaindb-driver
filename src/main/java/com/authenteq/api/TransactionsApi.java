@@ -49,7 +49,9 @@ public class TransactionsApi extends AbstractApi {
 	 */
 	public static void sendTransaction(Transaction transaction) throws IOException {
 		RequestBody body = RequestBody.create(JSON, JsonUtils.toJson(transaction));
-		NetworkUtils.sendPostRequest(Globals.getBaseUrl() + BigchainDbApi.TRANSACTIONS, body);
+		Response response = NetworkUtils.sendPostRequest(Globals.getBaseUrl() + BigchainDbApi.TRANSACTIONS, body);
+		System.out.println(response.body().string());
+		System.out.println(response.message());
 	}
 
 

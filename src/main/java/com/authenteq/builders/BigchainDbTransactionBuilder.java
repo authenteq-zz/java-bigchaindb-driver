@@ -3,6 +3,7 @@ package com.authenteq.builders;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -32,6 +33,7 @@ import com.authenteq.model.GenericCallback;
 import com.authenteq.util.DriverUtils;
 import com.authenteq.util.JsonUtils;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import net.i2p.crypto.eddsa.EdDSAEngine;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
@@ -88,6 +90,8 @@ public class BigchainDbTransactionBuilder {
 		 * @return the i asset meta data
 		 */
 		IAssetMetaData addAssets(Map<String, String> assets);
+		
+		<T> IAssetMetaData addAssets(T obj);
 
 		/**
 		 * Adds the meta data.
@@ -96,6 +100,8 @@ public class BigchainDbTransactionBuilder {
 		 * @return the i asset meta data
 		 */
 		IAssetMetaData addMetaData(Map<String, String> metadata);
+		
+		<T> IAssetMetaData addMetaData(T obj);
 
 		/**
 		 * Adds the meta data.
@@ -263,7 +269,7 @@ public class BigchainDbTransactionBuilder {
 			SHA3.DigestSHA3 md = new SHA3.DigestSHA3(256);
 			md.update(transactionJObject.toString().getBytes());
 			String id = DriverUtils.getHex(md.digest());
-			
+			this.transaction.setId(id);
 			// we need it after.
 			transactionJObject.accumulate("id", id);
 			this.transaction = JsonUtils.fromJson(DriverUtils.makeSelfSorting(transactionJObject).toString(), Transaction.class);
@@ -342,6 +348,22 @@ public class BigchainDbTransactionBuilder {
 		public Transaction sendTransaction() throws IOException {
 			TransactionsApi.sendTransaction(this.transaction);
 			return this.transaction;
+		}
+
+		@Override
+		public <T> IAssetMetaData addAssets(T obj) {
+			Type mapType = new TypeToken<Map<String, String>>(){}.getType();  
+			Map<String, String> son = JsonUtils.getGson().fromJson(JsonUtils.toJson(obj), mapType);
+			this.assets.putAll(son);
+			return this;
+		}
+
+		@Override
+		public <T> IAssetMetaData addMetaData(T obj) {
+			Type mapType = new TypeToken<Map<String, String>>(){}.getType();  
+			Map<String, String> son = JsonUtils.getGson().fromJson(JsonUtils.toJson(obj), mapType);
+			this.metadata.putAll(son);
+			return this;
 		}
 	}
 }

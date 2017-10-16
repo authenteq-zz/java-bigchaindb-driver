@@ -4,6 +4,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.security.KeyPair;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import com.authenteq.api.TransactionsApi;
@@ -11,16 +13,17 @@ import com.authenteq.builders.BigchainDbConfigBuilder;
 import com.authenteq.builders.BigchainDbTransactionBuilder;
 import com.authenteq.constants.Operations;
 import com.authenteq.model.Transaction;
+import com.authenteq.util.JsonUtils;
+import com.authenteq.model.Asset;
 import com.authenteq.model.GenericCallback;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
 import okhttp3.Response;
 
-
 /**
  * The Class BigchaindbTransactionTest.
  */
-public class TransactionApiTests {
+public class TransactionApiTest {
 
 	/**
 	 * Inits the.
@@ -31,16 +34,17 @@ public class TransactionApiTests {
 				.addToken("app_key", "c929b708177dcc8b9d58180082029b8d").setup();
 	}
 
+
 	/**
 	 * Test post transaction using builder.
 	 */
 	@Test
 	public void testPostTransactionUsingBuilder() {
+
 		net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
 		KeyPair keyPair = edDsaKpg.generateKeyPair();
 		try {
-			Transaction transaction = BigchainDbTransactionBuilder.init()
-					.addAsset("middlename", "mname")
+			Transaction transaction = BigchainDbTransactionBuilder.init().addAsset("middlename", "mname")
 					.addAsset("firstname", "John")
 					.addAsset("giddlename", "mname")
 					.addAsset("ziddlename", "mname")
@@ -55,7 +59,29 @@ public class TransactionApiTests {
 		}
 	}
 
-	
+	@Test
+	public void testPostTransactionOfObjectUsingBuilder() {
+		net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
+		KeyPair keyPair = edDsaKpg.generateKeyPair();
+		try {
+			ObjectDummy dummyAsset = new ObjectDummy();
+			dummyAsset.setId("id");
+			dummyAsset.setDescription("asset");
+			
+			ObjectDummy dummyMeta = new ObjectDummy();
+			dummyMeta.setId("id");
+			dummyMeta.setDescription("meta");
+			
+			Transaction transaction = BigchainDbTransactionBuilder.init().addAssets(dummyAsset)
+					.addMetaData(dummyMeta)
+					.buildAndSign((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate())
+					.sendTransaction();
+			assertNotNull(transaction.getId());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Test post transaction using builder with call back.
 	 */
@@ -70,7 +96,7 @@ public class TransactionApiTests {
 
 						@Override
 						public void transactionMalformed(Response response) {
-							//System.out.println(response.message());
+							// System.out.println(response.message());
 							System.out.println("malformed " + response.message());
 
 						}
@@ -89,7 +115,6 @@ public class TransactionApiTests {
 					});
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -100,13 +125,16 @@ public class TransactionApiTests {
 	@Test
 	public void testTransactionByAssetIdCreate() {
 		try {
-			
+
 			System.out.println(TransactionsApi
 					.getTransactionsByAssetId("437ce30de5cf1c3ad199fa983aded47d0db43567befa92e3a36b38a5784e4d3a",
-							Operations.CREATE).getTransactions().size());
-			
-			assertTrue(TransactionsApi.getTransactionsByAssetId(
-					"437ce30de5cf1c3ad199fa983aded47d0db43567befa92e3a36b38a5784e4d3a", Operations.CREATE).getTransactions().size() > 0);
+							Operations.CREATE)
+					.getTransactions().size());
+
+			assertTrue(TransactionsApi
+					.getTransactionsByAssetId("437ce30de5cf1c3ad199fa983aded47d0db43567befa92e3a36b38a5784e4d3a",
+							Operations.CREATE)
+					.getTransactions().size() > 0);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -119,11 +147,35 @@ public class TransactionApiTests {
 	@Test
 	public void testTransactionByAssetIdTransfer() {
 		try {
-			assertTrue(TransactionsApi.getTransactionsByAssetId(
-					"437ce30de5cf1c3ad199fa983aded47d0db43567befa92e3a36b38a5784e4d3a", Operations.CREATE).getTransactions().size() > 0);
+			assertTrue(TransactionsApi
+					.getTransactionsByAssetId("437ce30de5cf1c3ad199fa983aded47d0db43567befa92e3a36b38a5784e4d3a",
+							Operations.CREATE)
+					.getTransactions().size() > 0);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public class ObjectDummy {
+		private String id;
+		private String description;
+
+		public String getId() {
+			return id;
+		}
+
+		public void setId(String id) {
+			this.id = id;
+		}
+
+		public String getDescription() {
+			return description;
+		}
+
+		public void setDescription(String description) {
+			this.description = description;
+		}
+
 	}
 }
