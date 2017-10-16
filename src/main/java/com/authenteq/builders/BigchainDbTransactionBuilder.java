@@ -128,7 +128,7 @@ public class BigchainDbTransactionBuilder {
 		 * @param publicKey the public key
 		 * @return the transaction
 		 */
-		Transaction buildAndSignAndReturn(EdDSAPublicKey publicKey);
+		Transaction buildOnly(EdDSAPublicKey publicKey);
 
 		/**
 		 * Builds the and sign and return.
@@ -137,7 +137,7 @@ public class BigchainDbTransactionBuilder {
 		 * @param privateKey the private key
 		 * @return the transaction
 		 */
-		Transaction buildAndSignAndReturn(EdDSAPublicKey publicKey, EdDSAPrivateKey privateKey);
+		Transaction buildAndSignOnly(EdDSAPublicKey publicKey, EdDSAPrivateKey privateKey);
 	}
 
 	/**
@@ -159,7 +159,7 @@ public class BigchainDbTransactionBuilder {
 		 * @param callback the callback
 		 * @throws IOException Signals that an I/O exception has occurred.
 		 */
-		void sendTransaction(GenericCallback callback) throws IOException;
+		Transaction sendTransaction(GenericCallback callback) throws IOException;
 	}
 
 	/**
@@ -312,7 +312,7 @@ public class BigchainDbTransactionBuilder {
 		 * @see com.authenteq.builders.BigchainDbTransactionBuilder.IAssetMetaData#buildAndSignAndReturn(net.i2p.crypto.eddsa.EdDSAPublicKey)
 		 */
 		@Override
-		public Transaction buildAndSignAndReturn(EdDSAPublicKey publicKey) {
+		public Transaction buildOnly(EdDSAPublicKey publicKey) {
 			this.build(publicKey);
 			return this.transaction;
 		}
@@ -321,7 +321,7 @@ public class BigchainDbTransactionBuilder {
 		 * @see com.authenteq.builders.BigchainDbTransactionBuilder.IAssetMetaData#buildAndSignAndReturn(net.i2p.crypto.eddsa.EdDSAPublicKey, net.i2p.crypto.eddsa.EdDSAPrivateKey)
 		 */
 		@Override
-		public Transaction buildAndSignAndReturn(EdDSAPublicKey publicKey, EdDSAPrivateKey privateKey) {
+		public Transaction buildAndSignOnly(EdDSAPublicKey publicKey, EdDSAPrivateKey privateKey) {
 			this.buildAndSign(publicKey, privateKey);
 			return this.transaction;
 		}
@@ -330,8 +330,9 @@ public class BigchainDbTransactionBuilder {
 		 * @see com.authenteq.builders.BigchainDbTransactionBuilder.IBuild#sendTransaction(com.authenteq.model.GenericCallback)
 		 */
 		@Override
-		public void sendTransaction(GenericCallback callback) throws IOException {
+		public Transaction sendTransaction(GenericCallback callback) throws IOException {
 			TransactionsApi.sendTransaction(this.transaction, callback);
+			return this.transaction;
 		}
 
 		/* (non-Javadoc)

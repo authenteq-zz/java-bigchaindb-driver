@@ -37,19 +37,51 @@ BigchainDbConfigBuilder
 	.addToken("app_key", "c929b708177dcc8b9d58180082029b8d").setup();
 ```
 
+## Example: Create a Transaction
 
-### Example: Create, Sign and Send a transaction
 ```java
-//	prepare your keys
+//    prepare your keys
 net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
 KeyPair keyPair = edDsaKpg.generateKeyPair();
 
-//	Set up your transaction
+//    Set up your transaction
 Transaction transaction = BigchainDbTransactionBuilder.init()
 	.addAsset("firstname", "John")
 	.addAsset("lastname", "Smith")
 	.addMetaData("what", "My first BigchainDB transaction")
+	.addMetaData("this", "My 1st metadata BigchainDB transaction")
+	.buildOnly((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate());
+
+```
+
+## Example: Create and Sign Transaction
+```java
+//    prepare your keys
+net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
+KeyPair keyPair = edDsaKpg.generateKeyPair();
+
+//    Set up your transaction
+Transaction transaction = BigchainDbTransactionBuilder.init()
+	.addAsset("firstname", "John")
+	.addAsset("lastname", "Smith")
+	.addMetaData("what", "My second BigchainDB transaction")
 	.addMetaData("this", "My 2nd metadata BigchainDB transaction")
+	.buildAndSignOnly((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate());
+
+```
+
+### Example: Create, Sign and Send a Transaction
+```java
+//    prepare your keys
+net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
+KeyPair keyPair = edDsaKpg.generateKeyPair();
+
+//    Set up your transaction
+Transaction transaction = BigchainDbTransactionBuilder.init()
+	.addAsset("firstname", "John")
+	.addAsset("lastname", "Smith")
+	.addMetaData("what", "My third BigchainDB transaction")
+	.addMetaData("this", "My 3rd metadata BigchainDB transaction")
 	.buildAndSign((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate())
 	.sendTransaction();
 
