@@ -31,27 +31,27 @@ mvn clean install
 
 ### Set up your configuration
 ```java
-	BigchainDbConfigBuilder
-			.baseUrl("https://test.ipdb.io")
-			.addToken("app_id", "2bbaf3ff")
-			.addToken("app_key", "c929b708177dcc8b9d58180082029b8d").setup();
+BigchainDbConfigBuilder
+	.baseUrl("https://test.ipdb.io")
+	.addToken("app_id", "2bbaf3ff")
+	.addToken("app_key", "c929b708177dcc8b9d58180082029b8d").setup();
 ```
 
 
 ### Example: Create, Sign and Send a transaction
 ```java
-	//	prepare your keys
-	net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
-	KeyPair keyPair = edDsaKpg.generateKeyPair();
-	
-	//	Set up your transaction
-	Transaction transaction = BigchainDbTransactionBuilder.init()
-			.addAsset("firstname", "John")
-			.addAsset("lastname", "Smith")
-			.addMetaData("what", "My first BigchainDB transaction")
-			.addMetaData("this", "My 2nd metadata BigchainDB transaction")
-			.buildAndSign((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate())
-			.sendTransaction();
+//	prepare your keys
+net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
+KeyPair keyPair = edDsaKpg.generateKeyPair();
+
+//	Set up your transaction
+Transaction transaction = BigchainDbTransactionBuilder.init()
+	.addAsset("firstname", "John")
+	.addAsset("lastname", "Smith")
+	.addMetaData("what", "My first BigchainDB transaction")
+	.addMetaData("this", "My 2nd metadata BigchainDB transaction")
+	.buildAndSign((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate())
+	.sendTransaction();
 
 ```
 
