@@ -188,7 +188,7 @@ Status getBlockStatus(String blockId) throws IOException
 
 ## Authors
 
-- The [Authenteq](https://authenteq.com) team.
+- The [Authenteq](https://authenteq.com) team and others (see CONTRIBUTORS file).
 
 ## License
 
