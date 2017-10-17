@@ -20,18 +20,34 @@
 package com.authenteq.util;
 
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.TreeMap;
 
+
+/**
+ * The Class DriverUtils.
+ */
 public class DriverUtils {
+    
+    /** The Constant DIGITS. */
     private static final char[] DIGITS =
             {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
+    /**
+     * Gets the hex.
+     *
+     * @param data the data
+     * @return the hex
+     */
     public static String getHex(byte[] data) {
         final int l = data.length;
         final char[] outData = new char[l << 1];
@@ -43,6 +59,12 @@ public class DriverUtils {
         return new String(outData);
     }
 
+    /**
+     * Make self sorting.
+     *
+     * @param input the input
+     * @return the JSON object
+     */
     /*
     We are using a hack to make stardard org.json be automatically sorted
     by key desc alphabetically
@@ -74,7 +96,26 @@ public class DriverUtils {
         while (flavoursIter.hasNext()){
             String key = flavoursIter.next();
             try {
-                json.put(key, input.get(key));
+            	Object j = input.get(key);
+                if(j instanceof JSONObject) {
+                	json.put(key, makeSelfSorting((JSONObject)j));
+                }else if(j instanceof JSONArray) {
+                	JSONArray h = (JSONArray)j;
+                	Iterator<Object> jo = h.iterator();
+                	List<Object> oList = new ArrayList<Object>();
+                	while(jo.hasNext()) {
+                		Object joi = jo.next();
+                		if(joi instanceof JSONObject) {
+                			oList.add(makeSelfSorting((JSONObject)joi));
+                			json.put(key, oList);
+                		}else {
+                			oList.add((String)joi);
+                			json.put(key, oList);
+                		}
+                	}
+                }else {
+                	json.put(key, j);
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -83,6 +124,11 @@ public class DriverUtils {
         return json;
     }
 
+    /**
+     * Gets the self sorting json.
+     *
+     * @return the self sorting json
+     */
     /*
     We need to sort the keys in alphabetical order to sign the transaction successfully.
      */
@@ -91,6 +137,12 @@ public class DriverUtils {
         return json;
     }
 
+    /**
+     * Convert to base 58.
+     *
+     * @param publicKey the public key
+     * @return the string
+     */
     public static String convertToBase58(EdDSAPublicKey publicKey) {
         return Base58.encode(Arrays.copyOfRange(publicKey.getEncoded(), 12, 44));
     }

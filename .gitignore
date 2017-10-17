@@ -17,3 +17,12 @@ gradle-app.setting
 # IntelliJ specific files
 .idea
 *.iml
+
+
+# Maven 
+target/
+
+# Eclipse specific
+.classpath
+.project
+.settings/

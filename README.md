@@ -1,4 +1,4 @@
-[![java-bigchaindb-driver](media/repo-banner@2x.png)](https://www.bigchaindb.com)
+ [![java-bigchaindb-driver](media/repo-banner@2x.png)](https://www.bigchaindb.com)
 
 > Official Java driver for [BigchainDB](https://github.com/bigchaindb/bigchaindb) created by [Authenteq](https://authenteq.com).
 
@@ -14,7 +14,7 @@
 ## Contents
 
 * [Installation and Usage](#installation-and-usage)
-   * [Example: Create a transaction](#example-create-a-transaction)
+* [Example: Create a transaction](#example-create-a-transaction)
 * [Documentation](#bigchaindb-documentation)
 * [Authors](#authors)
 * [License](#license)
@@ -24,54 +24,159 @@ The build system now is fully gradle-based, so to build the driver run:
 ```bash
 ./gradlew install
 ```
-### Example: Create and sign a transaction
+or use maven
+```bash
+mvn clean install
+```
+
+## Set up your configuration
 ```java
-// Generating public/private key pair
+BigchainDbConfigBuilder
+	.baseUrl("https://test.ipdb.io")
+	.addToken("app_id", "2bbaf3ff")
+	.addToken("app_key", "c929b708177dcc8b9d58180082029b8d").setup();
+```
+
+## Example: Create a Transaction
+```java
+//    prepare your keys
 net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
 KeyPair keyPair = edDsaKpg.generateKeyPair();
 
-// Payload of the transaction, defined as the asset to store
-JSONObject data = new JSONObject();
-data.put("firstname", "John");
-data.put("lastname", "Smith");
+//    Set up your transaction
+Transaction transaction = BigchainDbTransactionBuilder.init()
+	.addAsset("firstname", "John")
+	.addAsset("lastname", "Smith")
+	.addMetaData("what", "My first BigchainDB transaction")
+	.addMetaData("this", "My 1st metadata BigchainDB transaction")
+	.buildOnly((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate());
 
-// Metadata contains information about the transaction itself
-//                     (can be `null` if not needed)
-JSONObject metadata = new JSONObject();
-metadata.put("what", "My first BigchainDB transaction");
-
-BigchaindbTransaction bigchaindbTransaction = new BigchaindbTransaction(
-        data, metadata, (EdDSAPublicKey) keyPair.getPublic()
-);
-bigchaindbTransaction.signTransaction((EdDSAPrivateKey) keyPair.getPrivate());
 ```
 
-### Example: Send a transaction
+## Example: Create and Sign Transaction
 ```java
-// creating connection (assuming the server is running on localhost)
-final BigchaindbConnection bigchaindbConnection = new BigchaindbConnection("http://localhost:9984");
+//    prepare your keys
+net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
+KeyPair keyPair = edDsaKpg.generateKeyPair();
 
-bigchaindbConnection.send(bigchaindbTransaction, new TransactionCallback() {
-            @Override
-            public void pushedSuccessfully() {
-               // get the newly submitted transaction from remote
-               BigchaindbTransaction tra =
-                bigchaindbConnection.getTransactionById(bigchaindbTransaction.getTransactionId());
-               System.out.println(tra.toString());
-            }
-
-            @Override
-            public void transactionMalformed() {
-              // transaction is malformed and has been rejected
-            }
-
-            @Override
-            public void otherError() {
-              // other unexpected server error
-            }
-});
+//    Set up your transaction
+Transaction transaction = BigchainDbTransactionBuilder.init()
+	.addAsset("firstname", "John")
+	.addAsset("lastname", "Smith")
+	.addMetaData("what", "My second BigchainDB transaction")
+	.addMetaData("this", "My 2nd metadata BigchainDB transaction")
+	.buildAndSignOnly((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate());
 
 ```
+
+## Example: Create, Sign and Send a Transaction
+```java
+//    prepare your keys
+net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
+KeyPair keyPair = edDsaKpg.generateKeyPair();
+
+//    Set up your transaction
+Transaction transaction = BigchainDbTransactionBuilder.init()
+	.addAsset("firstname", "John")
+	.addAsset("lastname", "Smith")
+	.addMetaData("what", "My third BigchainDB transaction")
+	.addMetaData("this", "My 3rd metadata BigchainDB transaction")
+	.buildAndSign((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate())
+	.sendTransaction();
+
+```
+
+<h2>Api Wrappers</h2>
+<h3>Transactions</h3>
+
+<h4>Send a Transaction</h4>
+
+```java
+TransactionApi.sendTransaction(Transaction transaction) throws IOException
+```
+
+<h4>Send a Transaction with Callback</h4>
+
+```java
+TransactionApi.sendTransaction(Transaction transaction, final GenericCallback callback) 
+```
+
+<h4>Get Transaction given a Transaction Id</h4>
+
+```java
+Transaction TransactionApi.getTransactionById(String id) throws IOException
+```
+
+<h4>Get Transaction given an Asset Id</h4>
+
+```java
+Transactions TransactionApi.getTransactionsByAssetId(String assetId, Operations operation)
+```
+
+<h3>Outputs</h3>
+
+<h4>Get Outputs given a public key</h4>
+
+```java
+Outputs getOutputs(String publicKey) throws IOException
+```
+
+<h4>Get Spent Outputs given a public key</h4>
+
+```java
+Outputs getSpentOutputs(String publicKey) throws IOException
+```
+
+<h3>Assets</h3>
+
+<h4>Get Assets given search key</h4>
+
+```java
+Assets getAssets(String searchKey) throws IOException
+```
+
+<h4>Get Assets given search key and limit</h4>
+
+```java
+Assets getAssetsWithLimit(String searchKey, String limit) throws IOException
+```
+
+<h3>Blocks</h3>
+
+<h4>Get Blocks given block id</h4>
+
+```java
+Block getBlock(String blockId) throws IOException
+```
+
+<h4>Get Blocks given transaction id and status</h4>
+
+```java
+List<String> getBlocks(String transactionId, String status) throws IOException
+```
+
+<h3>Votes</h3>
+
+<h4>Get Votes given a block id</h4>
+
+```java
+Votes getVotes(String blockId) throws IOException 
+```
+
+<h3>Statuses</h3>
+
+<h4>Get Transaction status</h4>
+
+```java
+Status getTransactionStatus(String transactionId) throws IOException
+```
+
+<h4>Get Block status</h4>
+
+```java
+Status getBlockStatus(String blockId) throws IOException
+```
+
 
 ## BigchainDB Documentation
 

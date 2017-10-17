@@ -1,6 +1,7 @@
 package com.authenteq.util;
 
 
+
 /**
  * BreadWallet
  * <p/>
@@ -27,11 +28,17 @@ package com.authenteq.util;
  */
 public class Base58 {
 
+    /** The Constant ALPHABET. */
     private static final char[] ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
             .toCharArray();
+    
+    /** The Constant BASE_58. */
     private static final int BASE_58 = ALPHABET.length;
+    
+    /** The Constant BASE_256. */
     private static final int BASE_256 = 256;
 
+    /** The Constant INDEXES. */
     private static final int[] INDEXES = new int[128];
 
     static {
@@ -44,6 +51,12 @@ public class Base58 {
     }
 
 
+    /**
+     * Encode.
+     *
+     * @param input the input
+     * @return the string
+     */
     public static String encode(byte[] input) {
         if (input.length == 0) {
             // paying with the same coin
@@ -97,6 +110,12 @@ public class Base58 {
         return new String(output);
     }
 
+    /**
+     * Decode.
+     *
+     * @param input the input
+     * @return the byte[]
+     */
     public static byte[] decode(String input) {
         if (input.length() == 0) {
             // paying with the same coin
@@ -155,6 +174,13 @@ public class Base58 {
         return copyOfRange(temp, j - zeroCount, temp.length);
     }
 
+    /**
+     * Divmod 58.
+     *
+     * @param number the number
+     * @param startAt the start at
+     * @return the byte
+     */
     private static byte divmod58(byte[] number, int startAt) {
         int remainder = 0;
         for (int i = startAt; i < number.length; i++) {
@@ -169,6 +195,13 @@ public class Base58 {
         return (byte) remainder;
     }
 
+    /**
+     * Divmod 256.
+     *
+     * @param number58 the number 58
+     * @param startAt the start at
+     * @return the byte
+     */
     private static byte divmod256(byte[] number58, int startAt) {
         int remainder = 0;
         for (int i = startAt; i < number58.length; i++) {
@@ -183,6 +216,14 @@ public class Base58 {
         return (byte) remainder;
     }
 
+    /**
+     * Copy of range.
+     *
+     * @param source the source
+     * @param from the from
+     * @param to the to
+     * @return the byte[]
+     */
     private static byte[] copyOfRange(byte[] source, int from, int to) {
         byte[] range = new byte[to - from];
         System.arraycopy(source, from, range, 0, range.length);
