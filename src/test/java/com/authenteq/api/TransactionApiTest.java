@@ -4,8 +4,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.security.KeyPair;
-import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 import com.authenteq.api.TransactionsApi;
@@ -13,8 +11,6 @@ import com.authenteq.builders.BigchainDbConfigBuilder;
 import com.authenteq.builders.BigchainDbTransactionBuilder;
 import com.authenteq.constants.Operations;
 import com.authenteq.model.Transaction;
-import com.authenteq.util.JsonUtils;
-import com.authenteq.model.Asset;
 import com.authenteq.model.DataModel;
 import com.authenteq.model.GenericCallback;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
@@ -44,6 +40,7 @@ public class TransactionApiTest {
 
 		net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
 		KeyPair keyPair = edDsaKpg.generateKeyPair();
+		
 		try {
 			Transaction transaction = BigchainDbTransactionBuilder.init().addAsset("middlename", "mname")
 					.addAsset("firstname", "John")

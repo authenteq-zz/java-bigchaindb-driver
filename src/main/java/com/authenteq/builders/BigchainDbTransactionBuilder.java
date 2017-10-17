@@ -239,7 +239,6 @@ public class BigchainDbTransactionBuilder {
 		 */
 		@Override
 		public IAssetMetaData addMetaData(JsonObject jsonObject) {
-			// TODO Auto-generated method stub
 			return this;
 		}
 

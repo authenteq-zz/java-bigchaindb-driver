@@ -83,15 +83,6 @@ public class JsonUtils {
 		return getGson().toJson(src);
 	}
 	
-	/**
-	 * Return the instance of Gson.
-	 *
-	 * @return the gson
-	 */
-	public static Gson gson() {
-		return gson;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 

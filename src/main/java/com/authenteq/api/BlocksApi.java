@@ -40,7 +40,7 @@ public class BlocksApi {
 	 */
 	public static List<String> getBlocks(String transactionId, String status) throws IOException { 
 		Response response = NetworkUtils.sendGetRequest(Globals.getBaseUrl() + BigchainDbApi.BLOCKS + "?transaction_id="+transactionId+"&status="+status);
-		return JsonUtils.gson().fromJson(response.body().string(), new TypeToken<List<String>>(){}.getType());
+		return JsonUtils.getGson().fromJson(response.body().string(), new TypeToken<List<String>>(){}.getType());
 	}
 	
 }
