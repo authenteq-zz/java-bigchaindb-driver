@@ -19,12 +19,6 @@
 
 package com.authenteq.util;
 
-import net.i2p.crypto.eddsa.EdDSAPublicKey;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,12 +26,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import net.i2p.crypto.eddsa.EdDSAPublicKey;
+
 
 /**
  * The Class DriverUtils.
  */
 public class DriverUtils {
-    
+
     /** The Constant DIGITS. */
     private static final char[] DIGITS =
             {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
@@ -93,28 +93,27 @@ public class DriverUtils {
         map.setAccessible(false);
 
         Iterator<String> flavoursIter = input.keys();
-        while (flavoursIter.hasNext()){
+        while (flavoursIter.hasNext()) {
             String key = flavoursIter.next();
             try {
-            	Object j = input.get(key);
-                if(j instanceof JSONObject) {
-                	json.put(key, makeSelfSorting((JSONObject)j));
-                }else if(j instanceof JSONArray) {
-                	JSONArray h = (JSONArray)j;
-                	Iterator<Object> jo = h.iterator();
-                	List<Object> oList = new ArrayList<Object>();
-                	while(jo.hasNext()) {
-                		Object joi = jo.next();
-                		if(joi instanceof JSONObject) {
-                			oList.add(makeSelfSorting((JSONObject)joi));
-                			json.put(key, oList);
-                		}else {
-                			oList.add((String)joi);
-                			json.put(key, oList);
-                		}
-                	}
-                }else {
-                	json.put(key, j);
+                Object j = input.get(key);
+                if (j instanceof JSONObject) {
+                    json.put(key, makeSelfSorting((JSONObject) j));
+                } else if (j instanceof JSONArray) {
+                    JSONArray h = (JSONArray) j;
+                    List<Object> oList = new ArrayList<Object>();
+                    for (int i = 0; i < h.length(); i++) {
+                        Object joi = h.get(i);
+                        if (joi instanceof JSONObject) {
+                            oList.add(makeSelfSorting((JSONObject) joi));
+                            json.put(key, oList);
+                        } else {
+                            oList.add((String) joi);
+                            json.put(key, oList);
+                        }
+                    }
+                } else {
+                    json.put(key, j);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
