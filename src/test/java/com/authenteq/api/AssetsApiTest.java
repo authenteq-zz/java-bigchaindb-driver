@@ -29,7 +29,7 @@ public class AssetsApiTest {
 	@Test
 	public void testAssetSearch() {
 		try {
-			AssetsApi.getAssets("John");
+			System.out.println(AssetsApi.getAssets("John").getAssets().size());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -49,6 +49,7 @@ Transaction transaction = BigchainDbTransactionBuilder.init()
 	.addAsset("lastname", "Smith")
 	.addMetaData("what", "My first BigchainDB transaction")
 	.addMetaData("this", "My 1st metadata BigchainDB transaction")
+	.operation(Operations.CREATE)
 	.buildOnly((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate());
 
 ```
@@ -65,6 +66,7 @@ Transaction transaction = BigchainDbTransactionBuilder.init()
 	.addAsset("lastname", "Smith")
 	.addMetaData("what", "My second BigchainDB transaction")
 	.addMetaData("this", "My 2nd metadata BigchainDB transaction")
+	.operation(Operations.CREATE)
 	.buildAndSignOnly((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate());
 
 ```
