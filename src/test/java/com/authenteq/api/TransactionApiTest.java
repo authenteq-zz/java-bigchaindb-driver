@@ -19,6 +19,7 @@ import com.authenteq.model.DataModel;
 import com.authenteq.model.GenericCallback;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
+import net.i2p.crypto.eddsa.Utils;
 import okhttp3.Response;
 
 /**
@@ -50,6 +51,7 @@ public class TransactionApiTest {
 		KeyPair keyPair = edDsaKpg.generateKeyPair();
 		Account account = null;
 		try {
+			
 			account = AccountApi.loadAccount(publicKey, privateKey);
 		} catch (InvalidKeySpecException e1) {
 			// TODO Auto-generated catch block
@@ -60,9 +62,8 @@ public class TransactionApiTest {
 		dummyAsset.setId("id");
 		dummyAsset.setDescription("asset");
 
-		
-
 		try {
+			
 			Transaction transaction = BigchainDbTransactionBuilder.init().addAsset("middlename", "mname")
 					.addAsset("firstname", "John").addAsset("giddlename", "mname").addAsset("ziddlename", "mname")
 					.addAsset("lastname", "Smith").addMetaData("what", "My first BigchainDB transaction")

@@ -1,27 +1,15 @@
 package com.authenteq.builders;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import org.springframework.messaging.converter.StringMessageConverter;
-import org.springframework.messaging.simp.stomp.StompSessionHandler;
-import org.springframework.web.socket.client.WebSocketClient;
-import org.springframework.web.socket.client.standard.StandardWebSocketClient;
-import org.springframework.web.socket.messaging.WebSocketStompClient;
-import org.springframework.web.socket.sockjs.client.SockJsClient;
-import org.springframework.web.socket.sockjs.client.Transport;
-import org.springframework.web.socket.sockjs.client.WebSocketTransport;
-
 import com.authenteq.constants.BigchainDbApi;
 import com.authenteq.model.ApiEndpoints;
 import com.authenteq.model.Globals;
 import com.authenteq.util.JsonUtils;
 import com.authenteq.util.NetworkUtils;
-import com.authenteq.ws.WsMonitorSessionHandler;
+import com.authenteq.util.ScannerUtil;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -134,19 +122,18 @@ public class BigchainDbConfigBuilder {
 						NetworkUtils.sendGetRequest(this.baserUrl + "/api" + BigchainDbApi.API_VERSION).body().string(),
 						ApiEndpoints.class));
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
 			if (this.setupWsockets) {
-				List<Transport> transports = new ArrayList<Transport>(1);
-				transports.add(new WebSocketTransport(new StandardWebSocketClient()));
-				WebSocketClient transport = new SockJsClient(transports);
-				WebSocketStompClient stompClient = new WebSocketStompClient(transport);
-				stompClient.setMessageConverter(new StringMessageConverter());
-				StompSessionHandler handler = new WsMonitorSessionHandler();
-				stompClient.connect("ws://138.197.169.112:9985/api/v1/streams", handler);
 				
+//				WebSocketClient client = new StandardWebSocketClient();
+//				WebSocketStompClient stompClient = new WebSocketStompClient(client);
+//				stompClient.setMessageConverter(new StringMessageConverter());
+//				StompSessionHandler handler = new WsMonitorSessionHandler();
+//				stompClient.connect(Globals.getApiEndpoints().getStreams(), handler);
+//				
+//				ScannerUtil.monitorExit();
 			}
 		}
 

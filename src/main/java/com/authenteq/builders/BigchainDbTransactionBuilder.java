@@ -179,7 +179,7 @@ public class BigchainDbTransactionBuilder {
 	 * The Class Builder.
 	 */
 	public static class Builder implements IAssetMetaData, IBuild {
-
+		
 		/** The metadata. */
 		private Map<String, String> metadata = new TreeMap<String, String>();
 		
