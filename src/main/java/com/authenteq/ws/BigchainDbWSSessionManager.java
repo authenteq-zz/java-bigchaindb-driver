@@ -1,7 +1,6 @@
 package com.authenteq.ws;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import javax.websocket.ClientEndpoint;
 import javax.websocket.CloseReason;
 import javax.websocket.ContainerProvider;
@@ -10,22 +9,20 @@ import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
-
 import com.authenteq.util.ScannerUtil;
 
 @ClientEndpoint
-public class WebsocketClientEndpoint {
+public class BigchainDbWSSessionManager {
 
 	Session userSession = null;
 	private MessageHandler messageHandler;
 
-	public static void main(String args[]) throws URISyntaxException {
-		new WebsocketClientEndpoint(new URI("wss://test.ipdb.io:443/api/v1/streams/valid_transactions"));
-	}
-	public WebsocketClientEndpoint(URI endpointURI) {
+	public BigchainDbWSSessionManager(URI endpointURI, MessageHandler messageHandler) {
 		try {
+
 			WebSocketContainer container = ContainerProvider.getWebSocketContainer();
 			container.connectToServer(this, endpointURI);
+			this.messageHandler = messageHandler;
 			ScannerUtil.monitorExit();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -67,7 +64,6 @@ public class WebsocketClientEndpoint {
 	 */
 	@OnMessage
 	public void onMessage(String message) {
-		System.out.println(message);
 		if (this.messageHandler != null) {
 			this.messageHandler.handleMessage(message);
 		}
@@ -91,11 +87,4 @@ public class WebsocketClientEndpoint {
 		this.userSession.getAsyncRemote().sendText(message);
 	}
 
-	/**
-     * Message handler.
-     *
-     */
-    public static interface MessageHandler {
-        public void handleMessage(String message);
-    }
 }

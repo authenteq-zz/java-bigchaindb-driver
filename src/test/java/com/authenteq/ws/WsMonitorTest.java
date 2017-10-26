@@ -8,7 +8,7 @@ public class WsMonitorTest {
 		BigchainDbConfigBuilder.baseUrl("https://test.ipdb.io")
 		.addToken("app_id", "2bbaf3ff")
 		.addToken("app_key", "c929b708177dcc8b9d58180082029b8d")
-		.webSocketMonitor()
+		.webSocketMonitor(new ValidTransactionMessageHandler())
 		.setup();
 	}
 }

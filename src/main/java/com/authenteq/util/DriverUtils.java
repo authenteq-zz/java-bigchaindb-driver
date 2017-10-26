@@ -36,132 +36,130 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 
-
 /**
  * The Class DriverUtils.
  */
 public class DriverUtils {
-    
 
-    private static final int OID_OLD = 100;
-    private static final int OID_ED25519 = 112;
-    private static final int OID_BYTE = 11;
-    private static final int IDLEN_BYTE = 6;
-    
-    /** The Constant DIGITS. */
-    private static final char[] DIGITS =
-            {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+	private static final int OID_OLD = 100;
+	private static final int OID_ED25519 = 112;
+	private static final int OID_BYTE = 11;
+	private static final int IDLEN_BYTE = 6;
 
-    /**
-     * Gets the hex.
-     *
-     * @param data the data
-     * @return the hex
-     */
-    public static String getHex(byte[] data) {
-        final int l = data.length;
-        final char[] outData = new char[l << 1];
-        for (int i = 0, j = 0; i < l; i++) {
-            outData[j++] = DIGITS[(0xF0 & data[i]) >>> 4];
-            outData[j++] = DIGITS[0x0F & data[i]];
-        }
+	/** The Constant DIGITS. */
+	private static final char[] DIGITS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',
+			'f' };
 
-        return new String(outData);
-    }
+	/**
+	 * Gets the hex.
+	 *
+	 * @param data
+	 *            the data
+	 * @return the hex
+	 */
+	public static String getHex(byte[] data) {
+		final int l = data.length;
+		final char[] outData = new char[l << 1];
+		for (int i = 0, j = 0; i < l; i++) {
+			outData[j++] = DIGITS[(0xF0 & data[i]) >>> 4];
+			outData[j++] = DIGITS[0x0F & data[i]];
+		}
 
-    /**
-     * Make self sorting.
-     *
-     * @param input the input
-     * @return the JSON object
-     */
-    /*
-    We are using a hack to make stardard org.json be automatically sorted
-    by key desc alphabetically
-     */
-    public static JSONObject makeSelfSorting(JSONObject input) {
-        if (input == null)
-            return null;
+		return new String(outData);
+	}
 
-        JSONObject json = new JSONObject();
-        Field map = null;
-        try {
-            map = json.getClass().getDeclaredField("map");
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        }
-        if (map == null) {
-            return json;
-        }
+	/**
+	 * Make self sorting.
+	 *
+	 * @param input
+	 *            the input
+	 * @return the JSON object
+	 */
+	/*
+	 * We are using a hack to make stardard org.json be automatically sorted by
+	 * key desc alphabetically
+	 */
+	public static JSONObject makeSelfSorting(JSONObject input) {
+		if (input == null)
+			return null;
 
-        map.setAccessible(true);//because the field is private final...
-        try {
-            map.set(json, new TreeMap<>());
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        map.setAccessible(false);
+		JSONObject json = new JSONObject();
+		Field map = null;
+		try {
+			map = json.getClass().getDeclaredField("map");
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		}
+		if (map == null) {
+			return json;
+		}
 
-        Iterator<String> flavoursIter = input.keys();
-        while (flavoursIter.hasNext()){
-            String key = flavoursIter.next();
-            try {
-            	Object j = input.get(key);
-                if(j instanceof JSONObject) {
-                	json.put(key, makeSelfSorting((JSONObject)j));
-                }else if(j instanceof JSONArray) {
-                	JSONArray h = (JSONArray)j;
-                	Iterator<Object> jo = h.iterator();
-                	List<Object> oList = new ArrayList<Object>();
-                	while(jo.hasNext()) {
-                		Object joi = jo.next();
-                		if(joi instanceof JSONObject) {
-                			oList.add(makeSelfSorting((JSONObject)joi));
-                			json.put(key, oList);
-                		}else {
-                			oList.add((String)joi);
-                			json.put(key, oList);
-                		}
-                	}
-                }else {
-                	json.put(key, j);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+		map.setAccessible(true);// because the field is private final...
+		try {
+			map.set(json, new TreeMap<>());
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		map.setAccessible(false);
 
-        return json;
-    }
+		Iterator<String> flavoursIter = input.keys();
+		while (flavoursIter.hasNext()) {
+			String key = flavoursIter.next();
+			try {
+				Object j = input.get(key);
+				if (j instanceof JSONObject) {
+					json.put(key, makeSelfSorting((JSONObject) j));
+				} else if (j instanceof JSONArray) {
+					JSONArray h = (JSONArray) j;
+					List<Object> oList = new ArrayList<Object>();
+					for (int i = 0; i < h.length(); i++) {
+						Object joi = h.get(i);
+						if (joi instanceof JSONObject) {
+							oList.add(makeSelfSorting((JSONObject) joi));
+							json.put(key, oList);
+						} else {
+							oList.add((String) joi);
+							json.put(key, oList);
+						}
+					}
+				} else {
+					json.put(key, j);
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
 
-    /**
-     * Gets the self sorting json.
-     *
-     * @return the self sorting json
-     */
-    /*
-    We need to sort the keys in alphabetical order to sign the transaction successfully.
-     */
-    public static JSONObject getSelfSortingJson() {
-        JSONObject json = makeSelfSorting(new JSONObject());
-        return json;
-    }
+		return json;
+	}
 
-    /**
-     * Convert to base 58.
-     *
-     * @param publicKey the public key
-     * @return the string
-     */
-    public static String convertToBase58(EdDSAPublicKey publicKey) {
-        return Base58.encode(Arrays.copyOfRange(publicKey.getEncoded(), 12, 44));
-    }
-    
-    public static String convertToBase58(EdDSAPrivateKey privateKey) {
-        return Base58.encode(privateKey.getEncoded());
-    }
-    
+	/**
+	 * Gets the self sorting json.
+	 *
+	 * @return the self sorting json
+	 */
+	/*
+	 * We need to sort the keys in alphabetical order to sign the transaction
+	 * successfully.
+	 */
+	public static JSONObject getSelfSortingJson() {
+		JSONObject json = makeSelfSorting(new JSONObject());
+		return json;
+	}
 
-    
+	/**
+	 * Convert to base 58.
+	 *
+	 * @param publicKey
+	 *            the public key
+	 * @return the string
+	 */
+	public static String convertToBase58(EdDSAPublicKey publicKey) {
+		return Base58.encode(Arrays.copyOfRange(publicKey.getEncoded(), 12, 44));
+	}
+
+	public static String convertToBase58(EdDSAPrivateKey privateKey) {
+		return Base58.encode(privateKey.getEncoded());
+	}
 
 }

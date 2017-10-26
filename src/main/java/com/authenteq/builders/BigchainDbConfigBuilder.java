@@ -1,6 +1,8 @@
 package com.authenteq.builders;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -10,6 +12,9 @@ import com.authenteq.model.Globals;
 import com.authenteq.util.JsonUtils;
 import com.authenteq.util.NetworkUtils;
 import com.authenteq.util.ScannerUtil;
+import com.authenteq.ws.BigchainDbWSSessionManager;
+import com.authenteq.ws.MessageHandler;
+
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -53,7 +58,7 @@ public class BigchainDbConfigBuilder {
 		 */
 		ITokens addToken(String key, String map);
 
-		ITokens webSocketMonitor();
+		ITokens webSocketMonitor(MessageHandler messageHandler);
 
 		void setup();
 
@@ -78,6 +83,8 @@ public class BigchainDbConfigBuilder {
 		OkHttpClient httpClient;
 
 		boolean setupWsockets = false;
+		
+		MessageHandler messageHandler = null;
 
 		/**
 		 * Instantiates a new builder.
@@ -127,13 +134,18 @@ public class BigchainDbConfigBuilder {
 
 			if (this.setupWsockets) {
 				
-//				WebSocketClient client = new StandardWebSocketClient();
-//				WebSocketStompClient stompClient = new WebSocketStompClient(client);
-//				stompClient.setMessageConverter(new StringMessageConverter());
-//				StompSessionHandler handler = new WsMonitorSessionHandler();
-//				stompClient.connect(Globals.getApiEndpoints().getStreams(), handler);
-//				
-//				ScannerUtil.monitorExit();
+				//	we create another thread for processing the endpoint. 
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							new BigchainDbWSSessionManager(new URI(Globals.getApiEndpoints().getStreams()),messageHandler);
+						} catch (URISyntaxException e) {
+							e.printStackTrace();
+						}
+						
+					}
+				}).start();
 			}
 		}
 
@@ -169,10 +181,9 @@ public class BigchainDbConfigBuilder {
 		};
 
 		@Override
-		public ITokens webSocketMonitor() {
-
+		public ITokens webSocketMonitor(MessageHandler messageHandler) {
 			this.setupWsockets = true;
-
+			this.messageHandler = messageHandler;
 			return this;
 		}
 	}

@@ -88,6 +88,24 @@ Transaction transaction = BigchainDbTransactionBuilder.init()
 
 ```
 
+## Example: Setup Config with Websocket Listener
+```java
+public class MyCustomMonitor implements MessageHandler {
+	@Override
+	public void handleMessage(String message) {
+		ValidTransaction validTransaction = JsonUtils.fromJson(message, ValidTransaction.class);
+	}
+}
+
+// config
+BigchainDbConfigBuilder
+	.baseUrl("https://test.ipdb.io")
+	.addToken("app_id", "2bbaf3ff")
+	.webSocketMonitor(new MyCustomMonitor())
+	.addToken("app_key", "c929b708177dcc8b9d58180082029b8d").setup();
+	
+```
+
 <h2>Api Wrappers</h2>
 <h3>Transactions</h3>
 
