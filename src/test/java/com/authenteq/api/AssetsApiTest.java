@@ -1,5 +1,7 @@
 package com.authenteq.api;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 
 import org.junit.Before;
@@ -29,9 +31,11 @@ public class AssetsApiTest {
 	@Test
 	public void testAssetSearch() {
 		try {
-			System.out.println(AssetsApi.getAssets("John").getAssets().size());
+			int size = AssetsApi.getAssets("John").getAssets().size();
+			
+			assertTrue(size > 0);
+			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

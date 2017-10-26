@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.authenteq.constants.BigchainDbApi;
+import com.authenteq.constants.BlockStatus;
 import com.authenteq.model.Block;
 import com.authenteq.model.Globals;
 import com.authenteq.util.JsonUtils;
@@ -38,7 +39,7 @@ public class BlocksApi {
 	 * @return the blocks
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static List<String> getBlocks(String transactionId, String status) throws IOException { 
+	public static List<String> getBlocks(String transactionId, BlockStatus status) throws IOException { 
 		Response response = NetworkUtils.sendGetRequest(Globals.getBaseUrl() + BigchainDbApi.BLOCKS + "?transaction_id="+transactionId+"&status="+status);
 		return JsonUtils.getGson().fromJson(response.body().string(), new TypeToken<List<String>>(){}.getType());
 	}
