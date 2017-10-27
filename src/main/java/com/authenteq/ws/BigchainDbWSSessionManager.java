@@ -21,8 +21,8 @@ public class BigchainDbWSSessionManager {
 		try {
 
 			WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-			container.connectToServer(this, endpointURI);
 			this.messageHandler = messageHandler;
+			container.connectToServer(this, endpointURI);
 			ScannerUtil.monitorExit();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
