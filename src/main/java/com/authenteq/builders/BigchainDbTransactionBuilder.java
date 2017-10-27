@@ -1,7 +1,5 @@
 package com.authenteq.builders;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.security.InvalidKeyException;
@@ -9,25 +7,20 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Signature;
 import java.security.SignatureException;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
-
 import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.jcajce.provider.digest.SHA3;
 import org.interledger.cryptoconditions.types.Ed25519Sha256Condition;
 import org.interledger.cryptoconditions.types.Ed25519Sha256Fulfillment;
-import org.json.JSONException;
 import org.json.JSONObject;
-
 import com.authenteq.api.TransactionsApi;
+import com.authenteq.constants.Operations;
 import com.authenteq.model.Asset;
 import com.authenteq.model.Condition;
 import com.authenteq.model.DataModel;
 import com.authenteq.model.Details;
-import com.authenteq.model.FulFill;
 import com.authenteq.model.Input;
-import com.authenteq.model.MetaData;
 import com.authenteq.model.Output;
 import com.authenteq.model.Transaction;
 import com.authenteq.model.GenericCallback;
@@ -35,7 +28,6 @@ import com.authenteq.util.DriverUtils;
 import com.authenteq.util.JsonUtils;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-
 import net.i2p.crypto.eddsa.EdDSAEngine;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
@@ -64,6 +56,8 @@ public class BigchainDbTransactionBuilder {
 	 * The Interface IAssetMetaData.
 	 */
 	public interface IAssetMetaData {
+		
+		IAssetMetaData operation(Operations operation);
 		
 		/**
 		 * Adds the asset.
@@ -185,7 +179,7 @@ public class BigchainDbTransactionBuilder {
 	 * The Class Builder.
 	 */
 	public static class Builder implements IAssetMetaData, IBuild {
-
+		
 		/** The metadata. */
 		private Map<String, String> metadata = new TreeMap<String, String>();
 		
@@ -197,6 +191,8 @@ public class BigchainDbTransactionBuilder {
 		
 		/** The transaction. */
 		private Transaction transaction;
+		
+		private Operations operation;
 
 		/* (non-Javadoc)
 		 * @see com.authenteq.builders.BigchainDbTransactionBuilder.IAssetMetaData#addAsset(java.lang.String, java.lang.String)
@@ -239,7 +235,6 @@ public class BigchainDbTransactionBuilder {
 		 */
 		@Override
 		public IAssetMetaData addMetaData(JsonObject jsonObject) {
-			// TODO Auto-generated method stub
 			return this;
 		}
 
@@ -256,6 +251,7 @@ public class BigchainDbTransactionBuilder {
 			Input input = new Input();
 			input.setFullFillment(null);
 			input.setFulFills(null);
+
 			input.addOwner(DriverUtils.convertToBase58(publicKey));
 
 			Output output = new Output();
@@ -272,7 +268,7 @@ public class BigchainDbTransactionBuilder {
 			this.transaction.addOutput(output);
 			this.transaction.setAsset(new Asset(this.assets));
 			this.transaction.setMetaData(this.metadata);
-			this.transaction.setOperation("CREATE");
+			this.transaction.setOperation(this.operation.toString());
 			this.transaction.setVersion("1.0");
 
 			//	Workaround to pop out the field.
@@ -382,6 +378,12 @@ public class BigchainDbTransactionBuilder {
 			Type mapType = new TypeToken<Map<String, String>>(){}.getType();  
 			Map<String, String> son = JsonUtils.getGson().fromJson(JsonUtils.toJson(obj), mapType);
 			this.metadata.putAll(son);
+			return this;
+		}
+
+		@Override
+		public IAssetMetaData operation(Operations operation) {
+			this.operation = operation;
 			return this;
 		}
 	}

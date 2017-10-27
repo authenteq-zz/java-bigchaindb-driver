@@ -9,6 +9,16 @@ import okhttp3.OkHttpClient;
  * The Class Globals.
  */
 public class Globals {
+	
+	private static ApiEndpoints apiEndpoints;
+
+	public static ApiEndpoints getApiEndpoints() {
+		return apiEndpoints;
+	}
+
+	public static void setApiEndpoints(ApiEndpoints apiEndpoints) {
+		Globals.apiEndpoints = apiEndpoints;
+	}
 
 	/** The authorization tokens. */
 	private static Map<String, String> authorizationTokens;
@@ -18,6 +28,16 @@ public class Globals {
 	
 	/** The http client. */
 	private static OkHttpClient httpClient;
+	
+	private static String wsSocketUrl;
+
+	public static String getWsSocketUrl() {
+		return wsSocketUrl;
+	}
+
+	public static void setWsSocketUrl(String wsSocketUrl) {
+		Globals.wsSocketUrl = wsSocketUrl;
+	}
 
 	/**
 	 * Gets the authorization tokens.
