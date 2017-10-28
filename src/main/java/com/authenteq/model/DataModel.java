@@ -6,8 +6,17 @@ import java.util.Map;
 import com.authenteq.util.JsonUtils;
 import com.google.gson.reflect.TypeToken;
 
+
+/**
+ * The Class DataModel.
+ */
 public abstract class DataModel {
 	
+	/**
+	 * To map string.
+	 *
+	 * @return the map
+	 */
 	public Map<String,String> toMapString() {
 		Type mapType = new TypeToken<Map<String, String>>(){}.getType();  
 		Map<String, String> son = JsonUtils.getGson().fromJson(JsonUtils.toJson(this), mapType);

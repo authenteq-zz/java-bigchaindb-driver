@@ -32,6 +32,7 @@ import net.i2p.crypto.eddsa.EdDSAEngine;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
 
+
 /**
  * The Class BigchainDbTransactionBuilder.
  */
@@ -57,6 +58,12 @@ public class BigchainDbTransactionBuilder {
 	 */
 	public interface IAssetMetaData {
 		
+		/**
+		 * Operation.
+		 *
+		 * @param operation the operation
+		 * @return the i asset meta data
+		 */
 		IAssetMetaData operation(Operations operation);
 		
 		/**
@@ -192,6 +199,7 @@ public class BigchainDbTransactionBuilder {
 		/** The transaction. */
 		private Transaction transaction;
 		
+		/** The operation. */
 		private Operations operation;
 
 		/* (non-Javadoc)
@@ -381,6 +389,9 @@ public class BigchainDbTransactionBuilder {
 			return this;
 		}
 
+		/* (non-Javadoc)
+		 * @see com.authenteq.builders.BigchainDbTransactionBuilder.IAssetMetaData#operation(com.authenteq.constants.Operations)
+		 */
 		@Override
 		public IAssetMetaData operation(Operations operation) {
 			this.operation = operation;

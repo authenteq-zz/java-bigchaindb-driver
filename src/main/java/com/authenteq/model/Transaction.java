@@ -15,6 +15,7 @@ import com.authenteq.util.JsonUtils;
 import com.google.gson.annotations.SerializedName;
 
 
+
 /**
  * The Class Transaction.
  */

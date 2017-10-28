@@ -36,14 +36,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TreeMap;
 
+
 /**
  * The Class DriverUtils.
  */
 public class DriverUtils {
 
+	/** The Constant OID_OLD. */
 	private static final int OID_OLD = 100;
+	
+	/** The Constant OID_ED25519. */
 	private static final int OID_ED25519 = 112;
+	
+	/** The Constant OID_BYTE. */
 	private static final int OID_BYTE = 11;
+	
+	/** The Constant IDLEN_BYTE. */
 	private static final int IDLEN_BYTE = 6;
 
 	/** The Constant DIGITS. */
@@ -158,6 +166,12 @@ public class DriverUtils {
 		return Base58.encode(Arrays.copyOfRange(publicKey.getEncoded(), 12, 44));
 	}
 
+	/**
+	 * Convert to base 58.
+	 *
+	 * @param privateKey the private key
+	 * @return the string
+	 */
 	public static String convertToBase58(EdDSAPrivateKey privateKey) {
 		return Base58.encode(privateKey.getEncoded());
 	}

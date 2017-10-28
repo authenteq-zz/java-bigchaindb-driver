@@ -5,17 +5,29 @@ import java.util.Map;
 import okhttp3.OkHttpClient;
 
 
+
 /**
  * The Class Globals.
  */
 public class Globals {
 	
+	/** The api endpoints. */
 	private static ApiEndpoints apiEndpoints;
 
+	/**
+	 * Gets the api endpoints.
+	 *
+	 * @return the api endpoints
+	 */
 	public static ApiEndpoints getApiEndpoints() {
 		return apiEndpoints;
 	}
 
+	/**
+	 * Sets the api endpoints.
+	 *
+	 * @param apiEndpoints the new api endpoints
+	 */
 	public static void setApiEndpoints(ApiEndpoints apiEndpoints) {
 		Globals.apiEndpoints = apiEndpoints;
 	}
@@ -29,12 +41,23 @@ public class Globals {
 	/** The http client. */
 	private static OkHttpClient httpClient;
 	
+	/** The ws socket url. */
 	private static String wsSocketUrl;
 
+	/**
+	 * Gets the ws socket url.
+	 *
+	 * @return the ws socket url
+	 */
 	public static String getWsSocketUrl() {
 		return wsSocketUrl;
 	}
 
+	/**
+	 * Sets the ws socket url.
+	 *
+	 * @param wsSocketUrl the new ws socket url
+	 */
 	public static void setWsSocketUrl(String wsSocketUrl) {
 		Globals.wsSocketUrl = wsSocketUrl;
 	}

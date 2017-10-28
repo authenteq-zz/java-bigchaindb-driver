@@ -8,6 +8,7 @@ import com.authenteq.annotations.Exclude;
 import com.google.gson.annotations.SerializedName;
 
 
+
 /**
  * The Class Output.
  */

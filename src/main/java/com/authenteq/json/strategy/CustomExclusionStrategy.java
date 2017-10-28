@@ -5,6 +5,7 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 
 
+
 /**
  * The Class CustomExclusionStrategy.
  */

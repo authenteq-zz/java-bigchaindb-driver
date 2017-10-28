@@ -24,6 +24,7 @@ import com.google.gson.reflect.TypeToken;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+
 /**
  * The Class TransactionsApi.
  */
@@ -43,9 +44,10 @@ public class TransactionsApi extends AbstractApi {
 	}
 
 	/**
-	 * Sends the transaction
-	 * @param transaction
-	 * @throws IOException
+	 * Sends the transaction.
+	 *
+	 * @param transaction the transaction
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void sendTransaction(Transaction transaction) throws IOException {
 		RequestBody body = RequestBody.create(JSON, JsonUtils.toJson(transaction));

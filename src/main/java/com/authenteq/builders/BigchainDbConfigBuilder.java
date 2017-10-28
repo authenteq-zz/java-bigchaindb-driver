@@ -58,8 +58,18 @@ public class BigchainDbConfigBuilder {
 		 */
 		ITokens addToken(String key, String map);
 
+		/**
+		 * Web socket monitor.
+		 *
+		 * @param messageHandler
+		 *            the message handler
+		 * @return the i tokens
+		 */
 		ITokens webSocketMonitor(MessageHandler messageHandler);
 
+		/**
+		 * Setup.
+		 */
 		void setup();
 
 		/**
@@ -82,8 +92,10 @@ public class BigchainDbConfigBuilder {
 		/** The http client. */
 		OkHttpClient httpClient;
 
+		/** The setup wsockets. */
 		boolean setupWsockets = false;
-		
+
+		/** The message handler. */
 		MessageHandler messageHandler = null;
 
 		/**
@@ -133,17 +145,18 @@ public class BigchainDbConfigBuilder {
 			}
 
 			if (this.setupWsockets) {
-				
-				//	we create another thread for processing the endpoint. 
+
+				// we create another thread for processing the endpoint.
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
 						try {
-							new BigchainDbWSSessionManager(new URI(Globals.getApiEndpoints().getStreams()),messageHandler);
+							new BigchainDbWSSessionManager(new URI(Globals.getApiEndpoints().getStreams()),
+									messageHandler);
 						} catch (URISyntaxException e) {
 							e.printStackTrace();
 						}
-						
+
 					}
 				}).start();
 			}
@@ -180,6 +193,12 @@ public class BigchainDbConfigBuilder {
 			}
 		};
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see com.authenteq.builders.BigchainDbConfigBuilder.ITokens#
+		 * webSocketMonitor(com.authenteq.ws.MessageHandler)
+		 */
 		@Override
 		public ITokens webSocketMonitor(MessageHandler messageHandler) {
 			this.setupWsockets = true;

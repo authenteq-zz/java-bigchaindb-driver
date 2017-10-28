@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 
 
+
 /**
  * The Class VoteBody.
  */

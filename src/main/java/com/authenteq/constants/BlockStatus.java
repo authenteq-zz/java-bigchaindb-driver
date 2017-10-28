@@ -1,10 +1,17 @@
 package com.authenteq.constants;
 
+
+/**
+ * The Enum BlockStatus.
+ */
 public enum BlockStatus {
 
+	/** The undecided. */
 	UNDECIDED("UNDECIDED"),
 
-	VALID("VALID"), INVALID("INVALID");
+	/** The valid. */
+	VALID("VALID"), /** The invalid. */
+ INVALID("INVALID");
 
 	/** The value. */
 	private final String value;

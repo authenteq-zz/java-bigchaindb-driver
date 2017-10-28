@@ -11,16 +11,30 @@ import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
 import com.authenteq.util.ScannerUtil;
 
+
+/**
+ * The Class BigchainDbWSSessionManager.
+ */
 @ClientEndpoint
 public class BigchainDbWSSessionManager {
 
+	/** The user session. */
 	Session userSession = null;
+	
+	/** The message handler. */
 	private MessageHandler messageHandler;
 
+	/**
+	 * Instantiates a new bigchain db WS session manager.
+	 *
+	 * @param endpointURI the endpoint URI
+	 * @param messageHandler the message handler
+	 */
 	public BigchainDbWSSessionManager(URI endpointURI, MessageHandler messageHandler) {
 		try {
 
 			WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+			container.setDefaultMaxSessionIdleTimeout(-1);
 			this.messageHandler = messageHandler;
 			container.connectToServer(this, endpointURI);
 			ScannerUtil.monitorExit();
@@ -64,15 +78,16 @@ public class BigchainDbWSSessionManager {
 	 */
 	@OnMessage
 	public void onMessage(String message) {
+		System.out.println(message);
 		if (this.messageHandler != null) {
 			this.messageHandler.handleMessage(message);
 		}
 	}
 
 	/**
-	 * register message handler
+	 * register message handler.
 	 *
-	 * @param msgHandler
+	 * @param msgHandler the msg handler
 	 */
 	public void addMessageHandler(MessageHandler msgHandler) {
 		this.messageHandler = msgHandler;
@@ -81,7 +96,7 @@ public class BigchainDbWSSessionManager {
 	/**
 	 * Send a message.
 	 *
-	 * @param message
+	 * @param message the message
 	 */
 	public void sendMessage(String message) {
 		this.userSession.getAsyncRemote().sendText(message);
