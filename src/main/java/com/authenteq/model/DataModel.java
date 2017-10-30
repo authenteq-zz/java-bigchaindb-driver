@@ -1,10 +1,10 @@
 package com.authenteq.model;
 
-import java.lang.reflect.Type;
-import java.util.Map;
-
 import com.authenteq.util.JsonUtils;
 import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.Map;
 
 public abstract class DataModel {
 	

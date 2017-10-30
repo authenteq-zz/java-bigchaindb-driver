@@ -1,16 +1,15 @@
 package com.authenteq.api;
 
-import java.io.IOException;
-import java.util.List;
-
 import com.authenteq.constants.BigchainDbApi;
 import com.authenteq.model.Block;
 import com.authenteq.model.Globals;
 import com.authenteq.util.JsonUtils;
 import com.authenteq.util.NetworkUtils;
 import com.google.gson.reflect.TypeToken;
-
 import okhttp3.Response;
+
+import java.io.IOException;
+import java.util.List;
 
 
 /**

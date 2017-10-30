@@ -19,18 +19,13 @@
 
 package com.authenteq.util;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.TreeMap;
-
+import net.i2p.crypto.eddsa.EdDSAPublicKey;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import net.i2p.crypto.eddsa.EdDSAPublicKey;
+import java.lang.reflect.Field;
+import java.util.*;
 
 
 /**

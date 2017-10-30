@@ -1,17 +1,8 @@
 package com.authenteq.util;
 
-import java.lang.reflect.Type;
-import java.util.List;
-
-import com.authenteq.json.strategy.AssetsDeserializer;
-import com.authenteq.json.strategy.CustomExclusionStrategy;
-import com.authenteq.json.strategy.OutputsDeserializer;
-import com.authenteq.json.strategy.TransactionDeserializer;
-import com.authenteq.json.strategy.TransactionsDeserializer;
-import com.authenteq.json.strategy.VoteDeserializer;
+import com.authenteq.json.strategy.*;
 import com.authenteq.model.Assets;
 import com.authenteq.model.Outputs;
-import com.authenteq.model.Transaction;
 import com.authenteq.model.Transactions;
 import com.authenteq.model.Votes;
 import com.google.gson.Gson;

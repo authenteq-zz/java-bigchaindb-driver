@@ -1,28 +1,18 @@
 package com.authenteq.api;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.sql.Driver;
-import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.authenteq.constants.BigchainDbApi;
 import com.authenteq.constants.Operations;
-import com.authenteq.model.TransactionModel;
-import com.authenteq.model.Transactions;
+import com.authenteq.model.GenericCallback;
 import com.authenteq.model.Globals;
 import com.authenteq.model.Transaction;
-import com.authenteq.model.GenericCallback;
-import com.authenteq.util.DriverUtils;
+import com.authenteq.model.Transactions;
 import com.authenteq.util.JsonUtils;
 import com.authenteq.util.NetworkUtils;
-import com.google.gson.reflect.TypeToken;
-
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.json.JSONException;
+
+import java.io.IOException;
 
 /**
  * The Class TransactionsApi.

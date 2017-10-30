@@ -1,8 +1,5 @@
 package com.authenteq.json.strategy;
 
-import java.lang.reflect.Type;
-import java.util.Iterator;
-
 import com.authenteq.model.Asset;
 import com.authenteq.model.Assets;
 import com.authenteq.util.JsonUtils;
@@ -10,6 +7,9 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+
+import java.lang.reflect.Type;
+import java.util.Iterator;
 
 
 /**

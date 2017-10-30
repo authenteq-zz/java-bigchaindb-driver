@@ -1,12 +1,13 @@
 package com.authenteq.api;
 
-import java.io.IOException;
 import com.authenteq.constants.BigchainDbApi;
 import com.authenteq.model.Assets;
 import com.authenteq.model.Globals;
 import com.authenteq.util.JsonUtils;
 import com.authenteq.util.NetworkUtils;
 import okhttp3.Response;
+
+import java.io.IOException;
 
 /**
  * The Class AssetsApi.

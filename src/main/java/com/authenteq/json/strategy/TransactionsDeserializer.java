@@ -1,18 +1,15 @@
 package com.authenteq.json.strategy;
 
-import java.lang.reflect.Type;
-import java.util.Iterator;
-import java.util.Map;
-import com.authenteq.model.Asset;
-import com.authenteq.model.Input;
-import com.authenteq.model.Output;
-import com.authenteq.model.Transaction;
-import com.authenteq.model.Transactions;
+import com.authenteq.model.*;
 import com.authenteq.util.JsonUtils;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+
+import java.lang.reflect.Type;
+import java.util.Iterator;
+import java.util.Map;
 
 
 /**

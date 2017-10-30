@@ -1,11 +1,11 @@
 package com.authenteq.model;
 
+import com.authenteq.annotations.Exclude;
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.authenteq.annotations.Exclude;
-import com.google.gson.annotations.SerializedName;
 
 
 /**
