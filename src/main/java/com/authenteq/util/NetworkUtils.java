@@ -1,20 +1,10 @@
 package com.authenteq.util;
 
-import java.io.IOException;
-
-import org.json.JSONObject;
-
-import com.authenteq.model.Globals;
-import com.authenteq.model.Transaction;
 import com.authenteq.model.GenericCallback;
+import com.authenteq.model.Globals;
+import okhttp3.*;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+import java.io.IOException;
 
 
 

@@ -11,10 +11,8 @@ import com.authenteq.model.ApiEndpoints;
 import com.authenteq.model.Globals;
 import com.authenteq.util.JsonUtils;
 import com.authenteq.util.NetworkUtils;
-import com.authenteq.util.ScannerUtil;
 import com.authenteq.ws.BigchainDbWSSessionManager;
 import com.authenteq.ws.MessageHandler;
-
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

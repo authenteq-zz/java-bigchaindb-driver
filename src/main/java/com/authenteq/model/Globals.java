@@ -1,8 +1,8 @@
 package com.authenteq.model;
 
-import java.util.Map;
-
 import okhttp3.OkHttpClient;
+
+import java.util.Map;
 
 
 

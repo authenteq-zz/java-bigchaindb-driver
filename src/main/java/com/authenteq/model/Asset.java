@@ -1,12 +1,11 @@
 package com.authenteq.model;
 
-import java.io.Serializable;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.TreeMap;
-
 import com.authenteq.annotations.Exclude;
 import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+import java.util.Map;
+import java.util.TreeMap;
 
 
 

@@ -1,10 +1,9 @@
 package com.authenteq.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Map;
 import java.util.TreeMap;
-
-import com.authenteq.annotations.Exclude;
-import com.google.gson.annotations.SerializedName;
 
 
 

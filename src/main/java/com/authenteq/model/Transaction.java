@@ -1,18 +1,14 @@
 package com.authenteq.model;
 
+import com.authenteq.annotations.Exclude;
+import com.authenteq.util.JsonUtils;
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import org.json.JSONObject;
-
-import com.authenteq.annotations.Exclude;
-import com.authenteq.util.DriverUtils;
-import com.authenteq.util.JsonUtils;
-import com.google.gson.annotations.SerializedName;
 
 
 
