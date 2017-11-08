@@ -4,6 +4,7 @@ import com.authenteq.api.TransactionsApi;
 import com.authenteq.model.*;
 import com.authenteq.util.DriverUtils;
 import com.authenteq.util.JsonUtils;
+import com.authenteq.util.KeyPairUtils;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import net.i2p.crypto.eddsa.EdDSAEngine;
@@ -237,14 +238,14 @@ public class BigchainDbTransactionBuilder {
 			Input input = new Input();
 			input.setFullFillment(null);
 			input.setFulFills(null);
-			input.addOwner(DriverUtils.convertToBase58(publicKey));
+			input.addOwner(KeyPairUtils.encodePublicKeyInBase58(publicKey));
 
 			Output output = new Output();
 			output.setAmount("1");
-			output.addPublicKey(DriverUtils.convertToBase58(publicKey));
+			output.addPublicKey(KeyPairUtils.encodePublicKeyInBase58(publicKey));
 
 			Details details = new Details();
-			details.setPublicKey(DriverUtils.convertToBase58(publicKey));
+			details.setPublicKey(KeyPairUtils.encodePublicKeyInBase58(publicKey));
 			details.setType("ed25519-sha-256");
 
 			output.setCondition(new Condition(details, condition1.getUri().toString()));
