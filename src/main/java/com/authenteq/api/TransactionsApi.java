@@ -14,7 +14,6 @@ import org.json.JSONException;
 
 import java.io.IOException;
 
-
 /**
  * The Class TransactionsApi.
  */
@@ -36,16 +35,15 @@ public class TransactionsApi extends AbstractApi {
 	/**
 	 * Sends the transaction.
 	 *
-	 * @param transaction the transaction
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @param transaction
+	 *            the transaction
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void sendTransaction(Transaction transaction) throws IOException {
 		RequestBody body = RequestBody.create(JSON, JsonUtils.toJson(transaction));
 		Response response = NetworkUtils.sendPostRequest(Globals.getBaseUrl() + BigchainDbApi.TRANSACTIONS, body);
-		System.out.println(response.body().string());
-		System.out.println(response.message());
 	}
-
 
 	/**
 	 * Gets the transaction by id.
@@ -82,4 +80,5 @@ public class TransactionsApi extends AbstractApi {
 		return JsonUtils.fromJson(response.body().string(), Transactions.class);
 
 	}
+
 }
