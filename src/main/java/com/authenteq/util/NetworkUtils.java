@@ -49,6 +49,7 @@ public class NetworkUtils {
 				} else {
 					callback.otherError(response);
 				}
+				response.close();
 			}
 		});
 	}
