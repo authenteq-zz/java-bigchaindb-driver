@@ -12,6 +12,8 @@ import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.binary.Hex;
 import com.authenteq.model.Account;
 import com.authenteq.util.DriverUtils;
+import com.authenteq.util.KeyPairUtils;
+
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
 import net.i2p.crypto.eddsa.Utils;
@@ -85,9 +87,9 @@ public class AccountApi {
 			Hex hex = new Hex();
 
 			Account acc = AccountApi.createAccount();
-			System.out.print(DriverUtils.convertToBase58((EdDSAPublicKey) acc.getPublicKey()));
+			System.out.print(KeyPairUtils.encodePublicKeyInBase58((EdDSAPublicKey) acc.getPublicKey()));
 			System.out.println(
-					Utils.bytesToHex(DriverUtils.convertToBase58((EdDSAPublicKey) acc.getPublicKey()).getBytes()));
+					Utils.bytesToHex(KeyPairUtils.encodePublicKeyInBase58((EdDSAPublicKey) acc.getPublicKey()).getBytes()));
 
 			System.out.println(Utils.bytesToHex(acc.getPublicKey().getEncoded()));
 			System.out.println(Utils.bytesToHex(acc.getPrivateKey().getEncoded()));

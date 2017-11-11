@@ -27,6 +27,7 @@ import com.authenteq.model.Transaction;
 import com.authenteq.model.GenericCallback;
 import com.authenteq.util.DriverUtils;
 import com.authenteq.util.JsonUtils;
+import com.authenteq.util.KeyPairUtils;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import net.i2p.crypto.eddsa.EdDSAEngine;
@@ -236,11 +237,11 @@ public class BigchainDbTransactionBuilder {
 		@Override
 		public ITransactionAttributes addOutput(String amount) {
 			Output output = new Output();
-			Ed25519Sha256Condition sha256Condition = new Ed25519Sha256Condition(publicKey);
+			Ed25519Sha256Condition sha256Condition = new Ed25519Sha256Condition(this.publicKey);
 			output.setAmount(amount);
-			output.addPublicKey(DriverUtils.convertToBase58(publicKey));
+			output.addPublicKey(KeyPairUtils.encodePublicKeyInBase58(this.publicKey));
 			Details details = new Details();
-			details.setPublicKey(DriverUtils.convertToBase58(publicKey));
+			details.setPublicKey(KeyPairUtils.encodePublicKeyInBase58(this.publicKey));
 			details.setType("ed25519-sha-256");
 			output.setCondition(new Condition(details, sha256Condition.getUri().toString()));
 			this.transaction.addOutput(output);
@@ -252,9 +253,9 @@ public class BigchainDbTransactionBuilder {
 			Output output = new Output();
 			Ed25519Sha256Condition sha256Condition = new Ed25519Sha256Condition(publicKey);
 			output.setAmount(amount);
-			output.addPublicKey(DriverUtils.convertToBase58(publicKey));
+			output.addPublicKey(KeyPairUtils.encodePublicKeyInBase58(publicKey));
 			Details details = new Details();
-			details.setPublicKey(DriverUtils.convertToBase58(publicKey));
+			details.setPublicKey(KeyPairUtils.encodePublicKeyInBase58(publicKey));
 			details.setType("ed25519-sha-256");
 			output.setCondition(new Condition(details, sha256Condition.getUri().toString()));
 			this.transaction.addOutput(output);
@@ -268,9 +269,9 @@ public class BigchainDbTransactionBuilder {
 				Output output = new Output();
 				Ed25519Sha256Condition sha256Condition = new Ed25519Sha256Condition(publicKey);
 				output.setAmount(amount);
-				output.addPublicKey(DriverUtils.convertToBase58(publicKey));
+				output.addPublicKey(KeyPairUtils.encodePublicKeyInBase58(publicKey));
 				Details details = new Details();
-				details.setPublicKey(DriverUtils.convertToBase58(publicKey));
+				details.setPublicKey(KeyPairUtils.encodePublicKeyInBase58(publicKey));
 				details.setType("ed25519-sha-256");
 				output.setCondition(new Condition(details, sha256Condition.getUri().toString()));
 				this.transaction.addOutput(output);
@@ -283,7 +284,7 @@ public class BigchainDbTransactionBuilder {
 			Input input = new Input();
 			input.setFullFillment(fullfillment);
 			input.setFulFills(fullFill);
-			input.addOwner(DriverUtils.convertToBase58(publicKey));
+			input.addOwner(KeyPairUtils.encodePublicKeyInBase58(publicKey));
 			this.transaction.addInput(input);
 			return this;
 		}
@@ -293,7 +294,7 @@ public class BigchainDbTransactionBuilder {
 			Input input = new Input();
 			input.setFullFillment(fullfillment);
 			input.setFulFills(fullFill);
-			input.addOwner(DriverUtils.convertToBase58(publicKey));
+			input.addOwner(KeyPairUtils.encodePublicKeyInBase58(publicKey));
 			this.transaction.addInput(input);
 			return this;
 		}
@@ -304,7 +305,7 @@ public class BigchainDbTransactionBuilder {
 				Input input = new Input();
 				input.setFullFillment(fullfillment);
 				input.setFulFills(fullFill);
-				input.addOwner(DriverUtils.convertToBase58(publicKey));
+				input.addOwner(KeyPairUtils.encodePublicKeyInBase58(publicKey));
 				this.transaction.addInput(input);
 			}
 			return this;
@@ -391,9 +392,9 @@ public class BigchainDbTransactionBuilder {
 			if (this.transaction.getOutputs().isEmpty()) {
 				Output output = new Output();
 				output.setAmount("1");
-				output.addPublicKey(DriverUtils.convertToBase58(publicKey));
+				output.addPublicKey(KeyPairUtils.encodePublicKeyInBase58(publicKey));
 				Details details = new Details();
-				details.setPublicKey(DriverUtils.convertToBase58(publicKey));
+				details.setPublicKey(KeyPairUtils.encodePublicKeyInBase58(publicKey));
 				details.setType("ed25519-sha-256");
 				output.setCondition(new Condition(details, sha256Condition.getUri().toString()));
 				this.transaction.addOutput(output);
@@ -403,7 +404,7 @@ public class BigchainDbTransactionBuilder {
 				Input input = new Input();
 				input.setFullFillment(null);
 				input.setFulFills(null);
-				input.addOwner(DriverUtils.convertToBase58(publicKey));
+				input.addOwner(KeyPairUtils.encodePublicKeyInBase58(publicKey));
 				this.transaction.addInput(input);
 			}
 

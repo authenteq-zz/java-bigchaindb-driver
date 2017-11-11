@@ -21,6 +21,7 @@ package com.authenteq.model;
 
 import com.authenteq.util.Base58;
 import com.authenteq.util.DriverUtils;
+import com.authenteq.util.KeyPairUtils;
 import net.i2p.crypto.eddsa.EdDSAEngine;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
@@ -125,14 +126,14 @@ public class TransactionModel {
 
 			outputs.put("amount", "1");
 			JSONArray publicKeys = new JSONArray();
-			publicKeys.put(DriverUtils.convertToBase58(publicKey));
+			publicKeys.put(KeyPairUtils.encodePublicKeyInBase58(publicKey));
 			outputs.put("public_keys", publicKeys);
 			outputsArr.put(outputs);
 			rootObject.put("outputs", outputsArr);
 
 			condition.put("uri", condition1.getUri().toString());
 
-			details.put("public_key", DriverUtils.convertToBase58(publicKey));
+			details.put("public_key", KeyPairUtils.encodePublicKeyInBase58(publicKey));
 			details.put("type", "ed25519-sha-256");
 			condition.put("details", details);
 			outputs.put("condition", condition);
@@ -140,7 +141,7 @@ public class TransactionModel {
 			inputs.put("fulfillment", JSONObject.NULL);
 			inputs.put("fulfills", JSONObject.NULL);
 			JSONArray ownersBefore = new JSONArray();
-			ownersBefore.put(DriverUtils.convertToBase58(publicKey));
+			ownersBefore.put(KeyPairUtils.encodePublicKeyInBase58(publicKey));
 			inputs.put("owners_before", ownersBefore);
 			inputsArr.put(inputs);
 			rootObject.put("inputs", inputsArr);

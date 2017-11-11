@@ -130,14 +130,4 @@ public class DriverUtils {
         JSONObject json = makeSelfSorting(new JSONObject());
         return json;
     }
-
-    /**
-     * Convert to base 58.
-     *
-     * @param publicKey the public key
-     * @return the string
-     */
-    public static String convertToBase58(EdDSAPublicKey publicKey) {
-        return Base58.encode(Arrays.copyOfRange(publicKey.getEncoded(), 12, 44));
-    }
 }
