@@ -1,7 +1,7 @@
 package com.authenteq.api;
 
 import com.authenteq.constants.BigchainDbApi;
-import com.authenteq.model.Globals;
+import com.authenteq.model.BigChainDBGlobals;
 import com.authenteq.model.Votes;
 import com.authenteq.util.JsonUtils;
 import com.authenteq.util.NetworkUtils;
@@ -24,7 +24,7 @@ public class VotesApi {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static Votes getVotes(String blockId) throws IOException {
-		Response response = NetworkUtils.sendGetRequest(Globals.getBaseUrl() + BigchainDbApi.VOTES + "?block_id=" + blockId);
+		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.VOTES + "?block_id=" + blockId);
 		return JsonUtils.fromJson(response.body().string(), Votes.class);
 	}
 

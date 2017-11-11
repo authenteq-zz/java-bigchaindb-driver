@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import com.authenteq.constants.BigchainDbApi;
 import com.authenteq.model.ApiEndpoints;
-import com.authenteq.model.Globals;
+import com.authenteq.model.BigChainDBGlobals;
 import com.authenteq.util.JsonUtils;
 import com.authenteq.util.NetworkUtils;
 import com.authenteq.ws.BigchainDbWSSessionManager;
@@ -126,16 +126,16 @@ public class BigchainDbConfigBuilder {
 		 */
 		@Override
 		public void setup() {
-			Globals.setAuthorizationTokens(tokens);
-			Globals.setBaseUrl(this.baserUrl + "/api" + BigchainDbApi.API_VERSION);
-			Globals.setWsSocketUrl(this.baserUrl + "/api" + BigchainDbApi.API_VERSION + BigchainDbApi.STREAMS);
+			BigChainDBGlobals.setAuthorizationTokens(tokens);
+			BigChainDBGlobals.setBaseUrl(this.baserUrl + "/api" + BigchainDbApi.API_VERSION);
+			BigChainDBGlobals.setWsSocketUrl(this.baserUrl + "/api" + BigchainDbApi.API_VERSION + BigchainDbApi.STREAMS);
 
 			if (this.httpClient == null) {
-				Globals.setHttpClient(buildDefaultHttpClient());
+				BigChainDBGlobals.setHttpClient(buildDefaultHttpClient());
 			}
 
 			try {
-				Globals.setApiEndpoints(JsonUtils.fromJson(
+				BigChainDBGlobals.setApiEndpoints(JsonUtils.fromJson(
 						NetworkUtils.sendGetRequest(this.baserUrl + "/api" + BigchainDbApi.API_VERSION).body().string(),
 						ApiEndpoints.class));
 			} catch (IOException e) {
@@ -149,7 +149,7 @@ public class BigchainDbConfigBuilder {
 					@Override
 					public void run() {
 						try {
-							new BigchainDbWSSessionManager(new URI(Globals.getApiEndpoints().getStreams()),
+							new BigchainDbWSSessionManager(new URI(BigChainDBGlobals.getApiEndpoints().getStreams()),
 									messageHandler);
 						} catch (URISyntaxException e) {
 							e.printStackTrace();

@@ -3,7 +3,7 @@ package com.authenteq.api;
 import com.authenteq.constants.BigchainDbApi;
 import com.authenteq.constants.BlockStatus;
 import com.authenteq.model.Block;
-import com.authenteq.model.Globals;
+import com.authenteq.model.BigChainDBGlobals;
 import com.authenteq.util.JsonUtils;
 import com.authenteq.util.NetworkUtils;
 import com.google.gson.reflect.TypeToken;
@@ -27,7 +27,7 @@ public class BlocksApi {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static Block getBlock(String blockId) throws IOException { 
-		Response response = NetworkUtils.sendGetRequest(Globals.getBaseUrl() + BigchainDbApi.BLOCKS + "/"+ blockId);
+		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.BLOCKS + "/"+ blockId);
 		return JsonUtils.fromJson(response.body().string(), Block.class);
 	}
 	
@@ -40,7 +40,7 @@ public class BlocksApi {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static List<String> getBlocks(String transactionId, BlockStatus status) throws IOException { 
-		Response response = NetworkUtils.sendGetRequest(Globals.getBaseUrl() + BigchainDbApi.BLOCKS + "?transaction_id="+transactionId+"&status="+status);
+		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.BLOCKS + "?transaction_id="+transactionId+"&status="+status);
 		return JsonUtils.getGson().fromJson(response.body().string(), new TypeToken<List<String>>(){}.getType());
 	}
 	

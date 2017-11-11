@@ -1,7 +1,7 @@
 package com.authenteq.api;
 
 import com.authenteq.constants.BigchainDbApi;
-import com.authenteq.model.Globals;
+import com.authenteq.model.BigChainDBGlobals;
 import com.authenteq.model.Outputs;
 import com.authenteq.util.JsonUtils;
 import com.authenteq.util.NetworkUtils;
@@ -24,7 +24,7 @@ public class OutputsApi {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static Outputs getOutputs(String publicKey) throws IOException { 
-		Response response = NetworkUtils.sendGetRequest(Globals.getBaseUrl() + BigchainDbApi.OUTPUTS + "?public_key="+ publicKey);
+		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.OUTPUTS + "?public_key="+ publicKey);
 		return JsonUtils.fromJson(response.body().string(), Outputs.class);
 	}
 	
@@ -36,7 +36,7 @@ public class OutputsApi {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static Outputs getSpentOutputs(String publicKey) throws IOException { 
-		Response response = NetworkUtils.sendGetRequest(Globals.getBaseUrl() + BigchainDbApi.OUTPUTS + "?public_key="+ publicKey+ "&spent=true");
+		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.OUTPUTS + "?public_key="+ publicKey+ "&spent=true");
 		return JsonUtils.fromJson(response.body().string(), Outputs.class);
 	}
 	

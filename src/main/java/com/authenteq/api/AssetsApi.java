@@ -2,7 +2,7 @@ package com.authenteq.api;
 
 import com.authenteq.constants.BigchainDbApi;
 import com.authenteq.model.Assets;
-import com.authenteq.model.Globals;
+import com.authenteq.model.BigChainDBGlobals;
 import com.authenteq.util.JsonUtils;
 import com.authenteq.util.NetworkUtils;
 import okhttp3.Response;
@@ -21,7 +21,7 @@ public class AssetsApi {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static Assets getAssets(String searchKey) throws IOException { 
-		Response response = NetworkUtils.sendGetRequest(Globals.getBaseUrl() + BigchainDbApi.ASSETS + "?search="+ searchKey);
+		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.ASSETS + "?search="+ searchKey);
 		return JsonUtils.fromJson(response.body().string(), Assets.class);
 	}
 	
@@ -34,7 +34,7 @@ public class AssetsApi {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static Assets getAssetsWithLimit(String searchKey, String limit) throws IOException { 
-		Response response = NetworkUtils.sendGetRequest(Globals.getBaseUrl() + BigchainDbApi.ASSETS + "?search="+ searchKey+ "&limit=" + limit);
+		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.ASSETS + "?search="+ searchKey+ "&limit=" + limit);
 		return JsonUtils.fromJson(response.body().string(), Assets.class);
 	}
 	

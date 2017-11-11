@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * The Class Globals.
  */
-public class Globals {
+public class BigChainDBGlobals {
 	
 	/** The api endpoints. */
 	private static ApiEndpoints apiEndpoints;
@@ -29,7 +29,7 @@ public class Globals {
 	 * @param apiEndpoints the new api endpoints
 	 */
 	public static void setApiEndpoints(ApiEndpoints apiEndpoints) {
-		Globals.apiEndpoints = apiEndpoints;
+		BigChainDBGlobals.apiEndpoints = apiEndpoints;
 	}
 
 	/** The authorization tokens. */
@@ -59,7 +59,7 @@ public class Globals {
 	 * @param wsSocketUrl the new ws socket url
 	 */
 	public static void setWsSocketUrl(String wsSocketUrl) {
-		Globals.wsSocketUrl = wsSocketUrl;
+		BigChainDBGlobals.wsSocketUrl = wsSocketUrl;
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class Globals {
 	 * @param authorizationTokens the authorization tokens
 	 */
 	public static void setAuthorizationTokens(Map<String, String> authorizationTokens) {
-		Globals.authorizationTokens = authorizationTokens;
+		BigChainDBGlobals.authorizationTokens = authorizationTokens;
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class Globals {
 	 * @param baseUrl the new base url
 	 */
 	public static void setBaseUrl(String baseUrl) {
-		Globals.baseUrl = baseUrl;
+		BigChainDBGlobals.baseUrl = baseUrl;
 	}
 
 	/**
@@ -113,7 +113,7 @@ public class Globals {
 	 * @param httpClient the new http client
 	 */
 	public static void setHttpClient(OkHttpClient httpClient) {
-		Globals.httpClient = httpClient;
+		BigChainDBGlobals.httpClient = httpClient;
 	}
 
 }

@@ -1,7 +1,7 @@
 package com.authenteq.api;
 
 import com.authenteq.constants.BigchainDbApi;
-import com.authenteq.model.Globals;
+import com.authenteq.model.BigChainDBGlobals;
 import com.authenteq.model.Status;
 import com.authenteq.util.JsonUtils;
 import com.authenteq.util.NetworkUtils;
@@ -24,7 +24,7 @@ public class StatusesApi {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static Status getTransactionStatus(String transactionId) throws IOException { 
-		Response response = NetworkUtils.sendGetRequest(Globals.getBaseUrl() + BigchainDbApi.STATUSES + "?transaction_id="+ transactionId);
+		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.STATUSES + "?transaction_id="+ transactionId);
 		return JsonUtils.fromJson(response.body().string(), Status.class);
 	}
 	
@@ -36,7 +36,7 @@ public class StatusesApi {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static Status getBlockStatus(String blockId) throws IOException { 
-		Response response = NetworkUtils.sendGetRequest(Globals.getBaseUrl() + BigchainDbApi.STATUSES + "?block_id="+ blockId);
+		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.STATUSES + "?block_id="+ blockId);
 		return JsonUtils.fromJson(response.body().string(), Status.class);
 	}
 }

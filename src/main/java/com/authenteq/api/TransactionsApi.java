@@ -3,7 +3,7 @@ package com.authenteq.api;
 import com.authenteq.constants.BigchainDbApi;
 import com.authenteq.constants.Operations;
 import com.authenteq.model.GenericCallback;
-import com.authenteq.model.Globals;
+import com.authenteq.model.BigChainDBGlobals;
 import com.authenteq.model.Transaction;
 import com.authenteq.model.Transactions;
 import com.authenteq.util.JsonUtils;
@@ -29,7 +29,7 @@ public class TransactionsApi extends AbstractApi {
 	 */
 	public static void sendTransaction(Transaction transaction, final GenericCallback callback) {
 		RequestBody body = RequestBody.create(JSON, transaction.toString());
-		NetworkUtils.sendPostRequest(Globals.getBaseUrl() + BigchainDbApi.TRANSACTIONS, body, callback);
+		NetworkUtils.sendPostRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.TRANSACTIONS, body, callback);
 	}
 
 	/**
@@ -42,7 +42,7 @@ public class TransactionsApi extends AbstractApi {
 	 */
 	public static void sendTransaction(Transaction transaction) throws IOException {
 		RequestBody body = RequestBody.create(JSON, JsonUtils.toJson(transaction));
-		Response response = NetworkUtils.sendPostRequest(Globals.getBaseUrl() + BigchainDbApi.TRANSACTIONS, body);
+		Response response = NetworkUtils.sendPostRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.TRANSACTIONS, body);
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class TransactionsApi extends AbstractApi {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static Transaction getTransactionById(String id) throws IOException {
-		Response response = NetworkUtils.sendGetRequest(Globals.getBaseUrl() + BigchainDbApi.TRANSACTIONS + "/" + id);
+		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.TRANSACTIONS + "/" + id);
 		return JsonUtils.fromJson(response.body().string(), Transaction.class);
 	}
 
@@ -76,7 +76,7 @@ public class TransactionsApi extends AbstractApi {
 			throws JSONException, IOException {
 
 		Response response = NetworkUtils.sendGetRequest(
-				Globals.getBaseUrl() + BigchainDbApi.TRANSACTIONS + "?asset_id=" + assetId + "&operation=" + operation);
+				BigChainDBGlobals.getBaseUrl() + BigchainDbApi.TRANSACTIONS + "?asset_id=" + assetId + "&operation=" + operation);
 		return JsonUtils.fromJson(response.body().string(), Transactions.class);
 
 	}

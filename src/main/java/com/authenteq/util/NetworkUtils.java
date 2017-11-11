@@ -1,7 +1,7 @@
 package com.authenteq.util;
 
 import com.authenteq.model.GenericCallback;
-import com.authenteq.model.Globals;
+import com.authenteq.model.BigChainDBGlobals;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class NetworkUtils {
 		
 		Request request = new Request.Builder().url(url).post(body).build();
 
-		Globals.getHttpClient().newCall(request).enqueue(new Callback() {
+		BigChainDBGlobals.getHttpClient().newCall(request).enqueue(new Callback() {
 			@Override
 			public void onFailure(Call call, IOException e) {
 				e.printStackTrace();
@@ -64,7 +64,7 @@ public class NetworkUtils {
 	 */
 	public static Response sendPostRequest(String url, RequestBody body) throws IOException {
 		Request request = new Request.Builder().url(url).post(body).build();
-		return Globals.getHttpClient().newCall(request).execute();
+		return BigChainDBGlobals.getHttpClient().newCall(request).execute();
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class NetworkUtils {
 	 */
 	public static Response sendGetRequest(String url) throws IOException {
 		Request request = new Request.Builder().url(url).get().build();
-		return Globals.getHttpClient().newCall(request).execute();
+		return BigChainDBGlobals.getHttpClient().newCall(request).execute();
 
 	}
 
