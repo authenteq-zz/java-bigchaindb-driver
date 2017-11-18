@@ -8,7 +8,6 @@ import com.authenteq.model.Votes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-
 /**
  * Utility class for handling JSON serialization and deserialization.
  * 
@@ -39,6 +38,7 @@ public class JsonUtils {
 					.registerTypeAdapter(Assets.class, new AssetsDeserializer())
 					.registerTypeAdapter(Outputs.class, new OutputsDeserializer())
 					.registerTypeAdapter(Votes.class, new VoteDeserializer())
+					.registerTypeAdapterFactory(new GsonEmptyCheckTypeAdapterFactory())
 					.setExclusionStrategies(new CustomExclusionStrategy()).create();
 		}
 		return gson;

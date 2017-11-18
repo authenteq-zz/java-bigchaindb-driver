@@ -19,7 +19,10 @@
 
 package com.authenteq;
 
+import com.authenteq.builders.BigchainDbTransactionBuilder;
+import com.authenteq.model.Transaction;
 import com.authenteq.model.TransactionModel;
+import com.authenteq.util.JsonUtils;
 import com.authenteq.util.KeyPairUtils;
 import net.i2p.crypto.eddsa.EdDSAEngine;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
@@ -35,13 +38,14 @@ import org.interledger.cryptoconditions.types.Ed25519Sha256Condition;
 import org.interledger.cryptoconditions.types.Ed25519Sha256Fulfillment;
 import org.json.JSONObject;
 import org.junit.Test;
+import sun.security.util.KeyUtil;
 
 import java.security.*;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
-
+import static org.junit.Assert.assertNull;
 
 /**
  * The Class BigchaindbTransactionTest.
@@ -195,6 +199,22 @@ public class BigchaindbTransactionTest {
         assertEquals(SHOULD_BE_PUBLIC_KEY, publicEncoded);
         assertTrue(transactionSigned.isSigned());
         assertFalse(transactionUnsigned.isSigned());
+    }
+
+    /**
+     * Test empty meta-data in transaction is null
+     */
+    @Test
+    public void transactionMetaDataIsNull() {
+        KeyPair alice = KeyPairUtils.generateNewKeyPair();
+        
+        Transaction transaction = BigchainDbTransactionBuilder.init()
+                                      .addAsset( "owner", "alice" )
+                                      .buildAndSignOnly( (EdDSAPublicKey) alice.getPublic(), (EdDSAPrivateKey) alice.getPrivate() );
+
+        assertTrue( transaction.toString().contains( "\"metadata\": null" ) );
+        Transaction tx = JsonUtils.fromJson( transaction.toString(), Transaction.class );
+        assertNull( tx.getMetaData() );
     }
 
     /**
