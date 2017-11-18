@@ -30,7 +30,7 @@ public class Transaction implements Serializable {
 
 	/** The meta data. */
 	@SerializedName("metadata")
-	private Map<String, String> metaData = new TreeMap<String, String>();
+	private Map<String, String> metaData = null;
 
 	/** The operation. */
 	@SerializedName("operation")
@@ -218,6 +218,8 @@ public class Transaction implements Serializable {
 	 * @return the transaction
 	 */
 	public Transaction addMetaData(String key, String value) {
+		if( this.metaData == null )
+			this.metaData = new TreeMap<String, String>();
 		this.metaData.put(key, value);
 		return this;
 	}
