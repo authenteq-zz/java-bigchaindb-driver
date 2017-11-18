@@ -40,7 +40,7 @@ public class NetworkUtils {
 			}
 
 			@Override
-			public void onResponse(Call call, Response response) throws IOException {
+			public void onResponse(Call call, Response response) {
 				if (response.code() == 202) {
 					callback.pushedSuccessfully(response);
 				} else if (response.code() == 400) {
@@ -48,6 +48,7 @@ public class NetworkUtils {
 				} else {
 					callback.otherError(response);
 				}
+				response.close();
 			}
 		});
 	}

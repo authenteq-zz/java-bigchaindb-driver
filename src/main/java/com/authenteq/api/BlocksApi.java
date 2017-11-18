@@ -26,7 +26,9 @@ public class BlocksApi {
 	 */
 	public static Block getBlock(String blockId) throws IOException { 
 		Response response = NetworkUtils.sendGetRequest(Globals.getBaseUrl() + BigchainDbApi.BLOCKS + "/"+ blockId);
-		return JsonUtils.fromJson(response.body().string(), Block.class);
+		String body = response.body().string();
+		response.close();
+		return JsonUtils.fromJson(body, Block.class);
 	}
 	
 	/**
@@ -39,7 +41,9 @@ public class BlocksApi {
 	 */
 	public static List<String> getBlocks(String transactionId, String status) throws IOException { 
 		Response response = NetworkUtils.sendGetRequest(Globals.getBaseUrl() + BigchainDbApi.BLOCKS + "?transaction_id="+transactionId+"&status="+status);
-		return JsonUtils.gson().fromJson(response.body().string(), new TypeToken<List<String>>(){}.getType());
+		String body = response.body().string();
+		response.close();
+		return JsonUtils.gson().fromJson(body, new TypeToken<List<String>>(){}.getType());
 	}
 	
 }

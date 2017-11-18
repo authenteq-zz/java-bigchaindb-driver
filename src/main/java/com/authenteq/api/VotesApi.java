@@ -24,7 +24,9 @@ public class VotesApi {
 	 */
 	public static Votes getVotes(String blockId) throws IOException {
 		Response response = NetworkUtils.sendGetRequest(Globals.getBaseUrl() + BigchainDbApi.VOTES + "?block_id=" + blockId);
-		return JsonUtils.fromJson(response.body().string(), Votes.class);
+		String body = response.body().string();
+		response.close();
+		return JsonUtils.fromJson(body, Votes.class);
 	}
 
 }

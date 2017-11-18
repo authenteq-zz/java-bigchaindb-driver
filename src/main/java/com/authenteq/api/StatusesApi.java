@@ -24,7 +24,9 @@ public class StatusesApi {
 	 */
 	public static Status getTransactionStatus(String transactionId) throws IOException { 
 		Response response = NetworkUtils.sendGetRequest(Globals.getBaseUrl() + BigchainDbApi.STATUSES + "?transaction_id="+ transactionId);
-		return JsonUtils.fromJson(response.body().string(), Status.class);
+		String body = response.body().string();
+		response.close();
+		return JsonUtils.fromJson(body, Status.class);
 	}
 	
 	/**
@@ -36,6 +38,8 @@ public class StatusesApi {
 	 */
 	public static Status getBlockStatus(String blockId) throws IOException { 
 		Response response = NetworkUtils.sendGetRequest(Globals.getBaseUrl() + BigchainDbApi.STATUSES + "?block_id="+ blockId);
-		return JsonUtils.fromJson(response.body().string(), Status.class);
+		String body = response.body().string();
+		response.close();
+		return JsonUtils.fromJson(body, Status.class);
 	}
 }
