@@ -220,8 +220,7 @@ public class BigchainDbTransactionBuilder {
 	public static class Builder implements ITransactionAttributes, IBuild {
 
 		/** The metadata. */
-		private Map<String, String> metadata = new TreeMap<String, String>();
-
+		private Map<String, String> metadata = null;
 		/** The assets. */
 		private Map<String, String> assets = new TreeMap<String, String>();
 
@@ -333,6 +332,8 @@ public class BigchainDbTransactionBuilder {
 		 */
 		@Override
 		public ITransactionAttributes addMetaData(String key, String value) {
+			if (this.metadata == null)
+				this.metadata = new TreeMap<String, String>();
 			this.metadata.put(key, value);
 			return this;
 		}
@@ -359,6 +360,8 @@ public class BigchainDbTransactionBuilder {
 		 */
 		@Override
 		public ITransactionAttributes addMetaData(Map<String, String> metadata) {
+			if( this.metadata == null )
+				this.metadata = new TreeMap<String, String>();
 			this.metadata.putAll(metadata);
 			return this;
 		}
@@ -554,6 +557,8 @@ public class BigchainDbTransactionBuilder {
 			Type mapType = new TypeToken<Map<String, String>>() {
 			}.getType();
 			Map<String, String> son = JsonUtils.getGson().fromJson(JsonUtils.toJson(obj), mapType);
+			if (this.metadata == null)
+				this.metadata = new TreeMap<String, String>();
 			this.metadata.putAll(son);
 			return this;
 		}

@@ -56,7 +56,9 @@ public class TransactionsApi extends AbstractApi {
 	 */
 	public static Transaction getTransactionById(String id) throws IOException {
 		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.TRANSACTIONS + "/" + id);
-		return JsonUtils.fromJson(response.body().string(), Transaction.class);
+		String body = response.body().string();
+		response.close();
+		return JsonUtils.fromJson(body, Transaction.class);
 	}
 
 	/**
@@ -77,7 +79,9 @@ public class TransactionsApi extends AbstractApi {
 
 		Response response = NetworkUtils.sendGetRequest(
 				BigChainDBGlobals.getBaseUrl() + BigchainDbApi.TRANSACTIONS + "?asset_id=" + assetId + "&operation=" + operation);
-		return JsonUtils.fromJson(response.body().string(), Transactions.class);
+		String body = response.body().string();
+		response.close();
+		return JsonUtils.fromJson(body, Transactions.class);
 
 	}
 

@@ -1,5 +1,6 @@
 package com.authenteq.util;
 
+import com.authenteq.json.factory.GsonEmptyCheckTypeAdapterFactory;
 import com.authenteq.json.strategy.*;
 import com.authenteq.model.Assets;
 import com.authenteq.model.Outputs;
@@ -7,8 +8,6 @@ import com.authenteq.model.Transactions;
 import com.authenteq.model.Votes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-
 
 /**
  * Utility class for handling JSON serialization and deserialization.
@@ -35,11 +34,11 @@ public class JsonUtils {
 			GsonBuilder builder = new GsonBuilder();
 			
 			gson = builder.setPrettyPrinting().serializeNulls().disableHtmlEscaping().setPrettyPrinting()
-					//.registerTypeAdapter(Transaction.class, new TransactionDeserializer())
 					.registerTypeAdapter(Transactions.class, new TransactionsDeserializer())
 					.registerTypeAdapter(Assets.class, new AssetsDeserializer())
 					.registerTypeAdapter(Outputs.class, new OutputsDeserializer())
 					.registerTypeAdapter(Votes.class, new VoteDeserializer())
+					.registerTypeAdapterFactory(new GsonEmptyCheckTypeAdapterFactory())
 					.setExclusionStrategies(new CustomExclusionStrategy()).create();
 		}
 		return gson;

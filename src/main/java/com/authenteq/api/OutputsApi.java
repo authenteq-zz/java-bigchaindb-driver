@@ -25,7 +25,9 @@ public class OutputsApi {
 	 */
 	public static Outputs getOutputs(String publicKey) throws IOException { 
 		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.OUTPUTS + "?public_key="+ publicKey);
-		return JsonUtils.fromJson(response.body().string(), Outputs.class);
+		String body = response.body().string();
+		response.close();
+		return JsonUtils.fromJson(body, Outputs.class);
 	}
 	
 	/**
@@ -37,7 +39,9 @@ public class OutputsApi {
 	 */
 	public static Outputs getSpentOutputs(String publicKey) throws IOException { 
 		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.OUTPUTS + "?public_key="+ publicKey+ "&spent=true");
-		return JsonUtils.fromJson(response.body().string(), Outputs.class);
+		String body = response.body().string();
+		response.close();
+		return JsonUtils.fromJson(body, Outputs.class);
 	}
 	
 }

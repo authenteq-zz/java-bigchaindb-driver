@@ -67,42 +67,4 @@ public class AccountApi {
 		return newAccount;
 	}
 
-	/**
-	 * The main method.
-	 *
-	 * @param args
-	 *            the arguments
-	 * @throws InterruptedException
-	 *             the interrupted exception
-	 * @throws DecoderException
-	 *             the decoder exception
-	 * @throws EncoderException
-	 *             the encoder exception
-	 * @throws UnsupportedEncodingException
-	 *             the unsupported encoding exception
-	 */
-	public static void main(String args[])
-			throws InterruptedException, DecoderException, EncoderException, UnsupportedEncodingException {
-		try {
-			Hex hex = new Hex();
-
-			Account acc = AccountApi.createAccount();
-			System.out.print(KeyPairUtils.encodePublicKeyInBase58((EdDSAPublicKey) acc.getPublicKey()));
-			System.out.println(
-					Utils.bytesToHex(KeyPairUtils.encodePublicKeyInBase58((EdDSAPublicKey) acc.getPublicKey()).getBytes()));
-
-			System.out.println(Utils.bytesToHex(acc.getPublicKey().getEncoded()));
-			System.out.println(Utils.bytesToHex(acc.getPrivateKey().getEncoded()));
-
-			Account acc1 = AccountApi.loadAccount(Utils.bytesToHex(acc.getPublicKey().getEncoded()),
-					Utils.bytesToHex(acc.getPrivateKey().getEncoded()));
-
-			System.out.println(Utils.bytesToHex(acc1.getPublicKey().getEncoded()));
-			System.out.println(Utils.bytesToHex(acc1.getPrivateKey().getEncoded()));
-
-		} catch (InvalidKeySpecException e) {
-			e.printStackTrace();
-		}
-	}
-
 }
