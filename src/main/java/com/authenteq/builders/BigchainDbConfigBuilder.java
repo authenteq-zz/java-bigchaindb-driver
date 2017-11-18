@@ -6,6 +6,9 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
+
+import com.authenteq.api.AccountApi;
 import com.authenteq.constants.BigchainDbApi;
 import com.authenteq.model.ApiEndpoints;
 import com.authenteq.model.BigChainDBGlobals;
@@ -22,7 +25,9 @@ import okhttp3.Response;
  * The Class BigchainDbConfigBuilder.
  */
 public class BigchainDbConfigBuilder {
-
+	
+	private static final Logger LOGGER = Logger.getLogger(AccountApi.class.getName());
+	
 	/**
 	 * Instantiates a new bigchain db config builder.
 	 */
@@ -126,10 +131,11 @@ public class BigchainDbConfigBuilder {
 		 */
 		@Override
 		public void setup() {
+			LOGGER.info(this.baserUrl);
 			BigChainDBGlobals.setAuthorizationTokens(tokens);
 			BigChainDBGlobals.setBaseUrl(this.baserUrl + "/api" + BigchainDbApi.API_VERSION);
 			BigChainDBGlobals.setWsSocketUrl(this.baserUrl + "/api" + BigchainDbApi.API_VERSION + BigchainDbApi.STREAMS);
-
+			
 			if (this.httpClient == null) {
 				BigChainDBGlobals.setHttpClient(buildDefaultHttpClient());
 			}

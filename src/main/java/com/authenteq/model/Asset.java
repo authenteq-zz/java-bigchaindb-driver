@@ -14,6 +14,11 @@ import java.util.TreeMap;
  */
 public class Asset implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 163400160721472722L;
+
 	/** The id. */
 	@SerializedName("id")
 	@Exclude

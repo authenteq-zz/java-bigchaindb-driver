@@ -1,16 +1,5 @@
 package com.authenteq.model;
 
-
-//
-//{
-//	  "assets": "/assets/", 
-//	  "docs": "https://docs.bigchaindb.com/projects/server/en/v1.1.0/http-client-server-api.html", 
-//	  "outputs": "/outputs/", 
-//	  "statuses": "/statuses/", 
-//	  "streams": "wss://test.ipdb.io:443/api/v1/streams/valid_transactions", 
-//	  "transactions": "/transactions/"
-//	}
-
 /**
  * The Class ApiEndpoints.
  */

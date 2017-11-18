@@ -13,12 +13,15 @@ import okhttp3.Response;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 /**
  * The Class TransactionsApi.
  */
 public class TransactionsApi extends AbstractApi {
 
+	private static final Logger LOGGER = Logger.getLogger(TransactionsApi.class.getName());
+	
 	/**
 	 * Send transaction.
 	 *
@@ -28,6 +31,7 @@ public class TransactionsApi extends AbstractApi {
 	 *            the callback
 	 */
 	public static void sendTransaction(Transaction transaction, final GenericCallback callback) {
+		LOGGER.info("sendTransaction Call :" + transaction);
 		RequestBody body = RequestBody.create(JSON, transaction.toString());
 		NetworkUtils.sendPostRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.TRANSACTIONS, body, callback);
 	}
@@ -41,6 +45,7 @@ public class TransactionsApi extends AbstractApi {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void sendTransaction(Transaction transaction) throws IOException {
+		LOGGER.info("sendTransaction Call :" + transaction);
 		RequestBody body = RequestBody.create(JSON, JsonUtils.toJson(transaction));
 		Response response = NetworkUtils.sendPostRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.TRANSACTIONS, body);
 	}
@@ -55,6 +60,7 @@ public class TransactionsApi extends AbstractApi {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static Transaction getTransactionById(String id) throws IOException {
+		LOGGER.info("getTransactionById Call :" + id);
 		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.TRANSACTIONS + "/" + id);
 		String body = response.body().string();
 		response.close();
@@ -76,7 +82,7 @@ public class TransactionsApi extends AbstractApi {
 	 */
 	public static Transactions getTransactionsByAssetId(String assetId, Operations operation)
 			throws JSONException, IOException {
-
+		LOGGER.info("getTransactionsByAssetId Call :" + assetId + " operation " + operation);
 		Response response = NetworkUtils.sendGetRequest(
 				BigChainDBGlobals.getBaseUrl() + BigchainDbApi.TRANSACTIONS + "?asset_id=" + assetId + "&operation=" + operation);
 		String body = response.body().string();

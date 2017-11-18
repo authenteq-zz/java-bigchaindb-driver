@@ -8,6 +8,7 @@ import com.authenteq.util.NetworkUtils;
 import okhttp3.Response;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 
 
@@ -15,6 +16,8 @@ import java.io.IOException;
  * The Class StatusesApi.
  */
 public class StatusesApi {
+	
+	private static final Logger LOGGER = Logger.getLogger(StatusesApi.class.getName());
 	
 	/**
 	 * Gets the transaction status.
@@ -24,6 +27,7 @@ public class StatusesApi {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static Status getTransactionStatus(String transactionId) throws IOException { 
+		LOGGER.info("getTransactionStatus Call :" + transactionId);
 		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.STATUSES + "?transaction_id="+ transactionId);
 		String body = response.body().string();
 		response.close();
@@ -37,7 +41,8 @@ public class StatusesApi {
 	 * @return the block status
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static Status getBlockStatus(String blockId) throws IOException { 
+	public static Status getBlockStatus(String blockId) throws IOException {
+		LOGGER.info("getBlockStatus Call :" + blockId);
 		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.STATUSES + "?block_id="+ blockId);
 		String body = response.body().string();
 		response.close();

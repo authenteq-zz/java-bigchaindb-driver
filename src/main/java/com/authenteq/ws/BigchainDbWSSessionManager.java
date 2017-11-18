@@ -1,6 +1,8 @@
 package com.authenteq.ws;
 
 import java.net.URI;
+import java.util.logging.Logger;
+
 import javax.websocket.ClientEndpoint;
 import javax.websocket.CloseReason;
 import javax.websocket.ContainerProvider;
@@ -17,6 +19,8 @@ import com.authenteq.util.ScannerUtil;
  */
 @ClientEndpoint
 public class BigchainDbWSSessionManager {
+	
+	private final static Logger LOGGER = Logger.getLogger(BigchainDbWSSessionManager.class.getName());
 
 	/** The user session. */
 	Session userSession = null;
@@ -51,7 +55,7 @@ public class BigchainDbWSSessionManager {
 	 */
 	@OnOpen
 	public void onOpen(Session userSession) {
-		System.out.println("opening websocket");
+		LOGGER.info("Opening Websocket");
 		this.userSession = userSession;
 	}
 
@@ -65,7 +69,7 @@ public class BigchainDbWSSessionManager {
 	 */
 	@OnClose
 	public void onClose(Session userSession, CloseReason reason) {
-		System.out.println("closing websocket");
+		LOGGER.info("Closing Websocket");
 		this.userSession = null;
 	}
 
@@ -78,7 +82,7 @@ public class BigchainDbWSSessionManager {
 	 */
 	@OnMessage
 	public void onMessage(String message) {
-		System.out.println(message);
+		LOGGER.info(message);
 		if (this.messageHandler != null) {
 			this.messageHandler.handleMessage(message);
 		}

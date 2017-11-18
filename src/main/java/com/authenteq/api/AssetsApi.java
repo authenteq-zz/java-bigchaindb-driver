@@ -7,12 +7,14 @@ import com.authenteq.util.JsonUtils;
 import com.authenteq.util.NetworkUtils;
 import okhttp3.Response;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 /**
  * The Class AssetsApi.
  */
 public class AssetsApi {
 	
+	private static final Logger LOGGER = Logger.getLogger(AssetsApi.class.getName());
 	/**
 	 * Gets the assets.
 	 *
@@ -20,7 +22,8 @@ public class AssetsApi {
 	 * @return the assets
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static Assets getAssets(String searchKey) throws IOException { 
+	public static Assets getAssets(String searchKey) throws IOException {
+		LOGGER.info("getAssets Call :" + searchKey);
 		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.ASSETS + "?search="+ searchKey);
 		String body = response.body().string();
 		response.close();
@@ -35,7 +38,8 @@ public class AssetsApi {
 	 * @return the assets with limit
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static Assets getAssetsWithLimit(String searchKey, String limit) throws IOException { 
+	public static Assets getAssetsWithLimit(String searchKey, String limit) throws IOException {
+		LOGGER.info("getAssets Call :" + searchKey + " limit " + limit);
 		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.ASSETS + "?search="+ searchKey+ "&limit=" + limit);
 		String body = response.body().string();
 		response.close();

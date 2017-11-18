@@ -11,6 +11,7 @@ import okhttp3.Response;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Logger;
 
 
 
@@ -19,6 +20,9 @@ import java.util.List;
  */
 public class BlocksApi {
 
+	
+	private static final Logger LOGGER = Logger.getLogger(BlocksApi.class.getName());
+	
 	/**
 	 * Gets the block.
 	 *
@@ -27,6 +31,7 @@ public class BlocksApi {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static Block getBlock(String blockId) throws IOException { 
+		LOGGER.info("getBlock Call :" + blockId);
 		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.BLOCKS + "/"+ blockId);
 		String body = response.body().string();
 		response.close();
@@ -41,7 +46,8 @@ public class BlocksApi {
 	 * @return the blocks
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static List<String> getBlocks(String transactionId, BlockStatus status) throws IOException { 
+	public static List<String> getBlocks(String transactionId, BlockStatus status) throws IOException {
+		LOGGER.info("getBlocks Call :" + transactionId + " status " + status);
 		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.BLOCKS + "?transaction_id="+transactionId+"&status="+status);
 		String body = response.body().string();
 		response.close();

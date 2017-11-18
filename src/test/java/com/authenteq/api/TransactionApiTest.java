@@ -145,34 +145,33 @@ public class TransactionApiTest {
 	@Test
 	public void testTransactionByAssetIdCreate() {
 		try {
+			net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
+			KeyPair keyPair = edDsaKpg.generateKeyPair();
+			
+			ObjectDummy dummyAsset = new ObjectDummy();
+			dummyAsset.setId("id");
+			dummyAsset.setDescription("asset");
+			System.out.println(dummyAsset.toMapString());
 
+			ObjectDummy dummyMeta = new ObjectDummy();
+			dummyMeta.setId("id");
+			dummyMeta.setDescription("meta");
+			
+			Transaction transaction = BigchainDbTransactionBuilder.init().addAssets(dummyAsset).addMetaData(dummyMeta)
+					.operation(Operations.CREATE)
+					.buildAndSign((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate())
+					.sendTransaction();
+			
 			System.out.println(TransactionsApi
-					.getTransactionsByAssetId("437ce30de5cf1c3ad199fa983aded47d0db43567befa92e3a36b38a5784e4d3a",
+					.getTransactionsByAssetId(transaction.getId(),
 							Operations.CREATE)
 					.getTransactions().size());
 
-			assertTrue(TransactionsApi
-					.getTransactionsByAssetId("437ce30de5cf1c3ad199fa983aded47d0db43567befa92e3a36b38a5784e4d3a",
+			TransactionsApi
+					.getTransactionsByAssetId(transaction.getId(),
 							Operations.CREATE)
-					.getTransactions().size() > 0);
+					.getTransactions();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Test transaction by asset id transfer.
-	 */
-	@Test
-	public void testTransactionByAssetIdTransfer() {
-		try {
-			assertTrue(TransactionsApi
-					.getTransactionsByAssetId("437ce30de5cf1c3ad199fa983aded47d0db43567befa92e3a36b38a5784e4d3a",
-							Operations.CREATE)
-					.getTransactions().size() > 0);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

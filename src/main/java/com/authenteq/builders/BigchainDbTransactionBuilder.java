@@ -410,10 +410,13 @@ public class BigchainDbTransactionBuilder {
 				input.addOwner(KeyPairUtils.encodePublicKeyInBase58(publicKey));
 				this.transaction.addInput(input);
 			}
+			
+			if(this.transaction.getOperation() == null) {
+				this.transaction.setOperation("CREATE");
+			}
 
 			this.transaction.setAsset(new Asset(this.assets));
 			this.transaction.setMetaData(this.metadata);
-			this.transaction.setOperation(this.operation.toString());
 			this.transaction.setVersion("1.0");
 
 			// Workaround to pop out the field.
