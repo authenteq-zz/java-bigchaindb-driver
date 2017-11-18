@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/BotMill/botmill-core.svg?branch=master)]
  [![java-bigchaindb-driver](media/repo-banner@2x.png)](https://www.bigchaindb.com)
 
 > Official Java driver for [BigchainDB](https://github.com/bigchaindb/bigchaindb) created by [Authenteq](https://authenteq.com).
