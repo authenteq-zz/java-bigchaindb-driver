@@ -1,6 +1,7 @@
 package com.authenteq.constants;
 
 
+
 /**
  * The Enum Operations.
  */

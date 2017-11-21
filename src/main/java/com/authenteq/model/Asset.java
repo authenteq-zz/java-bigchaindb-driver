@@ -8,11 +8,17 @@ import java.util.Map;
 import java.util.TreeMap;
 
 
+
 /**
  * The Class Asset.
  */
 public class Asset implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 163400160721472722L;
+
 	/** The id. */
 	@SerializedName("id")
 	@Exclude

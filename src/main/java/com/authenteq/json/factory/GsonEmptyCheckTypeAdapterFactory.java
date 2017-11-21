@@ -1,4 +1,4 @@
-package com.authenteq.util;
+package com.authenteq.json.factory;
 
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapterFactory;

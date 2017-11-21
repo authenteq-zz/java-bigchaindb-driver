@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/BotMill/botmill-core.svg?branch=master)]
  [![java-bigchaindb-driver](media/repo-banner@2x.png)](https://www.bigchaindb.com)
 
 > Official Java driver for [BigchainDB](https://github.com/bigchaindb/bigchaindb) created by [Authenteq](https://authenteq.com).
@@ -49,6 +50,7 @@ Transaction transaction = BigchainDbTransactionBuilder.init()
 	.addAsset("lastname", "Smith")
 	.addMetaData("what", "My first BigchainDB transaction")
 	.addMetaData("this", "My 1st metadata BigchainDB transaction")
+	.operation(Operations.CREATE)
 	.buildOnly((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate());
 
 ```
@@ -65,6 +67,7 @@ Transaction transaction = BigchainDbTransactionBuilder.init()
 	.addAsset("lastname", "Smith")
 	.addMetaData("what", "My second BigchainDB transaction")
 	.addMetaData("this", "My 2nd metadata BigchainDB transaction")
+	.operation(Operations.CREATE)
 	.buildAndSignOnly((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate());
 
 ```
@@ -84,6 +87,25 @@ Transaction transaction = BigchainDbTransactionBuilder.init()
 	.buildAndSign((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate())
 	.sendTransaction();
 
+```
+
+## Example: Setup Config with Websocket Listener
+```java
+public class MyCustomMonitor implements MessageHandler {
+	@Override
+	public void handleMessage(String message) {
+		ValidTransaction validTransaction = JsonUtils.fromJson(message, ValidTransaction.class);
+	}
+}
+
+// config
+BigchainDbConfigBuilder
+	.baseUrl("https://test.ipdb.io")
+	.addToken("app_id", "2bbaf3ff")
+	.addToken("app_key", "c929b708177dcc8b9d58180082029b8d")
+	.webSocketMonitor(new MyCustomMonitor())
+	.setup();
+	
 ```
 
 <h2>Api Wrappers</h2>

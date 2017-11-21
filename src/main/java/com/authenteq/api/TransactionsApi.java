@@ -3,7 +3,7 @@ package com.authenteq.api;
 import com.authenteq.constants.BigchainDbApi;
 import com.authenteq.constants.Operations;
 import com.authenteq.model.GenericCallback;
-import com.authenteq.model.Globals;
+import com.authenteq.model.BigChainDBGlobals;
 import com.authenteq.model.Transaction;
 import com.authenteq.model.Transactions;
 import com.authenteq.util.JsonUtils;
@@ -13,12 +13,15 @@ import okhttp3.Response;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 /**
  * The Class TransactionsApi.
  */
 public class TransactionsApi extends AbstractApi {
 
+	private static final Logger LOGGER = Logger.getLogger(TransactionsApi.class.getName());
+	
 	/**
 	 * Send transaction.
 	 *
@@ -28,23 +31,24 @@ public class TransactionsApi extends AbstractApi {
 	 *            the callback
 	 */
 	public static void sendTransaction(Transaction transaction, final GenericCallback callback) {
+		LOGGER.info("sendTransaction Call :" + transaction);
 		RequestBody body = RequestBody.create(JSON, transaction.toString());
-		NetworkUtils.sendPostRequest(Globals.getBaseUrl() + BigchainDbApi.TRANSACTIONS, body, callback);
+		NetworkUtils.sendPostRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.TRANSACTIONS, body, callback);
 	}
 
 	/**
-	 * Sends the transaction
+	 * Sends the transaction.
+	 *
 	 * @param transaction
+	 *            the transaction
 	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	public static void sendTransaction(Transaction transaction) throws IOException {
+		LOGGER.info("sendTransaction Call :" + transaction);
 		RequestBody body = RequestBody.create(JSON, JsonUtils.toJson(transaction));
-		Response response = NetworkUtils.sendPostRequest(Globals.getBaseUrl() + BigchainDbApi.TRANSACTIONS, body);
-		System.out.println(response.body().string());
-		System.out.println(response.message());
-		response.close();
+		Response response = NetworkUtils.sendPostRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.TRANSACTIONS, body);
 	}
-
 
 	/**
 	 * Gets the transaction by id.
@@ -56,7 +60,8 @@ public class TransactionsApi extends AbstractApi {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static Transaction getTransactionById(String id) throws IOException {
-		Response response = NetworkUtils.sendGetRequest(Globals.getBaseUrl() + BigchainDbApi.TRANSACTIONS + "/" + id);
+		LOGGER.info("getTransactionById Call :" + id);
+		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.TRANSACTIONS + "/" + id);
 		String body = response.body().string();
 		response.close();
 		return JsonUtils.fromJson(body, Transaction.class);
@@ -77,12 +82,13 @@ public class TransactionsApi extends AbstractApi {
 	 */
 	public static Transactions getTransactionsByAssetId(String assetId, Operations operation)
 			throws JSONException, IOException {
-
+		LOGGER.info("getTransactionsByAssetId Call :" + assetId + " operation " + operation);
 		Response response = NetworkUtils.sendGetRequest(
-				Globals.getBaseUrl() + BigchainDbApi.TRANSACTIONS + "?asset_id=" + assetId + "&operation=" + operation);
+				BigChainDBGlobals.getBaseUrl() + BigchainDbApi.TRANSACTIONS + "?asset_id=" + assetId + "&operation=" + operation);
 		String body = response.body().string();
 		response.close();
 		return JsonUtils.fromJson(body, Transactions.class);
 
 	}
+
 }
