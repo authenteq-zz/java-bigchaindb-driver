@@ -38,4 +38,14 @@ public class Assets {
 	public void addAsset(Asset asset) {
 		this.assets.add(asset);
 	}
+
+	/**
+	 * How many assets are there
+	 *
+	 * @return the number of assets
+	 */
+	public int size()
+	{
+		return assets != null ? assets.size() : 0;
+	}
 }

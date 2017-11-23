@@ -2,19 +2,17 @@ package com.authenteq.api;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.security.KeyPair;
-import java.util.Map;
 
-import org.junit.Before;
+import com.authenteq.AbstractTest;
+import com.authenteq.constants.Operations;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import com.authenteq.api.TransactionsApi;
 import com.authenteq.builders.BigchainDbConfigBuilder;
 import com.authenteq.builders.BigchainDbTransactionBuilder;
-import com.authenteq.constants.Operations;
 import com.authenteq.model.Transaction;
-import com.authenteq.util.JsonUtils;
-import com.authenteq.model.Asset;
 import com.authenteq.model.DataModel;
 import com.authenteq.model.GenericCallback;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
@@ -24,15 +22,19 @@ import okhttp3.Response;
 /**
  * The Class BigchaindbTransactionTest.
  */
-public class TransactionApiTest {
+public class TransactionApiTest extends AbstractTest
+{
 
 	/**
 	 * Inits the.
 	 */
-	@Before
-	public void init() {
-		BigchainDbConfigBuilder.baseUrl("https://test.ipdb.io").addToken("app_id", "2bbaf3ff")
-				.addToken("app_key", "c929b708177dcc8b9d58180082029b8d").setup();
+	@BeforeClass
+	public static void init() {
+		BigchainDbConfigBuilder
+			.baseUrl( get( "test.api.url", "https://test.ipdb.io" ) )
+			.addToken("app_id", "2bbaf3ff")
+			.addToken("app_key", "c929b708177dcc8b9d58180082029b8d")
+			.setup();
 	}
 
 
@@ -128,8 +130,8 @@ public class TransactionApiTest {
 		try {
 
 			System.out.println(TransactionsApi
-					.getTransactionsByAssetId("437ce30de5cf1c3ad199fa983aded47d0db43567befa92e3a36b38a5784e4d3a",
-							Operations.CREATE)
+					.getTransactionsByAssetId( "437ce30de5cf1c3ad199fa983aded47d0db43567befa92e3a36b38a5784e4d3a",
+					                           Operations.CREATE )
 					.getTransactions().size());
 
 			assertTrue(TransactionsApi
