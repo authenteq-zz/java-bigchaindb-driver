@@ -22,6 +22,7 @@ package com.authenteq.model;
 import okhttp3.Response;
 
 
+
 /**
  * The Interface TransactionCallback.
  */

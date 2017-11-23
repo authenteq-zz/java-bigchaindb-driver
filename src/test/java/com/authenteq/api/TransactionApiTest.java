@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.security.KeyPair;
+import java.security.spec.InvalidKeySpecException;
 
 import com.authenteq.AbstractTest;
 import com.authenteq.constants.Operations;
@@ -13,10 +14,14 @@ import org.junit.Test;
 import com.authenteq.builders.BigchainDbConfigBuilder;
 import com.authenteq.builders.BigchainDbTransactionBuilder;
 import com.authenteq.model.Transaction;
+
+import com.authenteq.util.JsonUtils;
+import com.authenteq.model.Account;
 import com.authenteq.model.DataModel;
 import com.authenteq.model.GenericCallback;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
+import net.i2p.crypto.eddsa.Utils;
 import okhttp3.Response;
 
 /**
@@ -24,6 +29,9 @@ import okhttp3.Response;
  */
 public class TransactionApiTest extends AbstractTest
 {
+
+	private String publicKey = "302a300506032b657003210033c43dc2180936a2a9138a05f06c892d2fb1cfda4562cbc35373bf13cd8ed373";
+	private String privateKey = "302e020100300506032b6570042204206f6b0cd095f1e83fc5f08bffb79c7c8a30e77a3ab65f4bc659026b76394fcea8";
 
 	/**
 	 * Inits the.
@@ -37,23 +45,37 @@ public class TransactionApiTest extends AbstractTest
 			.setup();
 	}
 
-
 	/**
 	 * Test post transaction using builder.
+	 * @throws InvalidKeySpecException 
 	 */
 	@Test
-	public void testPostTransactionUsingBuilder() {
-
+	public void testPostTransactionUsingBuilder() throws InvalidKeySpecException {
+		
 		net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
 		KeyPair keyPair = edDsaKpg.generateKeyPair();
+		Account account = null;
 		try {
+			
+			account = AccountApi.loadAccount(publicKey, privateKey);
+		} catch (InvalidKeySpecException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		ObjectDummy dummyAsset = new ObjectDummy();
+		dummyAsset.setId("id");
+		dummyAsset.setDescription("asset");
+
+		try {
+			
 			Transaction transaction = BigchainDbTransactionBuilder.init().addAsset("middlename", "mname")
-					.addAsset("firstname", "John")
-					.addAsset("giddlename", "mname")
-					.addAsset("ziddlename", "mname")
-					.addAsset("lastname", "Smith")
-					.addMetaData("what", "My first BigchainDB transaction")
-					.buildAndSign((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate())
+					.addAsset("firstname", "John").addAsset("giddlename", "mname").addAsset("ziddlename", "mname")
+					.addAsset("lastname", "Smith").addMetaData("what", "My first BigchainDB transaction")
+					.addAsset("aa", JsonUtils.toJson(dummyAsset))
+					.addMetaData("asa",JsonUtils.toJson(dummyAsset))
+					.operation(Operations.CREATE)
+					.buildAndSign((EdDSAPublicKey)Account.publicKeyFromHex(publicKey), (EdDSAPrivateKey)Account.privateKeyFromHex(privateKey))
 					.sendTransaction();
 
 			assertNotNull(transaction.toString());
@@ -71,14 +93,13 @@ public class TransactionApiTest extends AbstractTest
 			dummyAsset.setId("id");
 			dummyAsset.setDescription("asset");
 			System.out.println(dummyAsset.toMapString());
-			
+
 			ObjectDummy dummyMeta = new ObjectDummy();
 			dummyMeta.setId("id");
 			dummyMeta.setDescription("meta");
-			
-			Transaction transaction = BigchainDbTransactionBuilder.init()
-					.addAssets(dummyAsset)
-					.addMetaData(dummyMeta)
+
+			Transaction transaction = BigchainDbTransactionBuilder.init().addAssets(dummyAsset).addMetaData(dummyMeta)
+					.operation(Operations.CREATE)
 					.buildAndSign((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate())
 					.sendTransaction();
 			assertNotNull(transaction.getId());
@@ -96,6 +117,7 @@ public class TransactionApiTest extends AbstractTest
 		KeyPair keyPair = edDsaKpg.generateKeyPair();
 		try {
 			BigchainDbTransactionBuilder.init().addAsset("firstname", "alvin").addMetaData("what", "bigchaintrans")
+					.operation(Operations.CREATE)
 					.buildAndSign((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate())
 					.sendTransaction(new GenericCallback() {
 
@@ -128,34 +150,33 @@ public class TransactionApiTest extends AbstractTest
 	@Test
 	public void testTransactionByAssetIdCreate() {
 		try {
+			net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
+			KeyPair keyPair = edDsaKpg.generateKeyPair();
+			
+			ObjectDummy dummyAsset = new ObjectDummy();
+			dummyAsset.setId("id");
+			dummyAsset.setDescription("asset");
+			System.out.println(dummyAsset.toMapString());
 
+			ObjectDummy dummyMeta = new ObjectDummy();
+			dummyMeta.setId("id");
+			dummyMeta.setDescription("meta");
+			
+			Transaction transaction = BigchainDbTransactionBuilder.init().addAssets(dummyAsset).addMetaData(dummyMeta)
+					.operation(Operations.CREATE)
+					.buildAndSign((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate())
+					.sendTransaction();
+			
 			System.out.println(TransactionsApi
-					.getTransactionsByAssetId( "437ce30de5cf1c3ad199fa983aded47d0db43567befa92e3a36b38a5784e4d3a",
-					                           Operations.CREATE )
+					.getTransactionsByAssetId(transaction.getId(),
+							Operations.CREATE)
 					.getTransactions().size());
 
-			assertTrue(TransactionsApi
-					.getTransactionsByAssetId("437ce30de5cf1c3ad199fa983aded47d0db43567befa92e3a36b38a5784e4d3a",
+			TransactionsApi
+					.getTransactionsByAssetId(transaction.getId(),
 							Operations.CREATE)
-					.getTransactions().size() > 0);
+					.getTransactions();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Test transaction by asset id transfer.
-	 */
-	@Test
-	public void testTransactionByAssetIdTransfer() {
-		try {
-			assertTrue(TransactionsApi
-					.getTransactionsByAssetId("437ce30de5cf1c3ad199fa983aded47d0db43567befa92e3a36b38a5784e4d3a",
-							Operations.CREATE)
-					.getTransactions().size() > 0);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -163,7 +184,7 @@ public class TransactionApiTest extends AbstractTest
 	public class ObjectDummy extends DataModel {
 		private String id;
 		private String description;
-		
+
 		public String getId() {
 			return id;
 		}

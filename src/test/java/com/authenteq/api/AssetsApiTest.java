@@ -1,5 +1,7 @@
 package com.authenteq.api;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.security.KeyPair;
 
@@ -58,7 +60,6 @@ public class AssetsApiTest extends AbstractTest
 			Assets assets = AssetsApi.getAssets( asQuoted( uuid ) );
 			assertTrue( assets.size() == 1 ); // there should be one and only one
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

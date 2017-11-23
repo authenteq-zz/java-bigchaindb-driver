@@ -5,10 +5,32 @@ import okhttp3.OkHttpClient;
 import java.util.Map;
 
 
+
 /**
  * The Class Globals.
  */
-public class Globals {
+public class BigChainDBGlobals {
+	
+	/** The api endpoints. */
+	private static ApiEndpoints apiEndpoints;
+
+	/**
+	 * Gets the api endpoints.
+	 *
+	 * @return the api endpoints
+	 */
+	public static ApiEndpoints getApiEndpoints() {
+		return apiEndpoints;
+	}
+
+	/**
+	 * Sets the api endpoints.
+	 *
+	 * @param apiEndpoints the new api endpoints
+	 */
+	public static void setApiEndpoints(ApiEndpoints apiEndpoints) {
+		BigChainDBGlobals.apiEndpoints = apiEndpoints;
+	}
 
 	/** The authorization tokens. */
 	private static Map<String, String> authorizationTokens;
@@ -18,6 +40,27 @@ public class Globals {
 	
 	/** The http client. */
 	private static OkHttpClient httpClient;
+	
+	/** The ws socket url. */
+	private static String wsSocketUrl;
+
+	/**
+	 * Gets the ws socket url.
+	 *
+	 * @return the ws socket url
+	 */
+	public static String getWsSocketUrl() {
+		return wsSocketUrl;
+	}
+
+	/**
+	 * Sets the ws socket url.
+	 *
+	 * @param wsSocketUrl the new ws socket url
+	 */
+	public static void setWsSocketUrl(String wsSocketUrl) {
+		BigChainDBGlobals.wsSocketUrl = wsSocketUrl;
+	}
 
 	/**
 	 * Gets the authorization tokens.
@@ -34,7 +77,7 @@ public class Globals {
 	 * @param authorizationTokens the authorization tokens
 	 */
 	public static void setAuthorizationTokens(Map<String, String> authorizationTokens) {
-		Globals.authorizationTokens = authorizationTokens;
+		BigChainDBGlobals.authorizationTokens = authorizationTokens;
 	}
 
 	/**
@@ -52,7 +95,7 @@ public class Globals {
 	 * @param baseUrl the new base url
 	 */
 	public static void setBaseUrl(String baseUrl) {
-		Globals.baseUrl = baseUrl;
+		BigChainDBGlobals.baseUrl = baseUrl;
 	}
 
 	/**
@@ -70,7 +113,7 @@ public class Globals {
 	 * @param httpClient the new http client
 	 */
 	public static void setHttpClient(OkHttpClient httpClient) {
-		Globals.httpClient = httpClient;
+		BigChainDBGlobals.httpClient = httpClient;
 	}
 
 }

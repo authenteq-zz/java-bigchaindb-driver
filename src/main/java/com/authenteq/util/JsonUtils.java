@@ -1,5 +1,6 @@
 package com.authenteq.util;
 
+import com.authenteq.json.factory.GsonEmptyCheckTypeAdapterFactory;
 import com.authenteq.json.strategy.*;
 import com.authenteq.model.Assets;
 import com.authenteq.model.Outputs;
@@ -33,7 +34,6 @@ public class JsonUtils {
 			GsonBuilder builder = new GsonBuilder();
 			
 			gson = builder.setPrettyPrinting().serializeNulls().disableHtmlEscaping().setPrettyPrinting()
-					//.registerTypeAdapter(Transaction.class, new TransactionDeserializer())
 					.registerTypeAdapter(Transactions.class, new TransactionsDeserializer())
 					.registerTypeAdapter(Assets.class, new AssetsDeserializer())
 					.registerTypeAdapter(Outputs.class, new OutputsDeserializer())
@@ -74,15 +74,6 @@ public class JsonUtils {
 		return getGson().toJson(src);
 	}
 	
-	/**
-	 * Return the instance of Gson.
-	 *
-	 * @return the gson
-	 */
-	public static Gson gson() {
-		return gson;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 

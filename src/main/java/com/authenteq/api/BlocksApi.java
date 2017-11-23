@@ -1,8 +1,9 @@
 package com.authenteq.api;
 
 import com.authenteq.constants.BigchainDbApi;
+import com.authenteq.constants.BlockStatus;
 import com.authenteq.model.Block;
-import com.authenteq.model.Globals;
+import com.authenteq.model.BigChainDBGlobals;
 import com.authenteq.util.JsonUtils;
 import com.authenteq.util.NetworkUtils;
 import com.google.gson.reflect.TypeToken;
@@ -10,6 +11,8 @@ import okhttp3.Response;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Logger;
+
 
 
 /**
@@ -17,6 +20,9 @@ import java.util.List;
  */
 public class BlocksApi {
 
+	
+	private static final Logger LOGGER = Logger.getLogger(BlocksApi.class.getName());
+	
 	/**
 	 * Gets the block.
 	 *
@@ -25,7 +31,8 @@ public class BlocksApi {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static Block getBlock(String blockId) throws IOException { 
-		Response response = NetworkUtils.sendGetRequest(Globals.getBaseUrl() + BigchainDbApi.BLOCKS + "/"+ blockId);
+		LOGGER.info("getBlock Call :" + blockId);
+		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.BLOCKS + "/"+ blockId);
 		String body = response.body().string();
 		response.close();
 		return JsonUtils.fromJson(body, Block.class);
@@ -39,11 +46,12 @@ public class BlocksApi {
 	 * @return the blocks
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static List<String> getBlocks(String transactionId, String status) throws IOException { 
-		Response response = NetworkUtils.sendGetRequest(Globals.getBaseUrl() + BigchainDbApi.BLOCKS + "?transaction_id="+transactionId+"&status="+status);
+	public static List<String> getBlocks(String transactionId, BlockStatus status) throws IOException {
+		LOGGER.info("getBlocks Call :" + transactionId + " status " + status);
+		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.BLOCKS + "?transaction_id="+transactionId+"&status="+status);
 		String body = response.body().string();
 		response.close();
-		return JsonUtils.gson().fromJson(body, new TypeToken<List<String>>(){}.getType());
+		return JsonUtils.getGson().fromJson(body, new TypeToken<List<String>>(){}.getType());
 	}
 	
 }
