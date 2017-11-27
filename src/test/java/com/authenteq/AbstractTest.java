@@ -15,9 +15,9 @@ import java.util.Properties;
 import java.util.UUID;
 
 /**
- * Test scafolding and configuration
+ * Test scaffolding and configuration
  *
- * With reespect to test.properties:
+ * With respect to test.properties:
  *
  * There is a default test.properties file in test/resources
  * If you wish to use different properties you can set the environment variable "BDB_DRIVER_PROPERTIES" to point to a file, the
