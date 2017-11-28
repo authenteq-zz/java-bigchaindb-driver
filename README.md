@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/authenteq/java-bigchaindb-driver.svg?branch=master)
+[![Build Status](https://travis-ci.org/authenteq/java-bigchaindb-driver.svg?branch=master)](https://travis-ci.org/authenteq/java-bigchaindb-driver)
 [![Gitter](http://badges.gitter.im/bigchaindb/bigchaindb.svg)](https://gitter.im/bigchaindb/bigchaindb)
 [![java-bigchaindb-driver](media/repo-banner@2x.png)](https://www.bigchaindb.com)
 
