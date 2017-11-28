@@ -3,26 +3,39 @@ package com.authenteq.api;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.security.KeyPair;
 
-import org.junit.Before;
+import com.authenteq.AbstractTest;
+import com.authenteq.builders.BigchainDbTransactionBuilder;
+import com.authenteq.model.Assets;
+import com.authenteq.model.Transaction;
+import net.i2p.crypto.eddsa.EdDSAPrivateKey;
+import net.i2p.crypto.eddsa.EdDSAPublicKey;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.authenteq.api.AssetsApi;
 import com.authenteq.builders.BigchainDbConfigBuilder;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * The Class AssetsApiTest.
  */
-public class AssetsApiTest {
+public class AssetsApiTest extends AbstractTest
+{
 
 	/**
 	 * Inits the.
 	 */
-	@Before
-	public void init() {
-		BigchainDbConfigBuilder.baseUrl("https://test.ipdb.io").addToken("app_id", "2bbaf3ff")
-				.addToken("app_key", "c929b708177dcc8b9d58180082029b8d").setup();
+	@BeforeClass
+	public static void init() {
+		BigchainDbConfigBuilder
+			.baseUrl( get( "test.api.url", "https://test.ipdb.io" ))
+			.addToken("app_id", "2bbaf3ff")
+			.addToken("app_key", "c929b708177dcc8b9d58180082029b8d")
+			.setup();
 	}
 	
 	/**
@@ -30,11 +43,22 @@ public class AssetsApiTest {
 	 */
 	@Test
 	public void testAssetSearch() {
+		String uuid = getUUID();
+		System.err.println( "AssetApiTest.testAssetSearch.uuid " + uuid );
 		try {
-			int size = AssetsApi.getAssets("John").getAssets().size();
-			
-			assertTrue(size > 0);
-			
+			// create transaction with unique asset
+			net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
+			KeyPair alice = edDsaKpg.generateKeyPair();
+
+			Transaction transaction = BigchainDbTransactionBuilder
+				                          .init()
+				                          .addAsset( "uuid", uuid )
+				                          .buildAndSign( (EdDSAPublicKey) alice.getPublic(), (EdDSAPrivateKey) alice.getPrivate() )
+				                          .sendTransaction();
+			assertEquals( "valid", getStatus( transaction ).toString());    // wait for the transaction to be marked valid
+
+			Assets assets = AssetsApi.getAssets( asQuoted( uuid ) );
+			assertTrue( assets.size() == 1 ); // there should be one and only one
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

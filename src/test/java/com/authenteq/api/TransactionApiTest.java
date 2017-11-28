@@ -2,17 +2,19 @@ package com.authenteq.api;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.spec.InvalidKeySpecException;
 
-import org.junit.Before;
+import com.authenteq.AbstractTest;
+import com.authenteq.constants.Operations;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import com.authenteq.api.TransactionsApi;
 import com.authenteq.builders.BigchainDbConfigBuilder;
 import com.authenteq.builders.BigchainDbTransactionBuilder;
-import com.authenteq.constants.Operations;
 import com.authenteq.model.Transaction;
+
 import com.authenteq.util.JsonUtils;
 import com.authenteq.model.Account;
 import com.authenteq.model.DataModel;
@@ -25,19 +27,22 @@ import okhttp3.Response;
 /**
  * The Class BigchaindbTransactionTest.
  */
-public class TransactionApiTest {
+public class TransactionApiTest extends AbstractTest
+{
+
+	private String publicKey = "302a300506032b657003210033c43dc2180936a2a9138a05f06c892d2fb1cfda4562cbc35373bf13cd8ed373";
+	private String privateKey = "302e020100300506032b6570042204206f6b0cd095f1e83fc5f08bffb79c7c8a30e77a3ab65f4bc659026b76394fcea8";
 
 	/**
 	 * Inits the.
 	 */
-	
-	private String publicKey = "302a300506032b657003210033c43dc2180936a2a9138a05f06c892d2fb1cfda4562cbc35373bf13cd8ed373";
-	private String privateKey = "302e020100300506032b6570042204206f6b0cd095f1e83fc5f08bffb79c7c8a30e77a3ab65f4bc659026b76394fcea8";
-	@Before
-	public void init() {
-
-		BigchainDbConfigBuilder.baseUrl("https://test.ipdb.io").addToken("app_id", "2bbaf3ff")
-				.addToken("app_key", "c929b708177dcc8b9d58180082029b8d").setup();
+	@BeforeClass
+	public static void init() {
+		BigchainDbConfigBuilder
+			.baseUrl( get( "test.api.url", "https://test.ipdb.io" ) )
+			.addToken("app_id", "2bbaf3ff")
+			.addToken("app_key", "c929b708177dcc8b9d58180082029b8d")
+			.setup();
 	}
 
 	/**

@@ -6,7 +6,8 @@ import java.io.IOException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Iterator;
 
-import org.junit.Before;
+import com.authenteq.AbstractTest;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.authenteq.api.AssetsApi;
@@ -23,15 +24,19 @@ import net.i2p.crypto.eddsa.EdDSAPublicKey;
 /**
  * The Class OutputsApiTest.
  */
-public class OutputsApiTest {
+public class OutputsApiTest extends AbstractTest
+{
 
 	/**
 	 * Inits the.
 	 */
-	@Before
-	public void init() {
-		BigchainDbConfigBuilder.baseUrl("https://test.ipdb.io").addToken("app_id", "2bbaf3ff")
-				.addToken("app_key", "c929b708177dcc8b9d58180082029b8d").setup();
+	@BeforeClass
+	public static void init() {
+		BigchainDbConfigBuilder
+			.baseUrl(get( "test.api.url", "https://test.ipdb.io" ) )
+			.addToken("app_id", "2bbaf3ff")
+			.addToken("app_key", "c929b708177dcc8b9d58180082029b8d")
+			.setup();
 	}
 	
 	/**
