@@ -6,9 +6,7 @@ import com.authenteq.AbstractTest;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.authenteq.api.AssetsApi;
 import com.authenteq.builders.BigchainDbConfigBuilder;
-
 
 /**
  * The Class StatusesApiTest.
@@ -35,7 +33,7 @@ public class StatusesApiTest extends AbstractTest
 	public void testStatusTransaction() {
 		try {
 			System.out.println(StatusesApi.getTransactionStatus("437ce30de5cf1c3ad199fa983aded47d0db43567befa92e3a36b38a5784e4d3a").getStatus());
-		} catch (IOException e) {
+		} catch (IOException | StatusException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
