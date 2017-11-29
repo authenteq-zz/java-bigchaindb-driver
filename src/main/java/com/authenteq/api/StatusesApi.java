@@ -10,8 +10,6 @@ import okhttp3.Response;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-
-
 /**
  * The Class StatusesApi.
  */
@@ -26,12 +24,16 @@ public class StatusesApi {
 	 * @return the transaction status
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static Status getTransactionStatus(String transactionId) throws IOException { 
+	public static Status getTransactionStatus(String transactionId) throws StatusException, IOException
+	{
 		LOGGER.info("getTransactionStatus Call :" + transactionId);
-		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.STATUSES + "?transaction_id="+ transactionId);
+		try( Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.STATUSES + "?transaction_id="+ transactionId) ) {
+			if( response.code() == 200 ) {
 		String body = response.body().string();
-		response.close();
 		return JsonUtils.fromJson(body, Status.class);
+			}
+			throw new StatusException( response.code(), response.body() != null ? response.body().toString() : "Error in response, body is empty" );
+		}
 	}
 	
 	/**
@@ -41,11 +43,15 @@ public class StatusesApi {
 	 * @return the block status
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static Status getBlockStatus(String blockId) throws IOException {
+	public static Status getBlockStatus(String blockId) throws StatusException, IOException {
 		LOGGER.info("getBlockStatus Call :" + blockId);
-		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.STATUSES + "?block_id="+ blockId);
+		try( Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.STATUSES + "?block_id="+ blockId) ) {
+			if( response.code() == 200 ) {
 		String body = response.body().string();
-		response.close();
 		return JsonUtils.fromJson(body, Status.class);
+			}
+			throw new StatusException( response.code(), response.body() != null ? response.body().toString() : "Error in response, body is empty" );
+		}
 	}
 }
+                                                               
