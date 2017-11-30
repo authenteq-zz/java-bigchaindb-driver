@@ -6,6 +6,7 @@ import com.authenteq.model.Assets;
 import com.authenteq.model.Outputs;
 import com.authenteq.model.Transactions;
 import com.authenteq.model.Votes;
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -33,7 +34,10 @@ public class JsonUtils {
 		if (gson == null) {
 			GsonBuilder builder = new GsonBuilder();
 			
-			gson = builder.setPrettyPrinting().serializeNulls().disableHtmlEscaping().setPrettyPrinting()
+			gson = builder.setPrettyPrinting()
+					.serializeNulls()
+					.disableHtmlEscaping()
+					.setPrettyPrinting()
 					.registerTypeAdapter(Transactions.class, new TransactionsDeserializer())
 					.registerTypeAdapter(Assets.class, new AssetsDeserializer())
 					.registerTypeAdapter(Outputs.class, new OutputsDeserializer())

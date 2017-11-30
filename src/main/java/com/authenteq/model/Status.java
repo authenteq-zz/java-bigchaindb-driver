@@ -7,18 +7,18 @@ import com.google.gson.annotations.SerializedName;
 /**
  * The Class Status.
  */
-public class Status {
-
+public class Status
+{
 	/** The status. */
-	@SerializedName("status")
-	private String status;
+	private StatusCode status;
 
 	/**
 	 * Gets the status.
 	 *
 	 * @return the status
 	 */
-	public String getStatus() {
+	public StatusCode getStatus()
+	{
 		return status;
 	}
 
@@ -27,18 +27,8 @@ public class Status {
 	 *
 	 * @param status the new status
 	 */
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	/**
-	 * toString
-	 *
-	 * @return status
-	 */
-	@Override
-	public String toString()
+	public void setStatus( StatusCode statusCode )
 	{
-		return status;
+		this.status = statusCode;
 	}
 }
