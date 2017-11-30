@@ -43,7 +43,7 @@ public class JsonUtils {
 					.registerTypeAdapter(Outputs.class, new OutputsDeserializer())
 					.registerTypeAdapter(Votes.class, new VoteDeserializer())
 					.registerTypeAdapterFactory(new GsonEmptyCheckTypeAdapterFactory())
-					.setExclusionStrategies(new CustomExclusionStrategy()).create();
+					.addSerializationExclusionStrategy(new CustomExclusionStrategy()).create();
 		}
 		return gson;
 	}
