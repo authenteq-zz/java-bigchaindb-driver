@@ -22,21 +22,9 @@ import static org.junit.Assert.assertEquals;
 /**
  * The Class AssetsApiTest.
  */
-public class AssetsApiTest extends AbstractTest
+public class AssetsApiTest extends AbstractApiTest
 {
 
-	/**
-	 * Inits the.
-	 */
-	@BeforeClass
-	public static void init() {
-		BigchainDbConfigBuilder
-			.baseUrl( get( "test.api.url", "https://test.ipdb.io" ))
-			.addToken("app_id", "2bbaf3ff")
-			.addToken("app_key", "c929b708177dcc8b9d58180082029b8d")
-			.setup();
-	}
-	
 	/**
 	 * Test asset search.
 	 */
