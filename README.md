@@ -115,25 +115,25 @@ BigchainDbConfigBuilder
 <h4>Send a Transaction</h4>
 
 ```java
-TransactionApi.sendTransaction(Transaction transaction) throws IOException
+TransactionsApi.sendTransaction(Transaction transaction) throws IOException
 ```
 
 <h4>Send a Transaction with Callback</h4>
 
 ```java
-TransactionApi.sendTransaction(Transaction transaction, final GenericCallback callback) 
+TransactionsApi.sendTransaction(Transaction transaction, final GenericCallback callback) 
 ```
 
 <h4>Get Transaction given a Transaction Id</h4>
 
 ```java
-Transaction TransactionApi.getTransactionById(String id) throws IOException
+Transaction TransactionsApi.getTransactionById(String id) throws IOException
 ```
 
 <h4>Get Transaction given an Asset Id</h4>
 
 ```java
-Transactions TransactionApi.getTransactionsByAssetId(String assetId, Operations operation)
+Transactions TransactionsApi.getTransactionsByAssetId(String assetId, Operations operation)
 ```
 
 <h3>Outputs</h3>
