@@ -1,16 +1,13 @@
 package com.authenteq.model;
 
 import com.authenteq.annotations.Exclude;
+import com.authenteq.json.strategy.TransactionIdExclusionStrategy;
 import com.authenteq.util.JsonUtils;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-
 
 /**
  * The Class Transaction.
@@ -27,11 +24,11 @@ public class Transaction implements Serializable {
 
 	/** The inputs. */
 	@SerializedName("inputs")
-	private List<Input> inputs = new ArrayList<Input>();
+	private List<Input> inputs = new ArrayList<>();
 
 	/** The meta data. */
 	@SerializedName("metadata")
-	private Map<String, String> metaData = null;
+	private Object metaData = null;
 
 	/** The operation. */
 	@SerializedName("operation")
@@ -39,7 +36,7 @@ public class Transaction implements Serializable {
 
 	/** The outputs. */
 	@SerializedName("outputs")
-	private List<Output> outputs = new ArrayList<Output>();
+	private List<Output> outputs = new ArrayList<>();
 
 	/** The version. */
 	@SerializedName("version")
@@ -126,17 +123,18 @@ public class Transaction implements Serializable {
 	 *
 	 * @return the meta data
 	 */
-	public Map<String, String> getMetaData() {
+	public Object getMetaData() {
 		return metaData;
 	}
 
 	/**
-	 * Sets the meta data.
+	 * Set the metaData object
 	 *
-	 * @param metaData the meta data
+	 * @param obj the metadata object
 	 */
-	public void setMetaData(Map<String, String> metaData) {
-		this.metaData = metaData;
+	public void setMetaData( Object obj )
+	{
+		this.metaData = obj;
 	}
 
 	/**
@@ -211,25 +209,21 @@ public class Transaction implements Serializable {
 		this.outputs.add(output);
 	}
 
-	/**
-	 * Adds the meta data.
-	 *
-	 * @param key the key
-	 * @param value the value
-	 * @return the transaction
-	 */
-	public Transaction addMetaData(String key, String value) {
-		if( this.metaData == null )
-			this.metaData = new TreeMap<String, String>();
-		this.metaData.put(key, value);
-		return this;
-	}
-
 	 /* (non-Javadoc)
  	 * @see java.lang.Object#toString()
  	 */
  	@Override
 	 public String toString() {
 		 return JsonUtils.toJson(this);
+	 }
+
+	/**
+	 * Return the transaction suitable for hashing.
+	 *
+	 * @return the transaction as a json string
+	 */
+	public String toHashInput()
+	 {
+	 	return JsonUtils.toJson( this, new TransactionIdExclusionStrategy() );
 	 }
 }

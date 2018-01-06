@@ -19,14 +19,10 @@
 
 package com.authenteq.util;
 
-import net.i2p.crypto.eddsa.EdDSAPublicKey;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.reflect.Field;
-import java.util.*;
-
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 /**
  * The Class DriverUtils.
@@ -54,6 +50,22 @@ public class DriverUtils {
         return new String(outData);
     }
 
+	/**
+	 * To conform with BigchainDB serialization
+	 *
+	 * @param input the json string to sort the properties for
+	 *
+	 * @return the json object
+	 */
+	public static JsonObject makeSelfSortingGson( String input )
+    {
+        if( input == null )
+            return null;
+
+        JsonParser jsonParser = new JsonParser();
+        return makeSelfSortingGson( jsonParser.parse( input ).getAsJsonObject() );
+    }
+
     /**
      * Make self sorting.
      *
@@ -64,54 +76,31 @@ public class DriverUtils {
     We are using a hack to make stardard org.json be automatically sorted
     by key desc alphabetically
      */
-    public static JSONObject makeSelfSorting(JSONObject input) {
+    public static JsonObject makeSelfSortingGson(JsonObject input ) {
         if (input == null)
             return null;
 
-        JSONObject json = new JSONObject();
-        Field map = null;
-        try {
-            map = json.getClass().getDeclaredField("map");
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        }
-        if (map == null) {
-            return json;
-        }
+	    JsonObject json = new JsonObject();
 
-        map.setAccessible(true);//because the field is private final...
-        try {
-            map.set(json, new TreeMap<>());
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        map.setAccessible(false);
-
-        Iterator<String> flavoursIter = input.keys();
-        while (flavoursIter.hasNext()) {
-            String key = flavoursIter.next();
-            try {
-                Object j = input.get(key);
-                if (j instanceof JSONObject) {
-                    json.put(key, makeSelfSorting((JSONObject) j));
-                } else if (j instanceof JSONArray) {
-                    JSONArray h = (JSONArray) j;
-                    List<Object> oList = new ArrayList<Object>();
-                    for (int i = 0; i < h.length(); i++) {
-                        Object joi = h.get(i);
-                        if (joi instanceof JSONObject) {
-                            oList.add(makeSelfSorting((JSONObject) joi));
-                            json.put(key, oList);
-                        } else {
-                            oList.add((String) joi);
-                            json.put(key, oList);
-                        }
+        for( String key: input.keySet() ) {
+            JsonElement j = input.get(key);
+            if (j instanceof JsonObject) {
+                json.add(key, makeSelfSortingGson((JsonObject) j));
+            } else if (j instanceof JsonArray ) {
+                JsonArray h = (JsonArray) j;
+                JsonArray oList = new JsonArray();
+                for (int i = 0; i < h.size(); i++) {
+                    JsonElement joi = h.get( i );
+                    if (joi instanceof JsonObject) {
+                        oList.add(makeSelfSortingGson((JsonObject) joi));
+                        json.add(key, oList);
+                    } else {
+                        oList.add(joi);
+                        json.add(key, oList);
                     }
-                } else {
-                    json.put(key, j);
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
+            } else {
+                json.add(key, j);
             }
         }
 
@@ -126,8 +115,7 @@ public class DriverUtils {
     /*
     We need to sort the keys in alphabetical order to sign the transaction successfully.
      */
-    public static JSONObject getSelfSortingJson() {
-        JSONObject json = makeSelfSorting(new JSONObject());
-        return json;
+    public static JsonObject getSelfSortingJson() {
+        return makeSelfSortingGson(new JsonObject());
     }
 }

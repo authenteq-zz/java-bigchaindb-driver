@@ -9,9 +9,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 import java.lang.reflect.Type;
-import java.util.Iterator;
-
-
 
 /**
  * The Class AssetsDeserializer.
@@ -26,9 +23,7 @@ public class AssetsDeserializer implements JsonDeserializer<Assets> {
 			throws JsonParseException {
 		
 		Assets assets = new Assets();
-		Iterator<JsonElement> jsonIter = json.getAsJsonArray().iterator();
-		while(jsonIter.hasNext()) {
-			JsonElement jElement = jsonIter.next();
+		for( JsonElement jElement: json.getAsJsonArray() ) {
 			assets.addAsset(JsonUtils.fromJson(jElement.getAsJsonObject().toString(), Asset.class));
 		}
 		return assets;

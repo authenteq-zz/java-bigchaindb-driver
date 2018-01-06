@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import com.authenteq.api.AccountApi;
 import com.authenteq.constants.BigchainDbApi;
 import com.authenteq.model.ApiEndpoints;
 import com.authenteq.model.BigChainDBGlobals;
@@ -25,9 +24,8 @@ import okhttp3.Response;
  * The Class BigchainDbConfigBuilder.
  */
 public class BigchainDbConfigBuilder {
-	
-	private static final Logger LOGGER = Logger.getLogger(AccountApi.class.getName());
-	
+
+	private static final Logger LOGGER = Logger.getLogger(BigchainDbConfigBuilder.class.getName());
 	/**
 	 * Instantiates a new bigchain db config builder.
 	 */
@@ -74,11 +72,6 @@ public class BigchainDbConfigBuilder {
 		 * Setup.
 		 */
 		void setup();
-
-		/**
-		 * Setup.
-		 */
-
 	}
 
 	/**

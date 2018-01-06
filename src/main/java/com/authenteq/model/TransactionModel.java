@@ -22,6 +22,10 @@ package com.authenteq.model;
 import com.authenteq.util.Base58;
 import com.authenteq.util.DriverUtils;
 import com.authenteq.util.KeyPairUtils;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonObject;
 import net.i2p.crypto.eddsa.EdDSAEngine;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
@@ -32,15 +36,10 @@ import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.jcajce.provider.digest.SHA3;
 import org.interledger.cryptoconditions.types.Ed25519Sha256Condition;
 import org.interledger.cryptoconditions.types.Ed25519Sha256Fulfillment;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.security.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-
 
 /**
  * The Class Transaction.
@@ -51,13 +50,13 @@ public class TransactionModel {
 	private EdDSAPublicKey publicKey;
 	
 	/** The data. */
-	private JSONObject data;
+	private JsonObject data;
 	
 	/** The metadata. */
-	private JSONObject metadata;
+	private JsonObject metadata;
 	
 	/** The transaction json. */
-	private JSONObject transactionJson;
+	private JsonObject transactionJson;
 	
 	/** The signed. */
 	private boolean signed;
@@ -70,10 +69,10 @@ public class TransactionModel {
 	 *            (can be `null` if not needed)
 	 * @param publicKey the public key
 	 */
-	public TransactionModel(JSONObject data, JSONObject metadata, EdDSAPublicKey publicKey) {
+	public TransactionModel(JsonObject data, JsonObject metadata, EdDSAPublicKey publicKey) {
 		this.publicKey = publicKey;
-		this.data = DriverUtils.makeSelfSorting(data);
-		this.metadata = DriverUtils.makeSelfSorting(metadata);
+		this.data = DriverUtils.makeSelfSortingGson(data);
+		this.metadata = DriverUtils.makeSelfSortingGson(metadata);
 		buildTransactionJson();
 	}
 
@@ -86,12 +85,12 @@ public class TransactionModel {
 	 * @param publicKey the public key
 	 * @param signed the signed
 	 */
-	private TransactionModel(JSONObject data, JSONObject metadata, JSONObject transactionJson,
-			EdDSAPublicKey publicKey, boolean signed) {
+	private TransactionModel( JsonObject data, JsonObject metadata, JsonObject transactionJson,
+	                          EdDSAPublicKey publicKey, boolean signed) {
 		this.publicKey = publicKey;
-		this.data = DriverUtils.makeSelfSorting(data);
-		this.metadata = DriverUtils.makeSelfSorting(metadata);
-		this.transactionJson = DriverUtils.makeSelfSorting(transactionJson);
+		this.data = DriverUtils.makeSelfSortingGson(data);
+		this.metadata = DriverUtils.makeSelfSortingGson(metadata);
+		this.transactionJson = DriverUtils.makeSelfSortingGson(transactionJson);
 		this.signed = signed;
 	}
 
@@ -99,50 +98,50 @@ public class TransactionModel {
 	 * Builds the transaction JSON without actually signing it.
 	 */
 	protected void buildTransactionJson() {
-		JSONObject asset = DriverUtils.getSelfSortingJson();
-		JSONObject outputs = DriverUtils.getSelfSortingJson();
-		JSONObject inputs = DriverUtils.getSelfSortingJson();
-		JSONObject condition = DriverUtils.getSelfSortingJson();
-		JSONObject details = DriverUtils.getSelfSortingJson();
-		JSONArray inputsArr = new JSONArray();
-		JSONArray outputsArr = new JSONArray();
+		JsonObject asset = DriverUtils.getSelfSortingJson();
+		JsonObject outputs = DriverUtils.getSelfSortingJson();
+		JsonObject inputs = DriverUtils.getSelfSortingJson();
+		JsonObject condition = DriverUtils.getSelfSortingJson();
+		JsonObject details = DriverUtils.getSelfSortingJson();
+		JsonArray inputsArr = new JsonArray();
+		JsonArray outputsArr = new JsonArray();
 
 		Ed25519Sha256Condition condition1 = new Ed25519Sha256Condition(publicKey);
 
-		JSONObject rootObject = DriverUtils.getSelfSortingJson();
+		JsonObject rootObject = DriverUtils.getSelfSortingJson();
 		try {
 			if (metadata == null) {
-				rootObject.put("metadata", JSONObject.NULL);
+				rootObject.add("metadata", null);
 			} else {
-				rootObject.put("metadata", metadata);
+				rootObject.add("metadata", metadata);
 			}
 
-			rootObject.put("operation", "CREATE");
-			rootObject.put("version", "1.0");
-			asset.put("data", data);
-			rootObject.put("asset", asset);
+			rootObject.addProperty("operation", "CREATE");
+			rootObject.addProperty("version", "1.0");
+			asset.add("data", data);
+			rootObject.add("asset", asset);
 
-			outputs.put("amount", "1");
-			JSONArray publicKeys = new JSONArray();
-			publicKeys.put(KeyPairUtils.encodePublicKeyInBase58(publicKey));
-			outputs.put("public_keys", publicKeys);
-			outputsArr.put(outputs);
-			rootObject.put("outputs", outputsArr);
+			outputs.addProperty("amount", "1");
+			JsonArray publicKeys = new JsonArray();
+			publicKeys.add(KeyPairUtils.encodePublicKeyInBase58(publicKey));
+			outputs.add("public_keys", publicKeys);
+			outputsArr.add(outputs);
+			rootObject.add("outputs", outputsArr);
 
-			condition.put("uri", condition1.getUri().toString());
+			condition.addProperty("uri", condition1.getUri().toString());
 
-			details.put("public_key", KeyPairUtils.encodePublicKeyInBase58(publicKey));
-			details.put("type", "ed25519-sha-256");
-			condition.put("details", details);
-			outputs.put("condition", condition);
+			details.addProperty("public_key", KeyPairUtils.encodePublicKeyInBase58(publicKey));
+			details.addProperty("type", "ed25519-sha-256");
+			condition.add("details", details);
+			outputs.add("condition", condition);
 
-			inputs.put("fulfillment", JSONObject.NULL);
-			inputs.put("fulfills", JSONObject.NULL);
-			JSONArray ownersBefore = new JSONArray();
-			ownersBefore.put(KeyPairUtils.encodePublicKeyInBase58(publicKey));
-			inputs.put("owners_before", ownersBefore);
-			inputsArr.put(inputs);
-			rootObject.put("inputs", inputsArr);
+			inputs.add("fulfillment", null);
+			inputs.add("fulfills", null);
+			JsonArray ownersBefore = new JsonArray();
+			ownersBefore.add(KeyPairUtils.encodePublicKeyInBase58(publicKey));
+			inputs.add("owners_before", ownersBefore);
+			inputsArr.add(inputs);
+			rootObject.add("inputs", inputsArr);
 
 			// getting SHA3 hash of the current JSON object
 			SHA3.DigestSHA3 md = new SHA3.DigestSHA3(256);
@@ -150,8 +149,8 @@ public class TransactionModel {
 			String id = DriverUtils.getHex(md.digest());
 
 			// putting the hash as id field
-			rootObject.put("id", id);
-		} catch (JSONException e) {
+			rootObject.addProperty("id", id);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
@@ -166,7 +165,7 @@ public class TransactionModel {
 	 *         fulfillment
 	 */
 	public String getTransactionId() {
-		return transactionJson.getString("id");
+		return transactionJson.get("id").getAsString();
 	}
 
 	/**
@@ -184,10 +183,10 @@ public class TransactionModel {
 			edDsaSigner.update(transactionJson.toString().getBytes());
 			byte[] signature = edDsaSigner.sign();
 			Ed25519Sha256Fulfillment fulfillment = new Ed25519Sha256Fulfillment(publicKey, signature);
-			JSONObject inputs = transactionJson.getJSONArray("inputs").getJSONObject(0);
-			inputs.put("fulfillment", Base64.encodeBase64URLSafeString(fulfillment.getEncoded()));
+			JsonObject inputs = transactionJson.get("inputs").getAsJsonArray().get( 0 ).getAsJsonObject();//   getJsonArray("inputs").getJSONObject(0);
+			inputs.addProperty("fulfillment", Base64.encodeBase64URLSafeString(fulfillment.getEncoded()));
 			signed = true;
-		} catch (JSONException | NoSuchAlgorithmException e) {
+		} catch ( NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
 	}
@@ -206,7 +205,7 @@ public class TransactionModel {
 	 *
 	 * @return The JSON representation of the transaction
 	 */
-	public JSONObject getTransactionJson() {
+	public JsonObject getTransactionJson() {
 		return transactionJson;
 	}
 
@@ -236,7 +235,7 @@ public class TransactionModel {
 	 *
 	 * @return the data
 	 */
-	public JSONObject getData() {
+	public JsonObject getData() {
 		return data;
 	}
 
@@ -245,7 +244,7 @@ public class TransactionModel {
 	 *
 	 * @return the metadata
 	 */
-	public JSONObject getMetadata() {
+	public JsonObject getMetadata() {
 		return metadata;
 	}
 
@@ -257,21 +256,20 @@ public class TransactionModel {
 	 * @param jsonObject the json object
 	 * @return the transaction
 	 */
-	public static TransactionModel createFromJson(JSONObject jsonObject) {
-		JSONObject data = jsonObject.getJSONObject("asset").getJSONObject("data");
-		JSONObject metadata = jsonObject.getJSONObject("metadata");
-		String publicKeyEncoded = jsonObject.getJSONArray("outputs").getJSONObject(0).getJSONArray("public_keys")
-				.getString(0);
+	public static TransactionModel createFromJson(JsonObject jsonObject) {
+		JsonObject data = jsonObject.get("asset").getAsJsonObject().get("data").getAsJsonObject();
+		JsonObject metadata = jsonObject.get("metadata").getAsJsonObject();
+		String publicKeyEncoded = jsonObject.get("outputs").getAsJsonArray().get(0).getAsJsonObject().get("public_keys").getAsJsonArray().get(0).getAsString();
 		byte[] publicKey = Base58.decode(publicKeyEncoded);
 		EdDSAParameterSpec keySpecs = EdDSANamedCurveTable.getByName("Ed25519");
 		EdDSAPublicKeySpec spec = new EdDSAPublicKeySpec(publicKey, keySpecs);
 		EdDSAPublicKey edDSAPublicKey = new EdDSAPublicKey(spec);
 
 		// TODO: validate the signature
-		Object fulfObject = jsonObject.getJSONArray("inputs").getJSONObject(0).get("fulfillment");
+		JsonElement fulfObject = jsonObject.get("inputs").getAsJsonArray().get(0).getAsJsonObject().get("fulfillment");
 
 		boolean signed = false;
-		if (!JSONObject.NULL.equals(fulfObject))
+		if ( ! fulfObject.equals( JsonNull.INSTANCE ) )
 			signed = true;
 
 		return new TransactionModel(data, metadata, jsonObject, edDSAPublicKey, signed);
@@ -283,25 +281,23 @@ public class TransactionModel {
 	 * @param jsonArray the json array
 	 * @return the list
 	 */
-	public static List<TransactionModel> createFromJsonArray(JSONArray jsonArray) {
+	public static List<TransactionModel> createFromJsonArray(JsonArray jsonArray) {
 		List<TransactionModel> bigChaindbTransactionList = new ArrayList<TransactionModel>();
-		Iterator<Object> jsonObjectIter = jsonArray.iterator();
-		while (jsonObjectIter.hasNext()) {
-			JSONObject jsonObject = (JSONObject)jsonObjectIter.next();
-			JSONObject data = jsonObject.getJSONObject("asset").getJSONObject("data");
-			JSONObject metadata = jsonObject.getJSONObject("metadata");
-			String publicKeyEncoded = jsonObject.getJSONArray("outputs").getJSONObject(0).getJSONArray("public_keys")
-					.getString(0);
+		for( JsonElement jsonElement: jsonArray ) {
+			JsonObject jsonObject = jsonElement.getAsJsonObject();
+			JsonObject data = jsonObject.get("asset").getAsJsonObject().get("data").getAsJsonObject();
+			JsonObject metadata = jsonObject.get("metadata").getAsJsonObject();
+			String publicKeyEncoded = jsonObject.get("outputs").getAsJsonArray().get(0).getAsJsonObject().get("public_keys").getAsJsonArray().get(0).getAsString();
 			byte[] publicKey = Base58.decode(publicKeyEncoded);
 			EdDSAParameterSpec keySpecs = EdDSANamedCurveTable.getByName("Ed25519");
 			EdDSAPublicKeySpec spec = new EdDSAPublicKeySpec(publicKey, keySpecs);
 			EdDSAPublicKey edDSAPublicKey = new EdDSAPublicKey(spec);
 
 			// TODO: validate the signature
-			Object fulfObject = jsonObject.getJSONArray("inputs").getJSONObject(0).get("fulfillment");
+			JsonElement fulfObject = jsonObject.get("inputs").getAsJsonArray().get(0).getAsJsonObject().get("fulfillment");
 
 			boolean signed = false;
-			if (!JSONObject.NULL.equals(fulfObject))
+			if ( ! fulfObject.equals( JsonNull.INSTANCE ) )
 				signed = true;
 			
 			bigChaindbTransactionList.add(new TransactionModel(data, metadata, jsonObject, edDSAPublicKey, signed));

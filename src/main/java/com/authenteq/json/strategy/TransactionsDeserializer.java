@@ -8,15 +8,18 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 import java.lang.reflect.Type;
-import java.util.Iterator;
 import java.util.Map;
-
-
 
 /**
  * The Class TransactionsDeserializer.
  */
 public class TransactionsDeserializer implements JsonDeserializer<Transactions> {
+	private static Class metaDataClass = Map.class;
+
+	public static void setMetaDataClass( Class metaDataType )
+	{
+		metaDataClass = metaDataType;
+	}
 
 	/* (non-Javadoc)
 	 * @see com.google.gson.JsonDeserializer#deserialize(com.google.gson.JsonElement, java.lang.reflect.Type, com.google.gson.JsonDeserializationContext)
@@ -27,26 +30,19 @@ public class TransactionsDeserializer implements JsonDeserializer<Transactions> 
 			throws JsonParseException {
 		
 		Transactions transactions = new Transactions();
-		Iterator<JsonElement> jsonIter = json.getAsJsonArray().iterator();
-		while(jsonIter.hasNext()) {
+
+		for( JsonElement jElement: json.getAsJsonArray() ) {
 			Transaction transaction = new Transaction();
-			JsonElement jElement = jsonIter.next();
 			
 			transaction.setAsset(JsonUtils.fromJson(jElement.getAsJsonObject().get("asset").toString(), Asset.class));
-			transaction.setMetaData((Map<String,String>)JsonUtils.fromJson(jElement.getAsJsonObject().get("metadata").toString(), Map.class));
+			transaction.setMetaData( JsonUtils.fromJson( jElement.getAsJsonObject().get("metadata").toString(), metaDataClass ));
 			transaction.setId(jElement.getAsJsonObject().get("id").toString());
-			
-			Iterator<JsonElement> jInputElementIter = jElement.getAsJsonObject().get("inputs").getAsJsonArray().iterator();
-			
-			while(jInputElementIter.hasNext()) {
-				JsonElement jInputElement = jInputElementIter.next();
+
+			for( JsonElement jInputElement: jElement.getAsJsonObject().get("inputs").getAsJsonArray() ) {
 				transaction.addInput(JsonUtils.fromJson(jInputElement.toString(), Input.class));
 			}
-			
-			Iterator<JsonElement> jOutputElementIter = jElement.getAsJsonObject().get("outputs").getAsJsonArray().iterator();
-			
-			while(jOutputElementIter.hasNext()) {
-				JsonElement jOutputElement = jOutputElementIter.next();
+
+			for( JsonElement jOutputElement: jElement.getAsJsonObject().get("outputs").getAsJsonArray() ) {
 				transaction.addOutput(JsonUtils.fromJson(jOutputElement.toString(), Output.class));
 			}
 			
