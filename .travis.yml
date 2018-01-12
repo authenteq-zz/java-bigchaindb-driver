@@ -9,7 +9,7 @@ before_script:
 
 branches:
   only:
-  - AssetAndMetaData-as-Obj-Issue-36
+  - master
 
 script:
   - mvn clean install
