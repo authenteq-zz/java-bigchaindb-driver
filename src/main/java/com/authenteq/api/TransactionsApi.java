@@ -10,7 +10,6 @@ import com.authenteq.util.JsonUtils;
 import com.authenteq.util.NetworkUtils;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -75,20 +74,16 @@ public class TransactionsApi extends AbstractApi {
 	 * @param operation
 	 *            the operation
 	 * @return the transactions by asset id
-	 * @throws JSONException
-	 *             the JSON exception
 	 * @throws IOException
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public static Transactions getTransactionsByAssetId(String assetId, Operations operation)
-			throws JSONException, IOException {
+			throws IOException {
 		LOGGER.info("getTransactionsByAssetId Call :" + assetId + " operation " + operation);
 		Response response = NetworkUtils.sendGetRequest(
 				BigChainDBGlobals.getBaseUrl() + BigchainDbApi.TRANSACTIONS + "?asset_id=" + assetId + "&operation=" + operation);
 		String body = response.body().string();
 		response.close();
 		return JsonUtils.fromJson(body, Transactions.class);
-
 	}
-
 }

@@ -262,6 +262,8 @@ import com.authenteq.model.Transaction;
 import com.authenteq.model.TransactionModel;
 import com.authenteq.util.JsonUtils;
 import com.authenteq.util.KeyPairUtils;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.i2p.crypto.eddsa.EdDSAEngine;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
@@ -274,11 +276,10 @@ import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.interledger.cryptoconditions.types.Ed25519Sha256Condition;
 import org.interledger.cryptoconditions.types.Ed25519Sha256Fulfillment;
-import org.json.JSONObject;
 import org.junit.Test;
-import sun.security.util.KeyUtil;
 
 import java.security.*;
+import java.util.TreeMap;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -289,9 +290,10 @@ import static org.junit.Assert.assertNull;
  * The Class BigchaindbTransactionTest.
  */
 public class BigchaindbTransactionTest {
-    
+    private JsonParser jsonParser = new JsonParser();
+
     /** The Constant SHOULD_BE_FULFILMENT. */
-    static final String SHOULD_BE_FULFILMENT = "pGSAIOJUaCNTxPOZO2g7x0h6cFHt4LmgrN1LNGXh9q7IDOKxgUDSvX-fMwu6b-VdHQj9plPncX-XiS-VIgBWHPd13hNlB3G-C6grKqzHYGjEGvcJ_fcfD9wy-QHwN4hEfyvebkAM";
+    static final String SHOULD_BE_FULFILMENT = "pGSAIOJUaCNTxPOZO2g7x0h6cFHt4LmgrN1LNGXh9q7IDOKxgUAATCXo2r_eqIeRotaioUYOQzoaZTedmFMzQVfY4VOcCd5VO69SkFO3R6dJ8y-qQ0pEzuHDIOGKILoGOU87iWkI";
     
     /** The Constant JSON_REPR_SIGNED. */
     static final String JSON_REPR_SIGNED = "{\n" +
@@ -381,16 +383,16 @@ public class BigchaindbTransactionTest {
      */
     @Test
     public void transactionGenerationTest() throws Exception {
-        JSONObject data = new JSONObject();
-        data.put("expiration", "NLpPB8MpOkQLZJuyn4rXacdQBXOt4OAwQUSAEpipi2Y=\\n");
-        data.put("lat", "DP\\/p9q4D7L0IBZr53Dh98N1huD5BGG\\/nZ9zs\\/ydEUzc=\\n");
-        data.put("lon", "ZPleIXiR3W4RWzjrdXcqXDYUjPGGQn6JKmMF5OH7T6U=\\n");
-        data.put("firstname", "NLpPB8MpOkQLZJuyn4rXacdQBXOt4OAwQUSAEpipi2Y=\\n");
-        data.put("lastname", "N4iDURp+thKsn1Mn7csSoU63QJnJxqyz+VNOPUikMMk=\\n");
-        data.put("dob", "ZBJhOnJgC\\/E\\/iD2eyh15qWqD3jsyj+k9+2XIDJXvhEE=\\n");
-        data.put("sex", "lg52\\/gnwsTWdwUW4teyj4SGQOF7y5C435on9HtW3DwI=\\n");
-        data.put("nationality", "MjpcaVsVoR+5E5ov4Z2gAal1cUfYLUypL52nFqx7pyM=\\n");
-        data.put("idNumber", "hsDKi81fiXWuNHoZrzezzTMHykjDIrAtiPozzPTkkbM=\\n");
+        JsonObject data = new JsonObject();
+        data.addProperty("expiration", "NLpPB8MpOkQLZJuyn4rXacdQBXOt4OAwQUSAEpipi2Y=\\n");
+        data.addProperty("lat", "DP\\/p9q4D7L0IBZr53Dh98N1huD5BGG\\/nZ9zs\\/ydEUzc=\\n");
+        data.addProperty("lon", "ZPleIXiR3W4RWzjrdXcqXDYUjPGGQn6JKmMF5OH7T6U=\\n");
+        data.addProperty("firstname", "NLpPB8MpOkQLZJuyn4rXacdQBXOt4OAwQUSAEpipi2Y=\\n");
+        data.addProperty("lastname", "N4iDURp+thKsn1Mn7csSoU63QJnJxqyz+VNOPUikMMk=\\n");
+        data.addProperty("dob", "ZBJhOnJgC\\/E\\/iD2eyh15qWqD3jsyj+k9+2XIDJXvhEE=\\n");
+        data.addProperty("sex", "lg52\\/gnwsTWdwUW4teyj4SGQOF7y5C435on9HtW3DwI=\\n");
+        data.addProperty("nationality", "MjpcaVsVoR+5E5ov4Z2gAal1cUfYLUypL52nFqx7pyM=\\n");
+        data.addProperty("idNumber", "hsDKi81fiXWuNHoZrzezzTMHykjDIrAtiPozzPTkkbM=\\n");
 
         KeyPair keyPair = retrieveKeyPair();
 
@@ -405,20 +407,18 @@ public class BigchaindbTransactionTest {
                 (EdDSAPublicKey) keyPair.getPublic());
         Signature edDsaSigner = new EdDSAEngine(MessageDigest.getInstance("SHA-512"));
 
-        JSONObject rootObject = new JSONObject(bigchaindbTransaction.getTransactionJson().toString());
-        String fulfilmentVal = rootObject.getJSONArray("inputs").getJSONObject(0).getString("fulfillment");
-        rootObject.getJSONArray("inputs").getJSONObject(0).put("fulfillment", JSONObject.NULL);
+        JsonObject rootObject = jsonParser.parse( bigchaindbTransaction.getTransactionJson().toString()).getAsJsonObject();
+        String fulfilmentVal = rootObject.get("inputs").getAsJsonArray().get(0).getAsJsonObject().get("fulfillment").getAsString();
+        rootObject.get("inputs").getAsJsonArray().get(0).getAsJsonObject().add("fulfillment", null);
         edDsaSigner.initSign(keyPair.getPrivate());
         edDsaSigner.update(rootObject.toString().getBytes());
         byte[] signature = edDsaSigner.sign();
-        Ed25519Sha256Fulfillment fulfillment
-                = new Ed25519Sha256Fulfillment((EdDSAPublicKey) keyPair.getPublic(), signature);
-        assertEquals("4eff006ca203061d6bc1100959018f008c0f61a4b53c5d8a333159adf69a7c46", rootObject.getString("id"));
-        assertEquals("4eff006ca203061d6bc1100959018f008c0f61a4b53c5d8a333159adf69a7c46", bigchaindbTransaction.getTransactionId());
+        Ed25519Sha256Fulfillment fulfillment = new Ed25519Sha256Fulfillment((EdDSAPublicKey) keyPair.getPublic(), signature);
+        assertEquals("7a9f2830564b8d21acb1579a09c34904b694aeeabe670df20752d4d731ec96ea", rootObject.get("id").getAsString());
+        assertEquals("7a9f2830564b8d21acb1579a09c34904b694aeeabe670df20752d4d731ec96ea", bigchaindbTransaction.getTransactionId());
         assertEquals(SHOULD_BE_FULFILMENT, fulfilmentVal);
 
         assertTrue(fulfillment.verify(condition1, rootObject.toString().getBytes()));
-//        return rootObject.toString();
     }
 
     /**
@@ -428,10 +428,8 @@ public class BigchaindbTransactionTest {
      */
     @Test
     public void transactionFromJson() throws Exception {
-        TransactionModel transactionSigned
-                = TransactionModel.createFromJson(new JSONObject(JSON_REPR_SIGNED));
-        TransactionModel transactionUnsigned
-                = TransactionModel.createFromJson(new JSONObject(JSON_REPR_UNSIGNED));
+        TransactionModel transactionSigned = TransactionModel.createFromJson(jsonParser.parse(JSON_REPR_SIGNED).getAsJsonObject());
+        TransactionModel transactionUnsigned = TransactionModel.createFromJson(jsonParser.parse(JSON_REPR_UNSIGNED).getAsJsonObject());
 
         String publicEncoded = KeyPairUtils.encodePublicKeyInBase58(transactionSigned.getPublicKey());
         assertEquals(SHOULD_BE_PUBLIC_KEY, publicEncoded);
@@ -445,12 +443,13 @@ public class BigchaindbTransactionTest {
     @Test
     public void transactionMetaDataIsNull() {
         KeyPair alice = KeyPairUtils.generateNewKeyPair();
-        
+
+        TreeMap<String, String> assetData = new TreeMap<String, String>() {{ put( "owner", "alice" ); }};
         Transaction transaction = BigchainDbTransactionBuilder.init()
-                                      .addAsset( "owner", "alice" )
+                                      .addAssets( assetData, assetData.getClass() )
                                       .buildAndSignOnly( (EdDSAPublicKey) alice.getPublic(), (EdDSAPrivateKey) alice.getPrivate() );
 
-        assertTrue( transaction.toString().contains( "\"metadata\": null" ) );
+        assertTrue( transaction.toString().contains( "\"metadata\":null" ) );
         Transaction tx = JsonUtils.fromJson( transaction.toString(), Transaction.class );
         assertNull( tx.getMetaData() );
     }

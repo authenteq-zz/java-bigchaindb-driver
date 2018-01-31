@@ -7,6 +7,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.authenteq.AbstractTest;
 import org.junit.BeforeClass;
@@ -38,13 +40,21 @@ public class BlocksApiTest extends AbstractApiTest
 	@Test
 	public void testBlockSearch() throws InterruptedException {
 		try {
-		
-			Transaction transaction = BigchainDbTransactionBuilder.init().addAsset("middlename", "mname")
-					.addAsset("firstname", "John").addAsset("giddlename", "mname").addAsset("ziddlename", "mname")
-					.addAsset("lastname", "Smith").addMetaData("what", "My first BigchainDB transaction")
-					.operation(Operations.CREATE).buildAndSign((EdDSAPublicKey) Account.publicKeyFromHex(publicKey),
-							(EdDSAPrivateKey) Account.privateKeyFromHex(privateKey))
-					.sendTransaction();
+			Map<String, String> metaData = new TreeMap<String, String>() {{ put( "what", "My first BigchainDB transaction" ); }};
+			Map<String, String> assetData = new TreeMap<String, String>() {{
+				put( "middlename", "mname" );
+				put("firstname", "John");
+				put( "giddlename", "mname" );
+				put( "ziddlename", "mname" );
+				put( "lastname", "Smith" );
+			}};
+			
+			Transaction transaction = BigchainDbTransactionBuilder
+                      .init()
+                      .addAssets(assetData, TreeMap.class)
+                      .operation(Operations.CREATE)
+                      .buildAndSign((EdDSAPublicKey) Account.publicKeyFromHex(publicKey), (EdDSAPrivateKey) Account.privateKeyFromHex(privateKey))
+                      .sendTransaction();
 			
 			assertFalse(BlocksApi.getBlocks(transaction.getId(), BlockStatus.VALID).isEmpty());
 			

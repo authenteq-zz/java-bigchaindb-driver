@@ -4,12 +4,8 @@ import com.authenteq.annotations.Exclude;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.util.Map;
-import java.util.TreeMap;
 
-
-
-/**
+/*
  * The Class Asset.
  */
 public class Asset implements Serializable {
@@ -26,7 +22,11 @@ public class Asset implements Serializable {
 	
 	/** The data. */
 	@SerializedName("data")
-	private Map<String,String> data;
+	private Object data;
+
+	/** the data class the type of the data class needed for serialization/deserialization */
+	@Exclude
+	private Class dataClass;
 
 	/**
 	 * Instantiates a new asset.
@@ -37,9 +37,11 @@ public class Asset implements Serializable {
 	 * Instantiates a new asset.
 	 *
 	 * @param data the data
+	 * @param dataClass due to type erasure the data class needs to be provided for serialization/deserialization
 	 */
-	public Asset(Map<String,String> data) {
+	public Asset(Object data, Class dataClass ) {
 		this.data = data;
+		this.dataClass = dataClass;
 	}
 	
 	/**
@@ -47,17 +49,18 @@ public class Asset implements Serializable {
 	 *
 	 * @return the data
 	 */
-	public Map<String, String> getData() {
+	public Object getData() {
 		return data;
 	}
 
 	/**
-	 * Sets the data.
+	 * return the type of the Asset data class
 	 *
-	 * @param data the data
+	 * @return  the data class type
 	 */
-	public void setData(Map<String, String> data) {
-		this.data = data;
+	public Class getDataClass()
+	{
+		return dataClass;
 	}
 
 	/**
@@ -77,23 +80,4 @@ public class Asset implements Serializable {
 	public void setId(String id) {
 		this.id = id;
 	}
-	
-	
-	/**
-	 * Adds the asset.
-	 *
-	 * @param key the key
-	 * @param value the value
-	 * @return the asset
-	 */
-	public Asset addAsset(String key, String value) {
-		if(this.data == null) {
-			this.data = new TreeMap<String,String>();
-		}
-		this.data.put(key, value);
-		return this;
-	}
-	
-	
-
 }
