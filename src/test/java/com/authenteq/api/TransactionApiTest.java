@@ -1,8 +1,9 @@
 package com.authenteq.api;
 
-import com.authenteq.AbstractTest;
 import com.authenteq.builders.BigchainDbTransactionBuilder;
 import com.authenteq.constants.Operations;
+import com.authenteq.json.strategy.TransactionDeserializer;
+import com.authenteq.json.strategy.TransactionsDeserializer;
 import com.authenteq.model.Account;
 import com.authenteq.model.DataModel;
 import com.authenteq.model.GenericCallback;
@@ -11,11 +12,17 @@ import com.authenteq.util.JsonUtils;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
 import okhttp3.Response;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.security.KeyPair;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -51,15 +58,25 @@ public class TransactionApiTest extends AbstractApiTest
 		dummyAsset.setDescription("asset");
 
 		try {
-			
-			Transaction transaction = BigchainDbTransactionBuilder.init().addAsset("middlename", "mname")
-					.addAsset("firstname", "John").addAsset("giddlename", "mname").addAsset("ziddlename", "mname")
-					.addAsset("lastname", "Smith").addMetaData("what", "My first BigchainDB transaction")
-					.addAsset("aa", JsonUtils.toJson(dummyAsset))
-					.addMetaData("asa",JsonUtils.toJson(dummyAsset))
-					.operation(Operations.CREATE)
-					.buildAndSign((EdDSAPublicKey)Account.publicKeyFromHex(publicKey), (EdDSAPrivateKey)Account.privateKeyFromHex(privateKey))
-					.sendTransaction();
+			Map<String, String> metaData = new TreeMap<String, String>() {{
+				put( "what", "My first BigchainDB transaction" );
+				put( "aaa", JsonUtils.toJson( dummyAsset ));
+			}};
+			Map<String, String> assetData = new TreeMap<String, String>() {{
+				put("middlename", "mname");
+				put("firstname", "John");
+				put("giddlename", "mname");
+				put("ziddlename", "mname");
+				put("lastname", "Smith");
+				put("aa", JsonUtils.toJson(dummyAsset));
+			}};
+			Transaction transaction = BigchainDbTransactionBuilder
+				                          .init()
+				                          .addAssets(assetData, TreeMap.class)
+				                          .addMetaData(metaData)
+				                          .operation(Operations.CREATE)
+				                          .buildAndSign((EdDSAPublicKey)Account.publicKeyFromHex(publicKey), (EdDSAPrivateKey)Account.privateKeyFromHex(privateKey))
+				                          .sendTransaction();
 
 			assertNotNull(transaction.toString());
 		} catch (IOException e) {
@@ -81,7 +98,7 @@ public class TransactionApiTest extends AbstractApiTest
 			dummyMeta.setId("id");
 			dummyMeta.setDescription("meta");
 
-			Transaction transaction = BigchainDbTransactionBuilder.init().addAssets(dummyAsset).addMetaData(dummyMeta)
+			Transaction transaction = BigchainDbTransactionBuilder.init().addAssets(dummyAsset, ObjectDummy.class).addMetaData(dummyMeta)
 					.operation(Operations.CREATE)
 					.buildAndSign((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate())
 					.sendTransaction();
@@ -99,7 +116,13 @@ public class TransactionApiTest extends AbstractApiTest
 		net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
 		KeyPair keyPair = edDsaKpg.generateKeyPair();
 		try {
-			BigchainDbTransactionBuilder.init().addAsset("firstname", "alvin").addMetaData("what", "bigchaintrans")
+			Map<String, String> metaData = new TreeMap<String, String>() {{ put( "what", "bigchaintrans" ); }};
+			Map<String, String> assetData = new TreeMap<String, String>() {{
+				put("firstname", "alvin");
+			}};
+			BigchainDbTransactionBuilder.init()
+					.addAssets(assetData, TreeMap.class)
+                    .addMetaData(metaData)
 					.operation(Operations.CREATE)
 					.buildAndSign((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate())
 					.sendTransaction(new GenericCallback() {
@@ -127,6 +150,40 @@ public class TransactionApiTest extends AbstractApiTest
 		}
 	}
 
+	@Test
+	public void testPostTransactionOfObjectMetaDataUsingBuilder() {
+		net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
+		KeyPair keyPair = edDsaKpg.generateKeyPair();
+		try {
+			ObjectDummy dummyAsset = new ObjectDummy();
+			dummyAsset.setId("id");
+			dummyAsset.setDescription("asset");
+			System.out.println(dummyAsset.toMapString());
+
+			SomeMetaData metaData = new SomeMetaData();
+
+			Transaction transaction = BigchainDbTransactionBuilder
+				                          .init()
+				                          .addAssets(dummyAsset, ObjectDummy.class)
+				                          .addMetaData(metaData)
+                                          .operation(Operations.CREATE)
+                                          .buildAndSign((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate())
+                                          .sendTransaction();
+			assertNotNull(transaction.getId());
+
+			String jsonString = JsonUtils.toJson( transaction );
+			TransactionsDeserializer.setMetaDataClass( SomeMetaData.class );
+			TransactionDeserializer.setMetaDataClass( SomeMetaData.class );
+			Transaction x = JsonUtils.fromJson( jsonString,Transaction.class );
+			SomeMetaData resultMetaData = ( SomeMetaData) x.getMetaData();
+			Assert.assertEquals( 2, resultMetaData.porperty2.intValue() );
+			Assert.assertEquals( 3, resultMetaData.properties.size() );
+			Assert.assertEquals( "three", resultMetaData.properties.get( 2 ) );
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Test transaction by asset id create.
 	 */
@@ -145,7 +202,7 @@ public class TransactionApiTest extends AbstractApiTest
 			dummyMeta.setId("id");
 			dummyMeta.setDescription("meta");
 			
-			Transaction transaction = BigchainDbTransactionBuilder.init().addAssets(dummyAsset).addMetaData(dummyMeta)
+			Transaction transaction = BigchainDbTransactionBuilder.init().addAssets(dummyAsset, ObjectDummy.class).addMetaData(dummyMeta)
 					.operation(Operations.CREATE)
 					.buildAndSign((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate())
 					.sendTransaction();
@@ -183,6 +240,15 @@ public class TransactionApiTest extends AbstractApiTest
 		public void setDescription(String description) {
 			this.description = description;
 		}
+	}
 
+	public class SomeMetaData
+	{
+		public String property1 = "property1";
+		public Integer porperty2 = 2;
+		public BigDecimal property3 = new BigDecimal( "3.3" );
+		public int property4 = 4;
+		public ArrayList<String> properties = new ArrayList<String>() {{ add( "one" ); add( "two" ); add( "three"); }};
+		public Date date = new Date();
 	}
 }

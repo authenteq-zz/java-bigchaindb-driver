@@ -29,7 +29,6 @@ public class OutputsApiTest extends AbstractApiTest
 
 	/**
 	 * Test.
-	 * @throws InvalidKeySpecException 
 	 */
 	@Test
 	public void testOutput() throws InvalidKeySpecException {

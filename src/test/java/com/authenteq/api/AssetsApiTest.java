@@ -4,18 +4,18 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.security.KeyPair;
+import java.util.Map;
+import java.util.TreeMap;
 
-import com.authenteq.AbstractTest;
 import com.authenteq.builders.BigchainDbTransactionBuilder;
+import com.authenteq.json.strategy.AssetSerializer;
+import com.authenteq.model.Asset;
 import com.authenteq.model.Assets;
 import com.authenteq.model.StatusCode;
 import com.authenteq.model.Transaction;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
-import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.authenteq.builders.BigchainDbConfigBuilder;
 
 import static org.junit.Assert.assertEquals;
 
@@ -24,7 +24,6 @@ import static org.junit.Assert.assertEquals;
  */
 public class AssetsApiTest extends AbstractApiTest
 {
-
 	/**
 	 * Test asset search.
 	 */
@@ -37,10 +36,11 @@ public class AssetsApiTest extends AbstractApiTest
 			// create transaction with unique asset
 			net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
 			KeyPair alice = edDsaKpg.generateKeyPair();
+			TreeMap<String, String> assetData = new TreeMap<String, String>() {{ put( "uuid", uuid ); }};
 
 			Transaction transaction = BigchainDbTransactionBuilder
 				                          .init()
-				                          .addAsset( "uuid", uuid )
+				                          .addAssets( assetData, Map.class )
 				                          .buildAndSign( (EdDSAPublicKey) alice.getPublic(), (EdDSAPrivateKey) alice.getPrivate() )
 				                          .sendTransaction();
 			assertEquals( StatusCode.VALID, getStatus( transaction ).getStatus() );    // wait for the transaction to be marked VALID

@@ -4,6 +4,9 @@ jdk:
   - oraclejdk8
 install: true
 
+before_script:
+  - mvn install:install-file -Dfile=$TRAVIS_BUILD_DIR/libs/java-crypto-conditions-2.0.0-SNAPSHOT.jar -DgroupId=org.interledger -DartifactId=java-crypto-conditions -Dversion=2.0.0-SNAPSHOT -Dpackaging=jar
+
 branches:
   only:
   - master
