@@ -129,7 +129,7 @@ public class BigchainDbConfigBuilder {
 			BigChainDBGlobals.setBaseUrl(this.baserUrl + "/api" + BigchainDbApi.API_VERSION);
 			BigChainDBGlobals.setWsSocketUrl(this.baserUrl + "/api" + BigchainDbApi.API_VERSION + BigchainDbApi.STREAMS);
 			
-			if (this.httpClient == null) {
+			if (this.httpClient == null && BigChainDBGlobals.getHttpClient() == null ) {
 				BigChainDBGlobals.setHttpClient(buildDefaultHttpClient());
 			}
 
