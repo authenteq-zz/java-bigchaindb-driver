@@ -36,6 +36,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.jcajce.provider.digest.SHA3;
 import org.interledger.cryptoconditions.types.Ed25519Sha256Condition;
 import org.interledger.cryptoconditions.types.Ed25519Sha256Fulfillment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.security.*;
 import java.util.ArrayList;
@@ -45,7 +47,9 @@ import java.util.List;
  * The Class Transaction.
  */
 public class TransactionModel {
-	
+
+	private static final Logger log = LoggerFactory.getLogger( TransactionModel.class );
+
 	/** The public key. */
 	private EdDSAPublicKey publicKey;
 	
@@ -155,7 +159,7 @@ public class TransactionModel {
 		}
 		
 		transactionJson = rootObject;
-		System.out.println(transactionJson.toString());
+		log.debug( transactionJson.toString() );
 	}
 
 	/**

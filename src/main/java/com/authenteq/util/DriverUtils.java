@@ -24,6 +24,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * The Class DriverUtils.
  */
@@ -82,7 +85,7 @@ public class DriverUtils {
 
 	    JsonObject json = new JsonObject();
 
-        for( String key: input.keySet() ) {
+        for( String key: input.keySet().stream().sorted().collect( Collectors.toList() ) ) {
             JsonElement j = input.get(key);
             if (j instanceof JsonObject) {
                 json.add(key, makeSelfSortingGson((JsonObject) j));

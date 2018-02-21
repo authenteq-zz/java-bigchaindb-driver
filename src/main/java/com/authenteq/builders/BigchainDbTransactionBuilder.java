@@ -6,7 +6,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Signature;
 import java.security.SignatureException;
-import java.util.logging.Logger;
 
 import com.authenteq.json.strategy.TransactionDeserializer;
 import com.authenteq.json.strategy.TransactionsDeserializer;
@@ -31,12 +30,13 @@ import com.authenteq.util.KeyPairUtils;
 import net.i2p.crypto.eddsa.EdDSAEngine;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Class BigchainDbTransactionBuilder.
  */
 public class BigchainDbTransactionBuilder {
-	private static final Logger LOGGER = Logger.getLogger( BigchainDbTransactionBuilder.class.getName() );
+	private static final org.slf4j.Logger log = LoggerFactory.getLogger( BigchainDbTransactionBuilder.class );
 	
 	/**
 	 * Instantiates a new bigchain db transaction builder.
@@ -362,7 +362,7 @@ public class BigchainDbTransactionBuilder {
 			this.transaction.setVersion("1.0");
 
 			String temp = this.transaction.toHashInput();
-			LOGGER.info( "TO BE HASHED ---->\n" + temp + "\n<" );
+			log.debug( "TO BE HASHED ---->\n" + temp + "\n<" );
 			JsonObject transactionJObject = DriverUtils.makeSelfSortingGson( temp );
 
 			SHA3.DigestSHA3 md = new SHA3.DigestSHA3(256);

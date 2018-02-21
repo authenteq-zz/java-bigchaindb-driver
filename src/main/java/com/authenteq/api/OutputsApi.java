@@ -6,18 +6,16 @@ import com.authenteq.model.Outputs;
 import com.authenteq.util.JsonUtils;
 import com.authenteq.util.NetworkUtils;
 import okhttp3.Response;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.logging.Logger;
-
-
 
 /**
  * The Class OutputsApi.
  */
 public class OutputsApi {
 
-	private static final Logger LOGGER = Logger.getLogger(OutputsApi.class.getName());
+	private static final org.slf4j.Logger log = LoggerFactory.getLogger( OutputsApi.class );
 	/**
 	 * Gets the outputs.
 	 *
@@ -26,7 +24,7 @@ public class OutputsApi {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static Outputs getOutputs(String publicKey) throws IOException { 
-		LOGGER.info("getOutputs Call :" + publicKey);
+		log.debug( "getOutputs Call :" + publicKey );
 		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.OUTPUTS + "?public_key="+ publicKey);
 		String body = response.body().string();
 		response.close();
@@ -41,7 +39,7 @@ public class OutputsApi {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static Outputs getSpentOutputs(String publicKey) throws IOException { 
-		LOGGER.info("getSpentOutputs Call :" + publicKey);
+		log.debug( "getSpentOutputs Call :" + publicKey );
 		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.OUTPUTS + "?public_key="+ publicKey+ "&spent=true");
 		String body = response.body().string();
 		response.close();
