@@ -1,15 +1,26 @@
 package com.authenteq.api;
 
 import java.io.IOException;
+import java.security.KeyPair;
+import java.util.List;
 
 import com.authenteq.AbstractTest;
+import com.authenteq.builders.BigchainDbTransactionBuilder;
+import com.authenteq.constants.BlockStatus;
+import com.authenteq.constants.Operations;
+import com.authenteq.model.Status;
 import com.authenteq.model.StatusCode;
+import com.authenteq.model.Transaction;
+import net.i2p.crypto.eddsa.EdDSAPrivateKey;
+import net.i2p.crypto.eddsa.EdDSAPublicKey;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.authenteq.builders.BigchainDbConfigBuilder;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -25,9 +36,24 @@ public class StatusesApiTest extends AbstractApiTest
 
 	@Test
 	public void getTransactionStatusSuccessfully() throws IOException, StatusException {
-		StatusCode status = StatusesApi.getTransactionStatus("829752491efa070476431d7cb77ddd53eeb7916e8f01ef5bd7580bf731f799e3").getStatus();
+		net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
+		KeyPair keyPair = edDsaKpg.generateKeyPair();
+		try {
+			ObjectDummy dummyAsset = new ObjectDummy();
+			dummyAsset.setId("id");
+			dummyAsset.setDescription("asset");
 
-		assertThat(status.statusCode(), is("valid"));
+			Transaction transaction = BigchainDbTransactionBuilder.init()
+			                                                      .addAssets(dummyAsset, AbstractApiTest.ObjectDummy.class )
+			                                                      .operation(Operations.CREATE)
+			                                                      .buildAndSign((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate())
+			                                                      .sendTransaction();
+			assertNotNull( transaction.getId() );
+			Status txStatus = getStatus( transaction );
+			assertEquals( StatusCode.VALID, txStatus.getStatus() );
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Test(expected = StatusException.class)
@@ -37,8 +63,28 @@ public class StatusesApiTest extends AbstractApiTest
 
 	@Test
 	public void getBlockStatusSuccessfully() throws IOException, StatusException {
-		StatusCode status = StatusesApi.getBlockStatus("1929586867cb7d531d9de001de0370ecfab72c84f5a157cc51fa288445cb5605").getStatus();
+		net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
+		KeyPair keyPair = edDsaKpg.generateKeyPair();
+		try {
+			ObjectDummy dummyAsset = new ObjectDummy();
+			dummyAsset.setId("id");
+			dummyAsset.setDescription("asset");
 
-		assertThat(status.statusCode(), is("valid"));
+			Transaction transaction = BigchainDbTransactionBuilder.init()
+			                                                      .addAssets(dummyAsset, AbstractApiTest.ObjectDummy.class )
+			                                                      .operation(Operations.CREATE)
+			                                                      .buildAndSign((EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate())
+			                                                      .sendTransaction();
+			assertNotNull( transaction.getId() );
+			Status txStatus = getStatus( transaction );
+			assertEquals( StatusCode.VALID, txStatus.getStatus() );
+
+			List<String> blocks = BlocksApi.getBlocks( transaction.getId(), BlockStatus.VALID );
+			assertEquals( blocks.size(), 1 );
+			StatusCode bStatus = StatusesApi.getBlockStatus(blocks.get( 0 )).getStatus();
+			assertThat( bStatus, is( StatusCode.VALID ));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -293,7 +293,7 @@ public class BigchaindbTransactionTest {
     private JsonParser jsonParser = new JsonParser();
 
     /** The Constant SHOULD_BE_FULFILMENT. */
-    static final String SHOULD_BE_FULFILMENT = "pGSAIOJUaCNTxPOZO2g7x0h6cFHt4LmgrN1LNGXh9q7IDOKxgUAATCXo2r_eqIeRotaioUYOQzoaZTedmFMzQVfY4VOcCd5VO69SkFO3R6dJ8y-qQ0pEzuHDIOGKILoGOU87iWkI";
+    static final String SHOULD_BE_FULFILMENT = "pGSAIOJUaCNTxPOZO2g7x0h6cFHt4LmgrN1LNGXh9q7IDOKxgUB2Dd0EcnZnpKG6m-j6Fb5fxoFODZNPXUYBsWQ-16unDk9fbCPN4m5OG34dL6pzgGH9Xk1aPv1bYozH7c-E_4MD";
     
     /** The Constant JSON_REPR_SIGNED. */
     static final String JSON_REPR_SIGNED = "{\n" +
@@ -414,8 +414,9 @@ public class BigchaindbTransactionTest {
         edDsaSigner.update(rootObject.toString().getBytes());
         byte[] signature = edDsaSigner.sign();
         Ed25519Sha256Fulfillment fulfillment = new Ed25519Sha256Fulfillment((EdDSAPublicKey) keyPair.getPublic(), signature);
-        assertEquals("7a9f2830564b8d21acb1579a09c34904b694aeeabe670df20752d4d731ec96ea", rootObject.get("id").getAsString());
-        assertEquals("7a9f2830564b8d21acb1579a09c34904b694aeeabe670df20752d4d731ec96ea", bigchaindbTransaction.getTransactionId());
+
+        assertEquals("42cbe3b7c33257f4ac3e6805c7d720a64093393ea929a8666fa11e171b3e6515", rootObject.get("id").getAsString());
+        assertEquals("42cbe3b7c33257f4ac3e6805c7d720a64093393ea929a8666fa11e171b3e6515", bigchaindbTransaction.getTransactionId());
         assertEquals(SHOULD_BE_FULFILMENT, fulfilmentVal);
 
         assertTrue(fulfillment.verify(condition1, rootObject.toString().getBytes()));

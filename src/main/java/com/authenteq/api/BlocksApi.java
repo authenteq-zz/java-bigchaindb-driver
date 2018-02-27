@@ -8,10 +8,10 @@ import com.authenteq.util.JsonUtils;
 import com.authenteq.util.NetworkUtils;
 import com.google.gson.reflect.TypeToken;
 import okhttp3.Response;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Logger;
 
 
 
@@ -20,8 +20,7 @@ import java.util.logging.Logger;
  */
 public class BlocksApi {
 
-	
-	private static final Logger LOGGER = Logger.getLogger(BlocksApi.class.getName());
+	private static final org.slf4j.Logger log = LoggerFactory.getLogger( BlocksApi.class );
 	
 	/**
 	 * Gets the block.
@@ -31,7 +30,7 @@ public class BlocksApi {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static Block getBlock(String blockId) throws IOException { 
-		LOGGER.info("getBlock Call :" + blockId);
+		log.debug( "getBlock Call :" + blockId );
 		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.BLOCKS + "/"+ blockId);
 		String body = response.body().string();
 		response.close();
@@ -47,7 +46,7 @@ public class BlocksApi {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static List<String> getBlocks(String transactionId, BlockStatus status) throws IOException {
-		LOGGER.info("getBlocks Call :" + transactionId + " status " + status);
+		log.debug( "getBlocks Call :" + transactionId + " status " + status );
 		Response response = NetworkUtils.sendGetRequest(BigChainDBGlobals.getBaseUrl() + BigchainDbApi.BLOCKS + "?transaction_id="+transactionId+"&status="+status);
 		String body = response.body().string();
 		response.close();

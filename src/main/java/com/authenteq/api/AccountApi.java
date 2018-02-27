@@ -6,33 +6,33 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.logging.Logger;
 
 import com.authenteq.model.Account;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
 import net.i2p.crypto.eddsa.Utils;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Class AccountApi.
  */
 public class AccountApi extends AbstractApi {
-	
-	
-	private static final Logger LOGGER = Logger.getLogger(AccountApi.class.getName());
+
+	private static final org.slf4j.Logger log = LoggerFactory.getLogger( AccountApi.class );
+
 	/**
 	 * Creates the account.
 	 *
 	 * @return the account
 	 */
 	public static Account createAccount() {
-		LOGGER.info("createAccount Call");
+		log.debug( "createAccount Call" );
 		Account newAccount = new Account();
 		net.i2p.crypto.eddsa.KeyPairGenerator edDsaKpg = new net.i2p.crypto.eddsa.KeyPairGenerator();
 		KeyPair keyPair = edDsaKpg.generateKeyPair();
 		newAccount.setPrivateKey(keyPair.getPrivate());
 		newAccount.setPublicKey(keyPair.getPublic());
-		LOGGER.info("createAccount Call : " + newAccount.getPublicKey().toString());
+		log.debug( "createAccount Call : " + newAccount.getPublicKey().toString() );
 		return newAccount;
 	}
 
@@ -48,7 +48,7 @@ public class AccountApi extends AbstractApi {
 	 *             the invalid key spec exception
 	 */
 	public static Account loadAccount(String publicKey, String privateKey) throws InvalidKeySpecException {
-		LOGGER.info("loadAccount Call");
+		log.debug( "loadAccount Call" );
 		Account newAccount = new Account();
 
 		final X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(Utils.hexToBytes(publicKey));
@@ -60,7 +60,7 @@ public class AccountApi extends AbstractApi {
 		KeyPair keyPair = new KeyPair(pubKey, privKey);
 		newAccount.setPrivateKey(keyPair.getPrivate());
 		newAccount.setPublicKey(keyPair.getPublic());
-		LOGGER.info("loadAccount Call : " + newAccount.getPublicKey().toString());
+		log.debug( "loadAccount Call : " + newAccount.getPublicKey().toString() );
 		return newAccount;
 	}
 

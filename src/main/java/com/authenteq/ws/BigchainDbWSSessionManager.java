@@ -1,7 +1,6 @@
 package com.authenteq.ws;
 
 import java.net.URI;
-import java.util.logging.Logger;
 
 import javax.websocket.ClientEndpoint;
 import javax.websocket.CloseReason;
@@ -12,7 +11,8 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
 import com.authenteq.util.ScannerUtil;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Class BigchainDbWSSessionManager.
@@ -20,10 +20,10 @@ import com.authenteq.util.ScannerUtil;
 @ClientEndpoint
 public class BigchainDbWSSessionManager {
 	
-	private final static Logger LOGGER = Logger.getLogger(BigchainDbWSSessionManager.class.getName());
+	private static final Logger log = LoggerFactory.getLogger( BigchainDbWSSessionManager.class );
 
 	/** The user session. */
-	Session userSession = null;
+	private Session userSession = null;
 	
 	/** The message handler. */
 	private MessageHandler messageHandler;
@@ -55,7 +55,7 @@ public class BigchainDbWSSessionManager {
 	 */
 	@OnOpen
 	public void onOpen(Session userSession) {
-		LOGGER.info("Opening Websocket");
+		log.debug( "Opening Websocket" );
 		this.userSession = userSession;
 	}
 
@@ -69,7 +69,7 @@ public class BigchainDbWSSessionManager {
 	 */
 	@OnClose
 	public void onClose(Session userSession, CloseReason reason) {
-		LOGGER.info("Closing Websocket");
+		log.debug( "Closing Websocket" );
 		this.userSession = null;
 	}
 
@@ -82,7 +82,7 @@ public class BigchainDbWSSessionManager {
 	 */
 	@OnMessage
 	public void onMessage(String message) {
-		LOGGER.info(message);
+		log.debug( message );
 		if (this.messageHandler != null) {
 			this.messageHandler.handleMessage(message);
 		}
