@@ -13,3 +13,4 @@ branches:
 
 script:
   - mvn clean install
+  - ./gradlew clean install
