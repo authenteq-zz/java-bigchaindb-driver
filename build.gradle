@@ -3,8 +3,8 @@ apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'checkstyle'
 
-targetCompatibility = 1.7
-sourceCompatibility = 1.7
+targetCompatibility = 1.8
+sourceCompatibility = 1.8
 
 group = 'com.authenteq'
 version = '0.1'
@@ -24,15 +24,17 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: '*.jar')
 
-    compile 'net.i2p.crypto:eddsa:0.2.0'
-    compile 'org.bouncycastle:bcprov-jdk15on:1.58'
-    compile 'com.google.code.gson:gson:2.7'
     compile 'com.squareup.okhttp3:okhttp:3.9.0'
+    compile 'net.i2p.crypto:eddsa:0.2.0'
+    compile 'commons-codec:commons-codec:1.10'
+    compile 'com.google.code.gson:gson:2.8.2'
     compile 'org.slf4j:slf4j-api:1.7.25'
+    compile 'org.bouncycastle:bcprov-jdk15on:1.58'
     compile 'org.glassfish.tyrus.bundles:tyrus-standalone-client:1.9'
-    compile group: 'commons-codec', name: 'commons-codec', version: '1.10'
-    testCompile 'junit:junit:4.12'
-}
+    compile 'org.interledger:java-crypto-conditions:2.0.0-SNAPSHOT'
 
+    testCompile 'org.apache.logging.log4j:log4j-core:2.9.1'
+    testCompile 'org.slf4j:slf4j-log4j12:1.7.25'
+
+}

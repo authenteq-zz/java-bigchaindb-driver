@@ -85,7 +85,7 @@ public class DriverUtils {
 
 	    JsonObject json = new JsonObject();
 
-        for( String key: input.keySet().stream().sorted().collect( Collectors.toList() ) ) {
+        input.keySet().stream().sorted().forEach(key -> {
             JsonElement j = input.get(key);
             if (j instanceof JsonObject) {
                 json.add(key, makeSelfSortingGson((JsonObject) j));
@@ -105,7 +105,7 @@ public class DriverUtils {
             } else {
                 json.add(key, j);
             }
-        }
+        });
 
         return json;
     }
