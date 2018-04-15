@@ -1,5 +1,6 @@
 package com.authenteq.api;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -20,6 +21,7 @@ import com.authenteq.builders.BigchainDbTransactionBuilder;
 import com.authenteq.constants.BlockStatus;
 import com.authenteq.constants.Operations;
 import com.authenteq.model.Account;
+import com.authenteq.model.StatusCode;
 import com.authenteq.model.Transaction;
 
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
@@ -35,7 +37,7 @@ public class BlocksApiTest extends AbstractApiTest
 
 	/**
 	 * Test asset search.
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
 	@Test
 	public void testBlockSearch() throws InterruptedException {
@@ -48,17 +50,18 @@ public class BlocksApiTest extends AbstractApiTest
 				put( "ziddlename", "mname" );
 				put( "lastname", "Smith" );
 			}};
-			
+
 			Transaction transaction = BigchainDbTransactionBuilder
                       .init()
                       .addAssets(assetData, TreeMap.class)
                       .operation(Operations.CREATE)
                       .buildAndSign((EdDSAPublicKey) Account.publicKeyFromHex(publicKey), (EdDSAPrivateKey) Account.privateKeyFromHex(privateKey))
                       .sendTransaction();
-			
+
+			assertEquals(StatusCode.VALID, getStatus(transaction).getStatus());
 			assertFalse(BlocksApi.getBlocks(transaction.getId(), BlockStatus.VALID).isEmpty());
-			
-		} catch (IOException | InvalidKeySpecException e) {
+
+		} catch (IOException | InvalidKeySpecException | StatusException e) {
 			e.printStackTrace();
 		}
 	}

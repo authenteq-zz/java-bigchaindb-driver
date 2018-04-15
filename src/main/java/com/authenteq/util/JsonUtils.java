@@ -7,6 +7,7 @@ import com.google.gson.*;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 /**
  * Utility class for handling JSON serialization and deserialization.
@@ -35,7 +36,7 @@ public class JsonUtils {
 	 */
 	private JsonUtils() {
 	}
-	
+
 	private static synchronized GsonBuilder base()
 	{
 		GsonBuilder builder = new GsonBuilder();
@@ -58,11 +59,8 @@ public class JsonUtils {
 	public static Gson getGson() {
 		GsonBuilder builder = base();
 
-		for( TypeAdapter value : typeAdaptersDeserialize.values() )
-			builder.registerTypeAdapter( value.getType(), value.getSerializer() );
-
-		for( TypeAdapter value : typeAdaptersSerialize.values() )
-			builder.registerTypeAdapter( value.getType(), value.getSerializer() );
+		Stream.concat(typeAdaptersDeserialize.values().stream(), typeAdaptersSerialize.values().stream())
+				.forEach(value -> builder.registerTypeAdapter(value.getType(), value.getSerializer()));
 
 		return builder.create();
 	}
@@ -83,18 +81,9 @@ public class JsonUtils {
 	{
 		GsonBuilder builder = base();
 
-		for( TypeAdapter value : typeAdaptersDeserialize.values() ) {
-			if( ignoreClass != null && value.getType().equals( ignoreClass ) )
-				continue;
-			builder.registerTypeAdapter( value.getType(), value.getSerializer() );
-		}
-
-		for( TypeAdapter value : typeAdaptersSerialize.values() ) {
-			if( ignoreClass != null && value.getType().equals( ignoreClass ) )
-				continue;
-
-			builder.registerTypeAdapter( value.getType(), value.getSerializer() );
-		}
+		Stream.concat(typeAdaptersDeserialize.values().stream(), typeAdaptersSerialize.values().stream())
+				.filter(value -> !value.getType().equals(ignoreClass))
+				.forEach(value -> builder.registerTypeAdapter(value.getType(), value.getSerializer()));
 
 		return builder.setExclusionStrategies( exclusionStrategies ).create();
 	}
@@ -171,7 +160,7 @@ public class JsonUtils {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
