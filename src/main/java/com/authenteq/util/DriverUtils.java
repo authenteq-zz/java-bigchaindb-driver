@@ -80,7 +80,7 @@ public class DriverUtils {
         if (input == null)
             return null;
 
-	    JsonObject json = new JsonObject();
+        JsonObject json = new JsonObject();
 
         input.keySet().stream().sorted().forEach(key -> {
             JsonElement j = input.get(key);
