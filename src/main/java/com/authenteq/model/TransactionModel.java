@@ -33,7 +33,6 @@ import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
 import net.i2p.crypto.eddsa.spec.EdDSAParameterSpec;
 import net.i2p.crypto.eddsa.spec.EdDSAPublicKeySpec;
 import org.apache.commons.codec.binary.Base64;
-import org.bouncycastle.jcajce.provider.digest.SHA3;
 import org.interledger.cryptoconditions.types.Ed25519Sha256Condition;
 import org.interledger.cryptoconditions.types.Ed25519Sha256Fulfillment;
 import org.slf4j.Logger;
@@ -121,7 +120,7 @@ public class TransactionModel {
 			}
 
 			rootObject.addProperty("operation", "CREATE");
-			rootObject.addProperty("version", "1.0");
+			rootObject.addProperty("version", "2.0");
 			asset.add("data", data);
 			rootObject.add("asset", asset);
 
@@ -147,13 +146,7 @@ public class TransactionModel {
 			inputsArr.add(inputs);
 			rootObject.add("inputs", inputsArr);
 
-			// getting SHA3 hash of the current JSON object
-			SHA3.DigestSHA3 md = new SHA3.DigestSHA3(256);
-			md.update(rootObject.toString().getBytes());
-			String id = DriverUtils.getHex(md.digest());
-
-			// putting the hash as id field
-			rootObject.addProperty("id", id);
+			rootObject.add("id", null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -181,14 +174,23 @@ public class TransactionModel {
 	 */
 	public void signTransaction(EdDSAPrivateKey privateKey) throws InvalidKeyException, SignatureException {
 		try {
+			// hashing the transaction
+			byte[] sha3Hash = DriverUtils.getSha3HashRaw(transactionJson.toString().getBytes());
+
 			// signing the transaction
 			Signature edDsaSigner = new EdDSAEngine(MessageDigest.getInstance("SHA-512"));
 			edDsaSigner.initSign(privateKey);
-			edDsaSigner.update(transactionJson.toString().getBytes());
+			edDsaSigner.update(sha3Hash);
 			byte[] signature = edDsaSigner.sign();
 			Ed25519Sha256Fulfillment fulfillment = new Ed25519Sha256Fulfillment(publicKey, signature);
 			JsonObject inputs = transactionJson.get("inputs").getAsJsonArray().get( 0 ).getAsJsonObject();//   getJsonArray("inputs").getJSONObject(0);
 			inputs.addProperty("fulfillment", Base64.encodeBase64URLSafeString(fulfillment.getEncoded()));
+
+
+		    String id = DriverUtils.getSha3HashHex(transactionJson.toString().getBytes());
+
+			// putting the hash as id field
+			transactionJson.addProperty("id", id);
 			signed = true;
 		} catch ( NoSuchAlgorithmException e) {
 			e.printStackTrace();

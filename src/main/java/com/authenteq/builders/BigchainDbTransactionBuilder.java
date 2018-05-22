@@ -1,36 +1,26 @@
 package com.authenteq.builders;
 
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.Signature;
-import java.security.SignatureException;
-
-import com.authenteq.json.strategy.TransactionDeserializer;
-import com.authenteq.json.strategy.TransactionsDeserializer;
-import com.google.gson.*;
-import org.apache.commons.codec.binary.Base64;
-import org.bouncycastle.jcajce.provider.digest.SHA3;
-import org.interledger.cryptoconditions.types.Ed25519Sha256Condition;
-import org.interledger.cryptoconditions.types.Ed25519Sha256Fulfillment;
 import com.authenteq.api.TransactionsApi;
 import com.authenteq.constants.Operations;
-import com.authenteq.model.Asset;
-import com.authenteq.model.Condition;
-import com.authenteq.model.Details;
-import com.authenteq.model.FulFill;
-import com.authenteq.model.Input;
-import com.authenteq.model.Output;
-import com.authenteq.model.Transaction;
-import com.authenteq.model.GenericCallback;
+import com.authenteq.json.strategy.TransactionDeserializer;
+import com.authenteq.json.strategy.TransactionsDeserializer;
+import com.authenteq.model.*;
 import com.authenteq.util.DriverUtils;
 import com.authenteq.util.JsonUtils;
 import com.authenteq.util.KeyPairUtils;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializer;
 import net.i2p.crypto.eddsa.EdDSAEngine;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
+import org.apache.commons.codec.binary.Base64;
+import org.interledger.cryptoconditions.types.Ed25519Sha256Condition;
+import org.interledger.cryptoconditions.types.Ed25519Sha256Fulfillment;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.security.*;
 
 /**
  * The Class BigchainDbTransactionBuilder.
@@ -359,16 +349,9 @@ public class BigchainDbTransactionBuilder {
 
 			this.transaction.setAsset(new Asset(this.assets, this.assetsDataClass));
 			this.transaction.setMetaData(this.metadata);
-			this.transaction.setVersion("1.0");
+			this.transaction.setVersion("2.0");
 
-			String temp = this.transaction.toHashInput();
-			log.debug( "TO BE HASHED ---->\n" + temp + "\n<" );
-			JsonObject transactionJObject = DriverUtils.makeSelfSortingGson( temp );
-
-			SHA3.DigestSHA3 md = new SHA3.DigestSHA3(256);
-			md.update(transactionJObject.toString().getBytes());
-			String id = DriverUtils.getHex(md.digest());
-			this.transaction.setId(id);
+			this.transaction.setId(null);
 
 			return this;
 		}
@@ -388,16 +371,25 @@ public class BigchainDbTransactionBuilder {
 		private void sign(EdDSAPrivateKey privateKey)
 				throws InvalidKeyException, SignatureException, NoSuchAlgorithmException {
 
+			String temp = this.transaction.toHashInput();
+			log.debug( "TO BE HASHED ---->\n" + temp + "\n<" );
+			JsonObject transactionJObject = DriverUtils.makeSelfSortingGson( temp );
+
+			byte[] sha3Hash = DriverUtils.getSha3HashRaw(transactionJObject.toString().getBytes());
+
 			// signing the transaction
-			JsonObject transactionJObject = DriverUtils.makeSelfSortingGson(this.transaction.toString());
 			Signature edDsaSigner = new EdDSAEngine(MessageDigest.getInstance("SHA-512"));
 			edDsaSigner.initSign(privateKey);
-			edDsaSigner.update(transactionJObject.toString().getBytes());
+			edDsaSigner.update(sha3Hash);
 			byte[] signature = edDsaSigner.sign();
 			Ed25519Sha256Fulfillment fulfillment = new Ed25519Sha256Fulfillment(this.publicKey, signature);
 			this.transaction.getInputs().get(0)
 					.setFullFillment(Base64.encodeBase64URLSafeString(fulfillment.getEncoded()));
 			this.transaction.setSigned(true);
+
+			String id = DriverUtils.getSha3HashHex(
+					DriverUtils.makeSelfSortingGson( this.transaction.toHashInput() ).toString().getBytes());
+			this.transaction.setId(id);
 		}
 
 		/*
