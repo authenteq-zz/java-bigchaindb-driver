@@ -11,6 +11,7 @@
 | BigchainDB Server | BigchainDB Java Driver |
 | ----------------- |------------------------------|
 | `1.0`             | `0.1.x`                      |
+| `2.0`             | `0.2.x`                      |
 
 
 ## Contents

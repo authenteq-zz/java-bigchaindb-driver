@@ -20,7 +20,7 @@ public class Transaction implements Serializable {
 
 	/** The id. */
 	@SerializedName("id")
-	private String id;
+	private String id = null;
 
 	/** The inputs. */
 	@SerializedName("inputs")

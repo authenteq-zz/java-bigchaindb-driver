@@ -23,6 +23,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.bouncycastle.jcajce.provider.digest.SHA3;
 
 /**
  * The Class DriverUtils.
@@ -117,5 +118,18 @@ public class DriverUtils {
      */
     public static JsonObject getSelfSortingJson() {
         return makeSelfSortingGson(new JsonObject());
+    }
+
+    public static byte[] getSha3HashRaw(byte[] input) {
+        SHA3.DigestSHA3 md = new SHA3.DigestSHA3(256); //same as DigestSHA3 md = new SHA3.Digest256();
+        md.update(input);
+        return md.digest();
+    }
+
+    public static String getSha3HashHex(byte[] input) {
+        SHA3.DigestSHA3 md = new SHA3.DigestSHA3(256); //same as DigestSHA3 md = new SHA3.Digest256();
+        md.update(input);
+        String id = getHex(md.digest());
+        return id;
     }
 }

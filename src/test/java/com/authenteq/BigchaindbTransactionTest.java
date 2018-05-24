@@ -258,27 +258,25 @@
 package com.authenteq;
 
 import com.authenteq.builders.BigchainDbTransactionBuilder;
+import com.authenteq.model.DataModel;
 import com.authenteq.model.Transaction;
 import com.authenteq.model.TransactionModel;
+import com.authenteq.util.Base58;
 import com.authenteq.util.JsonUtils;
 import com.authenteq.util.KeyPairUtils;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.i2p.crypto.eddsa.EdDSAEngine;
 import net.i2p.crypto.eddsa.EdDSAPrivateKey;
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
 import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
 import net.i2p.crypto.eddsa.spec.EdDSAParameterSpec;
 import net.i2p.crypto.eddsa.spec.EdDSAPrivateKeySpec;
 import net.i2p.crypto.eddsa.spec.EdDSAPublicKeySpec;
-
 import org.apache.commons.codec.binary.Base64;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.interledger.cryptoconditions.types.Ed25519Sha256Condition;
-import org.interledger.cryptoconditions.types.Ed25519Sha256Fulfillment;
 import org.junit.Test;
 
-import java.security.*;
+import java.security.KeyPair;
+import java.security.Security;
 import java.util.TreeMap;
 
 import static junit.framework.Assert.assertEquals;
@@ -291,6 +289,8 @@ import static org.junit.Assert.assertNull;
  */
 public class BigchaindbTransactionTest {
     private JsonParser jsonParser = new JsonParser();
+
+    static final String RESULT_TRANSACTION = "{\"asset\":{\"data\":{\"asset\":\"asset_example\"}},\"id\":\"6a6353a96b51d5a484045f6f3b913b8744a90a8c128679707ac44d75cc691646\",\"inputs\":[{\"fulfillment\":\"pGSAIMeJTkEhTtqg1aStJMUpeiE47sfVGkzPLcQFt0SCC3QYgUCbIgYh7z5xh9kjOFVKc5liRP9AaRqffbVgygAxO1i9AyVDiRn_oYHIQG9zahDzSUIsEV8ye0rP3JEWuRI1IIkN\",\"fulfills\":null,\"owners_before\":[\"ERuZozuEMGfJDViZ7ABxxokieKq23BUN6vUAco8ztqR1\"]}],\"metadata\":{\"metadata\":\"metadata_example\"},\"operation\":\"CREATE\",\"outputs\":[{\"amount\":\"1\",\"condition\":{\"details\":{\"public_key\":\"ERuZozuEMGfJDViZ7ABxxokieKq23BUN6vUAco8ztqR1\",\"type\":\"ed25519-sha-256\"},\"uri\":\"ni:///sha-256;XLcOrKPa5YRr3xNcqE4pClkRtX54Bt1DMyVsvOLZy1c?fpt=ed25519-sha-256&cost=131072\"},\"public_keys\":[\"ERuZozuEMGfJDViZ7ABxxokieKq23BUN6vUAco8ztqR1\"]}],\"version\":\"2.0\"}";
 
     /** The Constant SHOULD_BE_FULFILMENT. */
     static final String SHOULD_BE_FULFILMENT = "pGSAIOJUaCNTxPOZO2g7x0h6cFHt4LmgrN1LNGXh9q7IDOKxgUB2Dd0EcnZnpKG6m-j6Fb5fxoFODZNPXUYBsWQ-16unDk9fbCPN4m5OG34dL6pzgGH9Xk1aPv1bYozH7c-E_4MD";
@@ -376,6 +376,32 @@ public class BigchaindbTransactionTest {
     /** The Constant SHOULD_BE_PUBLIC_KEY. */
     static final String SHOULD_BE_PUBLIC_KEY = "4K9sWUMFwTgaDGPfdynrbxWqWS6sWmKbZoTjxLtVUibD";
 
+    public class AssetObj extends DataModel
+    {
+        private String asset;
+
+        public String getAsset() {
+            return asset;
+        }
+
+        public void setAsset(String asset) {
+            this.asset = asset;
+        }
+    }
+
+    public class MetadataObj extends DataModel
+    {
+        private String metadata;
+
+        public String getMetadata() {
+            return metadata;
+        }
+
+        public void setMetadata(String metadata) {
+            this.metadata = metadata;
+        }
+    }
+
     /**
      * Transaction generation test.
      *
@@ -383,43 +409,22 @@ public class BigchaindbTransactionTest {
      */
     @Test
     public void transactionGenerationTest() throws Exception {
-        JsonObject data = new JsonObject();
-        data.addProperty("expiration", "NLpPB8MpOkQLZJuyn4rXacdQBXOt4OAwQUSAEpipi2Y=\\n");
-        data.addProperty("lat", "DP\\/p9q4D7L0IBZr53Dh98N1huD5BGG\\/nZ9zs\\/ydEUzc=\\n");
-        data.addProperty("lon", "ZPleIXiR3W4RWzjrdXcqXDYUjPGGQn6JKmMF5OH7T6U=\\n");
-        data.addProperty("firstname", "NLpPB8MpOkQLZJuyn4rXacdQBXOt4OAwQUSAEpipi2Y=\\n");
-        data.addProperty("lastname", "N4iDURp+thKsn1Mn7csSoU63QJnJxqyz+VNOPUikMMk=\\n");
-        data.addProperty("dob", "ZBJhOnJgC\\/E\\/iD2eyh15qWqD3jsyj+k9+2XIDJXvhEE=\\n");
-        data.addProperty("sex", "lg52\\/gnwsTWdwUW4teyj4SGQOF7y5C435on9HtW3DwI=\\n");
-        data.addProperty("nationality", "MjpcaVsVoR+5E5ov4Z2gAal1cUfYLUypL52nFqx7pyM=\\n");
-        data.addProperty("idNumber", "hsDKi81fiXWuNHoZrzezzTMHykjDIrAtiPozzPTkkbM=\\n");
+        AssetObj assetObj = new AssetObj();
+        assetObj.setAsset("asset_example");
 
-        KeyPair keyPair = retrieveKeyPair();
+        MetadataObj metadataObj = new MetadataObj();
+        metadataObj.setMetadata("metadata_example");
 
-        TransactionModel bigchaindbTransaction = new TransactionModel(
-                data, null, (EdDSAPublicKey) keyPair.getPublic()
-        );
-        assertFalse(bigchaindbTransaction.isSigned());
-        bigchaindbTransaction.signTransaction((EdDSAPrivateKey) keyPair.getPrivate());
-        assertTrue(bigchaindbTransaction.isSigned());
 
-        Ed25519Sha256Condition condition1 = new Ed25519Sha256Condition(
-                (EdDSAPublicKey) keyPair.getPublic());
-        Signature edDsaSigner = new EdDSAEngine(MessageDigest.getInstance("SHA-512"));
+        KeyPair keyPair = retrieveKeyPair2();
+        Transaction transaction = BigchainDbTransactionBuilder.init()
+                .addAssets( assetObj, assetObj.getClass() )
+                .addMetaData(metadataObj)
+                .buildAndSignOnly( (EdDSAPublicKey) keyPair.getPublic(), (EdDSAPrivateKey) keyPair.getPrivate() );
 
-        JsonObject rootObject = jsonParser.parse( bigchaindbTransaction.getTransactionJson().toString()).getAsJsonObject();
-        String fulfilmentVal = rootObject.get("inputs").getAsJsonArray().get(0).getAsJsonObject().get("fulfillment").getAsString();
-        rootObject.get("inputs").getAsJsonArray().get(0).getAsJsonObject().add("fulfillment", null);
-        edDsaSigner.initSign(keyPair.getPrivate());
-        edDsaSigner.update(rootObject.toString().getBytes());
-        byte[] signature = edDsaSigner.sign();
-        Ed25519Sha256Fulfillment fulfillment = new Ed25519Sha256Fulfillment((EdDSAPublicKey) keyPair.getPublic(), signature);
+        assertTrue(transaction.getSigned());
 
-        assertEquals("42cbe3b7c33257f4ac3e6805c7d720a64093393ea929a8666fa11e171b3e6515", rootObject.get("id").getAsString());
-        assertEquals("42cbe3b7c33257f4ac3e6805c7d720a64093393ea929a8666fa11e171b3e6515", bigchaindbTransaction.getTransactionId());
-        assertEquals(SHOULD_BE_FULFILMENT, fulfilmentVal);
-
-        assertTrue(fulfillment.verify(condition1, rootObject.toString().getBytes()));
+        assertEquals(RESULT_TRANSACTION, transaction.toString());
     }
 
     /**
@@ -464,6 +469,14 @@ public class BigchaindbTransactionTest {
         Security.addProvider(new BouncyCastleProvider());
 
         byte[] seedEncoded = Base64.decodeBase64("pK0Jep29SGSDx/AUdFBosyVtEU7EoTG1+Bq74Dnh6HQ");
+        EdDSAParameterSpec keySpecs = EdDSANamedCurveTable.getByName("Ed25519");
+        EdDSAPrivateKeySpec privKeySpec = new EdDSAPrivateKeySpec(seedEncoded, keySpecs);
+        EdDSAPublicKeySpec pubKeySpec = new EdDSAPublicKeySpec(privKeySpec.getA(), keySpecs);
+        return new KeyPair(new EdDSAPublicKey(pubKeySpec), new EdDSAPrivateKey(privKeySpec));
+    }
+
+    private KeyPair retrieveKeyPair2() {
+        byte[] seedEncoded = Base58.decode("747SJsjEjH1oguEWtBoKcPe8F77uS2g48fmkXMqxMA9M");
         EdDSAParameterSpec keySpecs = EdDSANamedCurveTable.getByName("Ed25519");
         EdDSAPrivateKeySpec privKeySpec = new EdDSAPrivateKeySpec(seedEncoded, keySpecs);
         EdDSAPublicKeySpec pubKeySpec = new EdDSAPublicKeySpec(privKeySpec.getA(), keySpecs);
